@@ -13,7 +13,7 @@ import com.jfinal.util.StringKit;
 public class AutoControllerRegist {
 	private static Logger logger = LoggerFactory.getLogger(AutoControllerRegist.class);
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void regist(Routes routes) {
 		List<Class> controllerClasses = ClassSearcher.findClasses(Controller.class);
 		ControllerBind controllerBind = null;

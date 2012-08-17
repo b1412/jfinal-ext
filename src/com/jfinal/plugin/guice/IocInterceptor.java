@@ -3,16 +3,7 @@ package com.jfinal.plugin.guice;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
-
-import com.cloud.pxxt.mobilebind.MobileBindController;
-import com.cloud.pxxt.mobilebind.MobileBindService;
-import com.cloud.pxxt.mobilebind.MobileBindServiceImpl;
-import com.google.inject.Binder;
 import com.google.inject.Guice;
-import com.google.inject.Module;
-import com.google.inject.matcher.Matchers;
 import com.jfinal.aop.Interceptor;
 import com.jfinal.core.ActionInvocation;
 import com.jfinal.core.Controller;
