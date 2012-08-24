@@ -27,7 +27,7 @@ public class DwzRender extends Render {
 
 	public static DwzRender success() {
 		DwzRender dwzRender = new DwzRender();
-		dwzRender.setTipsMessage("鎿崭綔鎴愬姛");
+		dwzRender.setTipsMessage("操作成功");
 		return dwzRender;
 	}
 
@@ -40,7 +40,7 @@ public class DwzRender extends Render {
 	public static DwzRender error() {
 		DwzRender dwzRender = new DwzRender();
 		dwzRender.statusCode = "300";
-		dwzRender.tipsMessage = "鎿崭綔澶辫触";
+		dwzRender.tipsMessage = "操作失败";
 		return dwzRender;
 	}
 
