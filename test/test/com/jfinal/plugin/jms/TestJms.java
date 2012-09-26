@@ -12,7 +12,7 @@ import com.jfinal.plugin.jms.JmsPlugin;
 public class TestJms {
 	@BeforeClass
 	public static void init() {
-		JmsPlugin jmsPlugin = new JmsPlugin();
+		JmsPlugin jmsPlugin = new JmsPlugin("test/com/jfinal/plugin/jms/jms.properties");
 		jmsPlugin.start();
 	}
 
