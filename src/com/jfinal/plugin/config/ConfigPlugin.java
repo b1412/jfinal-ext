@@ -4,7 +4,7 @@ import com.jfinal.plugin.IPlugin;
 
 public class ConfigPlugin implements IPlugin {
 	private String floder;
-	public ConfigPlugin(String floder){
+	public ConfigPlugin(String resources){
 		this.floder = floder;
 	}
 	@Override

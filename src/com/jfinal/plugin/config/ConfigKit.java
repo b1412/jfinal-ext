@@ -14,15 +14,17 @@ import java.util.Properties;
 import java.util.Set;
 
 public class ConfigKit {
-	private static Map<String, String> map = new HashMap<String, String>();
+	private static Map<String, String> map ;
 
-	private static Map<String, String> testMap = new HashMap<String, String>();
+	private static Map<String, String> testMap ;
 
 	/**
 	 *  the floders in classpath
 	 * @param floders
 	 */
 	static void init(String ... floders){
+		map = new HashMap<String, String>();
+		testMap = new HashMap<String, String>();
 		for (String floder : floders) {
 			System.out.println("floder :"+floder);
 			File[] propertiesFiles = null;
@@ -79,6 +81,9 @@ public class ConfigKit {
 		System.out.println("init success!");
 	}
 	public static String getStr(String key) {
+		if(testMap==null||map==null){
+			throw new RuntimeException(" the ConfigPlugin dident start");
+		}
 		Object val = testMap.get(key);
 		if("".equals(val)) {
 			val = map.get(key);
