@@ -108,14 +108,18 @@ public class ClassSearcher {
 
 	}
 
-	public static List<Class> findClasses(Class clazz)
-			throws MalformedURLException {
+	public static List<Class> findClasses(Class clazz){
 		List<Class> classList = new ArrayList<Class>();
 		URL classPathUrl = ClassSearcher.class.getResource("/");
 		List<String> classFileList = findFiles(classPathUrl.getFile(),
 				"*.class");
 		String lib = new File(classPathUrl.getFile()).getParent() + "/lib/";
-		List<String> jarclassFiles = findjarFiles(lib, new File(lib).toURL());
+		List<String> jarclassFiles = null;
+		try {
+			jarclassFiles = findjarFiles(lib, new File(lib).toURL());
+		} catch (MalformedURLException e1) {
+			e1.printStackTrace();
+		}
 		classFileList.addAll(jarclassFiles);
 		for (String classFile : classFileList) {
 			// String className = className(classFile, "/classes");
