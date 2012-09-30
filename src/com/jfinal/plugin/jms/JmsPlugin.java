@@ -19,6 +19,8 @@ public class JmsPlugin implements IPlugin {
 	private JmsSender jmsSender;
 	private List<MessageListener> listeners = new ArrayList<MessageListener>();
 	
+	public JmsPlugin(){}
+	
 	public JmsPlugin(String resoruceLocation){
 		this.resoruceLocation = resoruceLocation;
 	}

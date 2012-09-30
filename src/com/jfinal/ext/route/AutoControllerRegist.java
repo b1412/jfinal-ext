@@ -15,7 +15,7 @@ public class AutoControllerRegist {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void regist(Routes routes) {
-		List<Class> controllerClasses = ClassSearcher.findClasses(Controller.class);
+		List<Class> controllerClasses = ClassSearcher.findInClasspath(Controller.class);
 		ControllerBind controllerBind = null;
 		for (Class controller : controllerClasses) {
 			controllerBind = (ControllerBind) controller.getAnnotation(ControllerBind.class);

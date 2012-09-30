@@ -5,4 +5,5 @@
 /.settings
 /bin/*
 *.tmp
+/WebRoot/WEB-INF/classes/*
 /*.log
