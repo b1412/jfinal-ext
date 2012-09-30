@@ -1,5 +1,6 @@
 package com.jfinal.plugin.tablebind;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -10,11 +11,34 @@ import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.util.StringKit;
 
 public class AutoTableBindPlugin extends ActiveRecordPlugin {
-	private TableNameStyle tableNameStyle;
-
-	public AutoTableBindPlugin(DataSource dataSource) {
-		super(dataSource);
+	private final TableNameStyle tableNameStyle;
+	
+	private final List<String> includeJars = new ArrayList<String>();
+	
+	boolean includeAllJarsInLib ;
+	
+	public boolean setIncludeAllJarsInLib() {
+		return includeAllJarsInLib;
 	}
+
+	public void addJar(String jarName){
+		includeJars.add(jarName);
+	}
+	
+	public void addJars(List<String> jarsName){
+		includeJars.addAll(jarsName);
+	}
+	
+	public AutoTableBindPlugin(DataSource dataSource) {
+		this(dataSource, TableNameStyle.DEFAULT);
+	}
+	
+	public AutoTableBindPlugin(DataSource dataSource,TableNameStyle tableNameStyle) {
+		super(dataSource);
+		this.tableNameStyle = tableNameStyle;
+	}
+	
+	
 
 	public AutoTableBindPlugin(IDataSourceProvider dataSourceProvider) {
 		this(dataSourceProvider, TableNameStyle.DEFAULT);
@@ -30,7 +54,7 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
 	@Override
 	public boolean start() {
 		try {
-			List<Class> modelClasses = ClassSearcher.findClasses(Model.class);
+			List<Class> modelClasses = ClassSearcher.findInClasspathAndInJars(Model.class,includeJars);
 			System.out.println("modelClasses.size " + modelClasses.size());
 			TableBind tb = null;
 			for (Class modelClass : modelClasses) {

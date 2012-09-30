@@ -1,8 +1,8 @@
 package com.jfinal.plugin.tablebind;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -10,7 +10,11 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import com.jfinal.core.Controller;
+
 public class ClassSearcher {
+	static URL classPathUrl = ClassSearcher.class.getResource("/");
+	static String lib = new File(classPathUrl.getFile()).getParent() + "/lib/";
 
 	/**
 	 * 递归查找文件
@@ -31,7 +35,7 @@ public class ClassSearcher {
 		// 判断目录是否存在
 		File baseDir = new File(baseDirName);
 		if (!baseDir.exists() || !baseDir.isDirectory()) {
-			System.out.println("文件查找失败：" + baseDirName + "不是一个目录！");
+			System.err.println("search error：" + baseDirName + "is not a dir！");
 		} else {
 			String[] filelist = baseDir.list();
 			for (int i = 0; i < filelist.length; i++) {
@@ -66,38 +70,39 @@ public class ClassSearcher {
 	 * 
 	 * @param baseDirName
 	 *            jar路径
+	 * @param includeJars 
 	 * @param jarFileURL
 	 *            jar文件地址 <a href="http://my.oschina.net/u/556800"
 	 *            target="_blank" rel="nofollow">@return</a>
 	 */
-	public static List<String> findjarFiles(String baseDirName,
-			URL... jarFileURL) {
+	public static List<String> findjarFiles(String baseDirName, final List<String> includeJars) {
 		List<String> classFiles = new ArrayList<String>();
 		try {
 			// 判断目录是否存在
 			File baseDir = new File(baseDirName);
 			if (!baseDir.exists() || !baseDir.isDirectory()) {
-				System.out.println("文件查找失败：" + baseDirName + "不是一个目录！");
+				System.out.println("file serach error：" + baseDirName + "is not a dir！");
 			} else {
-				String[] filelist = baseDir.list();
+				String[] filelist = baseDir.list(new FilenameFilter() {
+					@Override
+					public boolean accept(File dir, String name) {
+						return includeJars.contains(name);
+					}
+				});
 				for (int i = 0; i < filelist.length; i++) {
-					if (filelist[i].contains("zfplugin")) {// 查找含有zfplugin的jar包
-						JarFile localJarFile = new JarFile(new File(baseDirName
-								+ File.separator + filelist[i]));
-						Enumeration<JarEntry> entries = localJarFile.entries();
-						while (entries.hasMoreElements()) {
-							JarEntry jarEntry = entries.nextElement();
-							String entryName = jarEntry.getName();
-							if (jarEntry.isDirectory()) {
-								// System.out.println(entryName);
-							} else if (entryName.endsWith(".class")) {
-								String className = entryName.replaceAll("/",
-										".").substring(0,
-										entryName.length() - 6);
-								classFiles.add(className);
-							}
+					JarFile localJarFile = new JarFile(new File(baseDirName
+							+ File.separator + filelist[i]));
+					Enumeration<JarEntry> entries = localJarFile.entries();
+					while (entries.hasMoreElements()) {
+						JarEntry jarEntry = entries.nextElement();
+						String entryName = jarEntry.getName();
+						if (!jarEntry.isDirectory()&&entryName.endsWith(".class")) {
+							String className = entryName.replaceAll("/", ".")
+									.substring(0, entryName.length() - 6);
+							classFiles.add(className);
 						}
 					}
+					localJarFile.close();
 				}
 			}
 
@@ -108,22 +113,15 @@ public class ClassSearcher {
 
 	}
 
-	public static List<Class> findClasses(Class clazz){
+	public static List<Class> findInClasspathAndInJars(Class clazz, List<String> includeJars) {
+		List<String> classFileList = findFiles(classPathUrl.getFile(),"*.class");
+		classFileList.addAll(findjarFiles(lib,includeJars));
+		return extraction(clazz,classFileList);
+	}
+
+	private static List<Class> extraction(Class clazz,List<String> classFileList) {
 		List<Class> classList = new ArrayList<Class>();
-		URL classPathUrl = ClassSearcher.class.getResource("/");
-		List<String> classFileList = findFiles(classPathUrl.getFile(),
-				"*.class");
-		String lib = new File(classPathUrl.getFile()).getParent() + "/lib/";
-		List<String> jarclassFiles = null;
-		try {
-			jarclassFiles = findjarFiles(lib, new File(lib).toURL());
-		} catch (MalformedURLException e1) {
-			e1.printStackTrace();
-		}
-		classFileList.addAll(jarclassFiles);
 		for (String classFile : classFileList) {
-			// String className = className(classFile, "/classes");
-			System.out.println(classFile);
 			try {
 				Class<?> classInFile = Class.forName(classFile);
 				if (classInFile.getSuperclass() == clazz) {
@@ -133,6 +131,7 @@ public class ClassSearcher {
 				e.printStackTrace();
 			}
 		}
+
 		return classList;
 	}
 
@@ -184,12 +183,8 @@ public class ClassSearcher {
 		return (strIndex == strLength);
 	}
 
-	public static void main(String[] args) throws MalformedURLException {
-		// URL classPathUrl = ClassSearcher.class.getResource("/");
-		// String baseDirName = new File(classPathUrl.getFile()).getParent()
-		// + "/lib/";
-		// URL url = new File(baseDirName).toURL();
-		// ClassSearcher.findjarFiles(baseDirName, url);
-		// ClassSearcher.findClasses(Demo.class);
+	public static List<Class> findInClasspath(Class<Controller> clazz) {
+		List<String> classFileList = findFiles(classPathUrl.getFile(),"*.class");
+		return extraction(clazz,classFileList);
 	}
 }
