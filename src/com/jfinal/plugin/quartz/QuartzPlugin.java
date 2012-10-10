@@ -6,11 +6,8 @@ import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.quartz.CronTrigger;
@@ -27,8 +24,6 @@ public class QuartzPlugin implements IPlugin {
 	private Scheduler sched = null;
 	private String config = "job.properties";
 	private Properties properties;
-	private List<Map<String,String>> jobs = new ArrayList<>();
-
 	public QuartzPlugin(String config) {
 		this.config = config;
 	}
