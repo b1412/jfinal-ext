@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlGroup name="blog" >
+	<sql id="findBlog">select * from blog</sql>
+	<sql id="findUser">select * from user</sql>
+</sqlGroup>
