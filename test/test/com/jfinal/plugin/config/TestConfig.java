@@ -11,7 +11,8 @@ import com.jfinal.plugin.config.ConfigPlugin;
 public class TestConfig {
 	@BeforeClass
 	public static void init() {
-		ConfigPlugin configPlugin = new ConfigPlugin("/test/com/jfinal/plugin/config");
+		ConfigPlugin configPlugin = new ConfigPlugin();
+		configPlugin.addResource(".*.properties");
 		configPlugin.start();
 	}
 
