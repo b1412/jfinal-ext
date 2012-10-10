@@ -1,11 +1,8 @@
-﻿package com.jfinal.render;
+package com.jfinal.render;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.MessageFormat;
-
-import com.jfinal.render.Render;
-import com.jfinal.render.RenderException;
 
 public class DwzRender extends Render {
 	private static final long serialVersionUID = -6389678574264885365L;
