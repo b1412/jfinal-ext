@@ -7,3 +7,4 @@
 *.tmp
 /WebRoot/WEB-INF/classes/*
 /*.log
+build/*
