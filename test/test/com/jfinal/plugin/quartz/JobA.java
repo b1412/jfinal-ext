@@ -1,4 +1,4 @@
-package test.com.jfinal.plugin.quartzPlugin;
+package test.com.jfinal.plugin.quartz;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
