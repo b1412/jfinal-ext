@@ -10,9 +10,12 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 public class SqlManager {
-	private static Map<String, String> sqlMap = new HashMap<String, String>();
+	private static Map<String, String> sqlMap;
 
 	public static String sql(String groupNameAndsqlId) {
+		if(sqlMap ==null){
+			System.err.println("SqlInXmlPlugin not start");
+		}
 		return sqlMap.get(groupNameAndsqlId);
 	}
 
@@ -20,7 +23,8 @@ public class SqlManager {
 		sqlMap.clear();
 	}
 
-	static void parseSqlXml() {
+	static void init() {
+		sqlMap =  new HashMap<String, String>();
 		File file = new File(SqlManager.class.getClassLoader().getResource("").getFile());
 		File[] files = file.listFiles(new FileFilter() {
 
@@ -39,7 +43,7 @@ public class SqlManager {
 				Unmarshaller unmarshaller = context.createUnmarshaller();
 				group = (SqlGroup) unmarshaller.unmarshal(xmlfile);
 			} catch (JAXBException e) {
-				throw new RuntimeException(e);
+				e.printStackTrace();
 			}
 			String name = group.name;
 			if (name == null || name.trim().equals("")) {
@@ -49,11 +53,6 @@ public class SqlManager {
 				sqlMap.put(name + "." + sqlItem.id, sqlItem.value);
 			}
 		}
+		System.out.println("sqlMap"+sqlMap);
 	}
-
-	public static void main(String[] args) {
-		parseSqlXml();
-		System.out.println(sqlMap);
-	}
-
 }
