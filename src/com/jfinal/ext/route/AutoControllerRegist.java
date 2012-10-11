@@ -2,16 +2,12 @@ package com.jfinal.ext.route;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.jfinal.config.Routes;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.tablebind.ClassSearcher;
 import com.jfinal.util.StringKit;
 
 public class AutoControllerRegist {
-	private static Logger logger = LoggerFactory.getLogger(AutoControllerRegist.class);
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void regist(Routes routes) {
@@ -21,10 +17,9 @@ public class AutoControllerRegist {
 			controllerBind = (ControllerBind) controller.getAnnotation(ControllerBind.class);
 			if (controllerBind == null) {
 				routes.add(controllerKey(controller), controller);
-				logger.debug("routes.add({}, {})", controllerKey(controller), controller.getName());
+				System.out.println("routes.add("+controllerKey(controller)+", "+controller.getName()+")");
 			} else {
-				logger.debug("routes.add({}, {},{})", new Object[] { controllerBind.controllerKey(), controller,
-						controllerBind.viewPath() });
+				System.out.println("routes.add("+controllerBind.controllerKey()+", "+controller+","+controllerBind.viewPath()+")");
 			}
 		}
 	}
