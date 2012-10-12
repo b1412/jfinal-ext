@@ -6,8 +6,13 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
+import com.jfinal.plugin.config.ConfigKit;
+import com.jfinal.plugin.config.ConfigPlugin;
+
 public class JmsConfig {
 	private static  Properties properties;
+	
+	private static ConfigPlugin configPlugin;
 	
 	public synchronized static void init(String resoruceLocation) {
 		if(properties!=null){
@@ -26,6 +31,9 @@ public class JmsConfig {
 	}
 		
 	public static String getVal(String key) {
+		if(configPlugin!=null){
+			return ConfigKit.getStr(key);
+		}
 		Object objVal = properties.get(key);
 		return objVal==null?"":objVal+"";
 	}
@@ -36,6 +44,11 @@ public class JmsConfig {
 			keySet.add(objVal+"");
 		}
 		return keySet;
+	}
+
+	public static void init(String resoruceLocation, ConfigPlugin configPlugin) {
+		JmsConfig.configPlugin = configPlugin;
+		init(resoruceLocation);
 	}
 	
 }
