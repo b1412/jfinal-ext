@@ -1,7 +1,5 @@
 package test.com.jfinal.plugin.tablebind;
 
-import java.util.ArrayList;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -15,8 +13,7 @@ public class TestTableBind {
 		DruidPlugin c3p0 = new DruidPlugin(
 				"jdbc:mysql://127.0.0.1/jfinal_demo", "root", "root");
 		AutoTableBindPlugin atbp = new AutoTableBindPlugin(c3p0,TableNameStyle.LOWER);
-		atbp.addJar("xx.jar");
-		atbp.addJars(new ArrayList<String>());
+		atbp.addJar("modelInJar.jar");
 		c3p0.start();
 		atbp.start();
 	}
