@@ -7,11 +7,13 @@ import java.util.List;
 import javax.jms.MessageListener;
 
 import com.jfinal.plugin.IPlugin;
+import com.jfinal.plugin.config.ConfigPlugin;
 import com.jfinal.util.StringKit;
 
 public class JmsPlugin implements IPlugin {
 	private String resoruceLocation = "jms.properties";
 	
+	private ConfigPlugin configPlugin;
 	private String serverUrl;
 	private String username;
 	private String password;
@@ -21,12 +23,21 @@ public class JmsPlugin implements IPlugin {
 	
 	public JmsPlugin(){}
 	
+	public JmsPlugin(ConfigPlugin  configPlugin){
+		this.configPlugin = configPlugin;
+	}
+	
 	public JmsPlugin(String resoruceLocation){
 		this.resoruceLocation = resoruceLocation;
 	}
+	
+	public JmsPlugin(String resoruceLocation,ConfigPlugin  configPlugin){
+		this.resoruceLocation = resoruceLocation;
+		this.configPlugin = configPlugin;
+	}
 	@Override
 	public boolean start() {
-		JmsConfig.init(resoruceLocation);
+		JmsConfig.init(resoruceLocation,configPlugin);
 		initServerConfig();
 		initSender();
 		initReceiver();
