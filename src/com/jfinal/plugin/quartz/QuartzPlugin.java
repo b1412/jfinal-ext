@@ -92,6 +92,9 @@ public class QuartzPlugin implements IPlugin {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+		System.out.println("------------load Propteries---------------");
+		System.out.println(properties);
+		System.out.println("------------------------------------------");
 	}
 
 	@Override
