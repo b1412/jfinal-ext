@@ -8,12 +8,13 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 public class JobB implements Job {
+	static int callTime = 0;
 
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
-		System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())+" JobB works");
+		callTime++;
+		System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())+" JobB works,callTime is: "+callTime);
 	}
-
 
 
 }
