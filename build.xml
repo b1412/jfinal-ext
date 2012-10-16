@@ -9,7 +9,7 @@
     <property name="debug" value="off"/>
     <property name="jdk.version" value="1.7"/>
     <property name="release.version" value="1.0"/>
-    <property name="build.jar" location="${build.dir}/jfinal-ext.${release.version}-b${now}.jar"/>
+    <property name="build.jar" location="${build.dir}/jfinal-ext-${release.version}-b${now}-${jdk.version}.jar"/>
     <path id="compile.lib">
         <fileset dir="${lib.dir}">
             <include name="**/*.jar"/>
