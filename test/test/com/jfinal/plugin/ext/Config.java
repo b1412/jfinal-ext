@@ -7,12 +7,16 @@ import com.jfinal.config.JFinalConfig;
 import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
 import com.jfinal.ext.route.AutoControllerRegist;
+import com.jfinal.plugin.activerecord.tx.TxByRegex;
+import com.jfinal.render.ViewType;
 
 public class Config extends JFinalConfig {
 
 	@Override
 	public void configConstant(Constants me) {
+		me.setEncoding("utf-8");
 		me.setDevMode(true);
+		me.setViewType(ViewType.JSP);
 	}
    
 	@Override
@@ -28,8 +32,7 @@ public class Config extends JFinalConfig {
 
 	@Override
 	public void configInterceptor(Interceptors me) {
-		// TODO Auto-generated method stub
-		
+		me.add(new TxByRegex(".*.save"));
 	}
 
 	@Override

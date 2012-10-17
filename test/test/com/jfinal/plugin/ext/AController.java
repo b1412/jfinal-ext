@@ -5,5 +5,7 @@ import com.jfinal.core.Controller;
 public class AController extends Controller {
 	public void index(){
 		System.out.println("a index");
+		setAttr("name", "zhoulei");
+		render("test.html");
 	}
 }
