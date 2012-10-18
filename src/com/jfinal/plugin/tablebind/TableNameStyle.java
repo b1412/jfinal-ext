@@ -30,18 +30,34 @@ public enum TableNameStyle {
 	UP_UNDERLINE {
 		@Override
 		public String tableName(String className) {
-			// TODO
-			throw new RuntimeException("not finished");
+			String tableName="";
+			for (int i = 0; i < className.length(); i++) {
+				char ch = className.charAt(i);
+				if(Character.isUpperCase(ch)){
+					tableName+=("_"+ch);
+				}else{
+					tableName+=Character.toUpperCase(ch);
+				}
+			}
+			return tableName;
 		}
 	},
 	LOWER_UNDERLINE {
 		@Override
 		public String tableName(String className) {
-			// TODO
-			throw new RuntimeException("not finished");
+			String tableName="";
+			for (int i = 0; i < className.length(); i++) {
+				char ch = className.charAt(i);
+				if(Character.isUpperCase(ch)){
+					tableName+=("_"+Character.toLowerCase(ch));
+				}else{
+					tableName+=ch;
+				}
+			}
+			return tableName;
 		}
 	};
 
 	public abstract String tableName(String className);
-
+	
 }

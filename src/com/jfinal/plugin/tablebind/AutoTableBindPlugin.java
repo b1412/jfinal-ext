@@ -1,6 +1,7 @@
 package com.jfinal.plugin.tablebind;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -22,7 +23,21 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
 	}
 
 	public void addJar(String jarName){
+		if(StringKit.isBlank(jarName)){
+			return;
+		}
 		includeJars.add(jarName);
+	}
+	
+	public void addJars(String jarNames){
+		if(StringKit.isBlank(jarNames)){
+			return;
+		}
+		addJars(jarNames.split(","));
+	}
+	
+	public void addJars(String [] jarsName){
+		includeJars.addAll(Arrays.asList(jarsName));
 	}
 	
 	public void addJars(List<String> jarsName){
@@ -60,11 +75,9 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
 			for (Class modelClass : modelClasses) {
 				tb = (TableBind) modelClass.getAnnotation(TableBind.class);
 				if (tb == null) {
-					this.addMapping(tableNameStyle.tableName(modelClass
-							.getSimpleName()), modelClass);
+					this.addMapping(tableNameStyle.tableName(modelClass.getSimpleName()), modelClass);
 					System.out.println("auto bindTable: addMapping("
-							+ tableNameStyle.tableName(modelClass
-									.getSimpleName()) + ", "
+							+ tableNameStyle.tableName(modelClass.getSimpleName()) + ", "
 							+ modelClass.getName() + ")");
 				} else {
 					if (StringKit.notBlank(tb.pkName())) {
