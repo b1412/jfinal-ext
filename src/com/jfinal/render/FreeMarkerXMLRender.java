@@ -11,7 +11,7 @@ import freemarker.template.Template;
 @SuppressWarnings("serial")
 /**
  *  <http://my.oschina.net/alvinte/blog/69030>
- * @author kid
+ * @author alvinte
  *
  */
 public class FreeMarkerXMLRender extends FreeMarkerRender {
