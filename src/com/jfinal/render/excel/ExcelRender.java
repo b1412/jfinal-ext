@@ -1,12 +1,11 @@
-package com.jfinal.render;
+package com.jfinal.render.excel;
 
 import java.io.OutputStream;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-import com.jfinal.util.ExcelKit;
+import com.jfinal.render.Render;
 
 @SuppressWarnings("serial")
 public class ExcelRender extends Render {
@@ -17,15 +16,15 @@ public class ExcelRender extends Render {
 	
 	private String sheetName="sheet1";
 	
-	private List<Map<String,Object>>  data;
+	private List<Object>  data;
 	
 	
-	public ExcelRender(String fileName ,String[]headers,List<Map<String,Object>>  data){
+	public ExcelRender(String fileName ,String[]headers,List<Object>  data){
 		this.fileName = fileName;
 		this.headers = headers;
 		this.data=data;
 	}
-	public ExcelRender(String fileName ,String[]headers,String[]columns,List<Map<String,Object>>   data){
+	public ExcelRender(String fileName ,String[]headers,String[]columns,List<Object> data){
 		this.fileName = fileName;
 		this.headers = headers;
 		this.columns=columns;

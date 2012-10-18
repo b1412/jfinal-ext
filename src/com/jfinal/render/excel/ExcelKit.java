@@ -1,4 +1,4 @@
-package com.jfinal.util;
+package com.jfinal.render.excel;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -15,6 +16,9 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.Region;
+
+import com.jfinal.plugin.activerecord.Model;
+import com.jfinal.plugin.activerecord.Record;
 
 /**
  * description:
@@ -40,8 +44,7 @@ public class ExcelKit {
 
 	@SuppressWarnings("deprecation")
 	private static HSSFWorkbook export(String sheetName, int cellWidth,
-			int headerRow, String[] headers, String[] columns,
-			List<Map<String, Object>> list,int columnNum,  boolean hasHeaders) {
+			int headerRow, String[] headers, String[] columns,List  list,int columnNum,  boolean hasHeaders) {
 		if (sheetName == null || sheetName.isEmpty()) {
 			sheetName = "new sheet";
 		}
@@ -75,23 +78,65 @@ public class ExcelKit {
 			}
 			for (int i = 0, len = list.size(); i < len; i++) {
 				row = sheet.createRow(i + headerRow);
-				Map<String, Object> map = list.get(i);
-				if(map==null){
+				Object obj = list.get(i);
+				if(obj==null){
 					continue;
 				}
-				if(columns.length==0){//未设置显示列，默认全部
-					Set<String> keys = map.keySet();
-					int  columnIndex=0;
-					for (String key : keys) {
-						cell = row.createCell(columnIndex);
-						cell.setCellValue(map.get(key)+"");
-						columnIndex++;
+				//obj : record map model
+				if(obj instanceof Map){
+					@SuppressWarnings("unchecked")
+					Map<String,Object> map = (Map<String,Object>)obj;
+					if(columns.length==0){//未设置显示列，默认全部
+						Set<String> keys = map.keySet();
+						int  columnIndex=0;
+						for (String key : keys) {
+							cell = row.createCell(columnIndex);
+							cell.setCellValue(map.get(key)+"");
+							columnIndex++;
+						}
+					}else{
+						for (int j = 0, lenJ = columns.length; j < lenJ; j++) {
+							cell = row.createCell(j);
+							cell.setCellValue(map.get(columns[j])+"");
+						}
 					}
-				}else{
-					for (int j = 0, lenJ = columns.length; j < lenJ; j++) {
-						cell = row.createCell(j);
-						cell.setCellValue(map.get(columns[j])+"");
+				}else if(obj instanceof Model){
+					@SuppressWarnings("rawtypes")
+					Model model = (Model)obj;
+					Set<Entry<String, Object>> entries = model.getAttrsEntrySet();
+					if(columns.length==0){//未设置显示列，默认全部
+						int  columnIndex=0;
+						for (Entry<String, Object> entry : entries) {
+							cell = row.createCell(columnIndex);
+							cell.setCellValue(entry.getValue()+"");
+							columnIndex++;
+						}
+					}else{
+						for (int j = 0, lenJ = columns.length; j < lenJ; j++) {
+							cell = row.createCell(j);
+							cell.setCellValue(model.get(columns[j])+"");
+						}
 					}
+					
+				}else if(obj instanceof Record){
+					Record record = (Record)obj;
+					Map<String,Object> map = record.getColumns();
+					if(columns.length==0){//未设置显示列，默认全部
+						record.getColumns();
+						Set<String> keys = map.keySet();
+						int  columnIndex=0;
+						for (String key : keys) {
+							cell = row.createCell(columnIndex);
+							cell.setCellValue(record.get(key)+"");
+							columnIndex++;
+						}
+					}else{
+						for (int j = 0, lenJ = columns.length; j < lenJ; j++) {
+							cell = row.createCell(j);
+							cell.setCellValue(map.get(columns[j])+"");
+						}
+					}
+					
 				}
 			}
 		} catch (Exception ex) {
@@ -121,7 +166,7 @@ public class ExcelKit {
 	 * @return
 	 */
 	public static HSSFWorkbook export(String sheetName,int headerRow, String[] headers, String[] columns,
-			List<Map<String, Object>> list, int cellWidth) {
+			List<Object> list, int cellWidth) {
 		boolean hasHeaders = false;
 		int columnNum = 0;
 		if (headers != null && headers.length >0) {
@@ -141,19 +186,20 @@ public class ExcelKit {
 	public static void main(String[] args) {
 		try {
 			FileOutputStream os = new FileOutputStream(new File("test.xls"));
-			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-			for (int i = 0; i < 3; i++) {
+			List  list = new ArrayList();
+			for (int i = 0; i < 5; i++) {
+				Record record = new Record();
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("ACC_NBR", "ACC_NBR" + i);
 				map.put("IMSI", "IMSI" + i);
 				map.put("DEVID", "DEVID" + i);
 				map.put("LASTTIME", "LASTTIME" + i);
-				list.add(map);
+				record.setColumns(map);
+				list.add(record);
 			}
 			String[] headers = new String[] { "电话号码", "设备id", "imsi", "最后上线时间" };
-//			String[] columns = new String[] { "ACC_NBR", "IMSI", "DEVID",
-//					"LASTTIME" };
-			HSSFWorkbook wb = export("test", 0, headers, null, list, 0);
+			String[] columns = new String[] { "ACC_NBR", "IMSI", "DEVID"};
+			HSSFWorkbook wb = export("test", 0, headers, columns, list, 0);
 			wb.write(os);
 			os.close();
 		} catch (FileNotFoundException e) {
