@@ -33,7 +33,7 @@ public class ControllerTestCase {
 		Class handlerClazz = handler.getClass();
 		Method handle = handlerClazz.getDeclaredMethod("handle", String.class,HttpServletRequest.class,HttpServletResponse.class,new boolean[]{}.getClass());
 		handle.setAccessible(true);
-		handle.invoke(handler, "/a",request,response,new boolean[]{true});
+		handle.invoke(handler, path,request,response,new boolean[]{true});
 		return "";
 	} 
 	
