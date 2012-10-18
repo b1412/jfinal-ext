@@ -24,7 +24,6 @@ public class MockHttpRequest implements  HttpServletRequest {
 	
 	private Map<String,Object> para = new HashMap<String,Object>();
 
-	//			request.getRequestDispatcher(view).forward(request, response);
 	@Override
 	public Object getAttribute(String key) {
 		return attr.get(key);
@@ -153,7 +152,10 @@ public class MockHttpRequest implements  HttpServletRequest {
 			@Override
 			public void forward(ServletRequest arg0, ServletResponse arg1)
 					throws ServletException, IOException {
-				System.out.println("forward view:"+view);
+				System.out.println();
+				System.out.println("JFinal view report -----------------------------------");
+				System.out.println("forward to view :"+view);
+				System.out.println("------------------------------------------------------");
 			}
 
 			@Override

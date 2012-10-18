@@ -47,8 +47,8 @@ public class ReceiveResolverFactory  {
 	private void loadReceiveResolver() {
 		for (String key : JmsConfig.keys()) {
 			if (key.startsWith(typeFilter)&&!key.endsWith(RESOLVER_SUFFIX)) {
-				Integer messageType = new Integer((String) JmsConfig.getVal(key));
-				String messageResolver = (String) JmsConfig.getVal(key + RESOLVER_SUFFIX);
+				Integer messageType = new Integer(JmsConfig.getVal(key));
+				String messageResolver = JmsConfig.getVal(key + RESOLVER_SUFFIX);
 				messageTypeMap.put(key, messageType);
 				try {
 					receiveResolverMap.put(messageType,

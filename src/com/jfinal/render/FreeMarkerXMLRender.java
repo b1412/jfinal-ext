@@ -21,6 +21,7 @@ public class FreeMarkerXMLRender extends FreeMarkerRender {
 		super(view);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public void render() {
 		response.setContentType(contentType);

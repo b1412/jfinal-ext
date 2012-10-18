@@ -46,7 +46,8 @@ public class QueueListener implements MessageListener {
         }
     }
 
-    public void onMessage(Message message) {
+    @Override
+	public void onMessage(Message message) {
         if (messageHandler != null) {
             messageHandler.handleMessage(message);
         } else {

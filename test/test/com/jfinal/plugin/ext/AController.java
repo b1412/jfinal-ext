@@ -7,6 +7,6 @@ public class AController extends Controller {
 		System.out.println("a index");
 		setAttr("name", "zhoulei");
 		setAttr("age", 10*2+4);
-		render("test.html");
+		render("add.html");
 	}
 }

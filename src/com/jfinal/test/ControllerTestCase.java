@@ -10,9 +10,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.BeforeClass;
-
-
 import com.jfinal.config.JFinalConfig;
 import com.jfinal.core.JFinal;
 import com.jfinal.handler.Handler;
@@ -38,7 +35,7 @@ public class ControllerTestCase {
 		handle.setAccessible(true);
 		handle.invoke(handler, "/a",request,response,new boolean[]{true});
 		return "";
-	}
+	} 
 	
 	public static Object findAttrAfterInvoke(String  key){
 		return request.getAttribute(key);

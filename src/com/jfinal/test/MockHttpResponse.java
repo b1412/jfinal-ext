@@ -1,7 +1,5 @@
 package com.jfinal.test;
 
-import groovy.ui.Console;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -10,8 +8,6 @@ import java.util.Locale;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-
-import org.mockito.Mockito;
 
 public class MockHttpResponse implements HttpServletResponse {
 
