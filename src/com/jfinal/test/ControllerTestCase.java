@@ -32,13 +32,18 @@ public class ControllerTestCase {
 		handler = (Handler) field.get(me);
 	}
 
-	public static void invoke(String path) throws Exception {
+	public static String invoke(String path) throws Exception {
 		Class handlerClazz = handler.getClass();
 		Method handle = handlerClazz.getDeclaredMethod("handle", String.class,HttpServletRequest.class,HttpServletResponse.class,new boolean[]{}.getClass());
 		handle.setAccessible(true);
 		handle.invoke(handler, "/a",request,response,new boolean[]{true});
+		return "";
 	}
-
+	
+	public static Object findAttrAfterInvoke(String  key){
+		return request.getAttribute(key);
+	}
+	
 	private static void initConfig(Class<JFinal> clazz, JFinal me,
 			ServletContext servletContext,JFinalConfig config) throws Exception {
 		Method method = clazz.getDeclaredMethod("init", JFinalConfig.class,
