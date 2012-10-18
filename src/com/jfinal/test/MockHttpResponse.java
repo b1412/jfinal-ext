@@ -2,7 +2,6 @@ package com.jfinal.test;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Locale;
 
 import javax.servlet.ServletOutputStream;
@@ -49,7 +48,7 @@ public class MockHttpResponse implements HttpServletResponse {
 
 	@Override
 	public PrintWriter getWriter() throws IOException {
-		PrintWriter writer = new PrintWriter(new StringWriter());
+		PrintWriter writer = new PrintWriter(System.out);
 		return writer;
 	}
 
