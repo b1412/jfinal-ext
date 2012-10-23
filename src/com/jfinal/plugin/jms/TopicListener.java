@@ -9,11 +9,8 @@ import javax.jms.MessageListener;
 import javax.jms.Session;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TopicListener implements MessageListener {
-    private static Logger logger = LoggerFactory.getLogger(TopicListener.class);
 
     protected String serverUrl;
     protected String username;
@@ -45,7 +42,7 @@ public class TopicListener implements MessageListener {
             consumer = session.createConsumer(destination);
             consumer.setMessageListener(this);
         } catch (JMSException e) {
-            logger.error("init listener error", e);
+        	e.printStackTrace();
         }
     }
 
@@ -53,7 +50,6 @@ public class TopicListener implements MessageListener {
         if (messageHandler != null) {
             messageHandler.handleMessage(message);
         } else {
-            logger.error("no message handler!! use default message handler");
             new DefaultMessageHandler().handleMessage(message);
         }
     }
@@ -63,21 +59,21 @@ public class TopicListener implements MessageListener {
             try {
                 consumer.close();
             } catch (JMSException e) {
-                logger.error("close consumer error", e);
+            	e.printStackTrace();
             }
         }
         if (session != null) {
             try {
                 session.close();
             } catch (JMSException e) {
-                logger.error("close session error", e);
+            	e.printStackTrace();
             }
         }
         if (connection != null) {
             try {
                 connection.close();
             } catch (JMSException e) {
-                logger.error("close connection error", e);
+            	e.printStackTrace();
             }
         }
     }

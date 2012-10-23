@@ -10,10 +10,7 @@ import javax.jms.ObjectMessage;
 import javax.jms.Session;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 public class TopicPublisher {
-	private static final Logger logger = LoggerFactory.getLogger(TopicPublisher.class);
 
 	protected String serverUrl;
 	protected String username;
@@ -52,7 +49,8 @@ public class TopicPublisher {
 			producer = session.createProducer(destination);
 			producer.setTimeToLive(10L);
 		} catch (JMSException e) {
-			logger.error("init publisher error");
+			System.out.println("init publisher error");
+			e.printStackTrace();
 		}
 	}
 
@@ -60,16 +58,17 @@ public class TopicPublisher {
 		try {
 			if (session == null) {
 				if (!reConnect()) {
-					logger.error("cant connected to JMS server");
+					System.out.println("cant connected to JMS server");
 					return false;
 				}
 			}
-			logger.debug("publish message, msg_type:" + msg_type);
+			System.out.println("publish message, msg_type:" + msg_type);
 			ObjectMessage om = session.createObjectMessage(object);
 			om.setIntProperty(JMSConstants.JMS_MESSAGE_TYPE, msg_type);
 			producer.send(om);
 		} catch (JMSException e) {
-			logger.error("publish message error", e);
+			System.out.println("publish message error");
+			e.printStackTrace();
 			return false;
 		}
 		return true;
@@ -78,7 +77,7 @@ public class TopicPublisher {
 	private boolean reConnect() {
 		int times = reConnectTimes;
 		while (times-- > 0) {
-			logger.debug("reConnectTimes" + times);
+			System.out.println("reConnectTimes" + times);
 			initConnection();
 			if (session != null) {
 				return true;
@@ -86,7 +85,7 @@ public class TopicPublisher {
 			try {
 				Thread.sleep(reConnectInterval * 60 * 1000);
 			} catch (InterruptedException e) {
-				logger.error(e.getMessage(), e);
+				e.printStackTrace();
 			}
 		}
 		return false;
@@ -97,21 +96,21 @@ public class TopicPublisher {
 			try {
 				producer.close();
 			} catch (JMSException e) {
-				logger.error("close producer error", e);
+				e.printStackTrace();
 			}
 		}
 		if (session != null) {
 			try {
 				session.close();
 			} catch (JMSException e) {
-				logger.error("close session error", e);
+				e.printStackTrace();
 			}
 		}
 		if (connection != null) {
 			try {
 				connection.close();
 			} catch (JMSException e) {
-				logger.error("close connection error", e);
+				e.printStackTrace();
 			}
 		}
 	}
