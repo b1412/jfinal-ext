@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.MessageFormat;
 
+@SuppressWarnings("serial")
 public class DwzRender extends Render {
-	private static final long serialVersionUID = -6389678574264885365L;
 	private static final String contentType = "text/html;charset=" + getEncoding();
 	private String statusCode = "200";
 	private String message = "";
