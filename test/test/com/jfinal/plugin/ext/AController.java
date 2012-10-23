@@ -1,7 +1,9 @@
 package test.com.jfinal.plugin.ext;
 
 import com.jfinal.core.Controller;
+import com.jfinal.ext.route.ControllerBind;
 
+@ControllerBind(controllerKey = "/t")
 public class AController extends Controller {
 	public void index(){
 		System.out.println("a index");

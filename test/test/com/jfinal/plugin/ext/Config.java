@@ -22,6 +22,7 @@ public class Config extends JFinalConfig {
 	@Override
 	public void configRoute(Routes me) {
 		AutoControllerRegist.regist(me);
+//		me.add("/t",AController.class);
 	}
 
 	@Override

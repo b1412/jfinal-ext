@@ -13,7 +13,7 @@ public class TestRoute extends ControllerTestCase {
 	}
 	@Test
 	public void test() throws Exception {
-		invoke("/a");
+		invoke("/t/index");
 		assertEquals("zhoulei", findAttrAfterInvoke("name"));
 		assertEquals(24, findAttrAfterInvoke("age"));
 	}
