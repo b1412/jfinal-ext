@@ -18,7 +18,11 @@ public class AutoControllerRegist {
 			if (controllerBind == null) {
 				routes.add(controllerKey(controller), controller);
 				System.out.println("routes.add("+controllerKey(controller)+", "+controller.getName()+")");
-			} else {
+			} else if(StringKit.isBlank(controllerBind.viewPath())){
+				routes.add(controllerBind.controllerKey(), controller);
+				System.out.println("routes.add("+controllerBind.controllerKey()+", "+controller.getName()+")");
+			}else{
+				routes.add(controllerKey(controller), controller,controllerBind.viewPath());
 				System.out.println("routes.add("+controllerBind.controllerKey()+", "+controller+","+controllerBind.viewPath()+")");
 			}
 		}
