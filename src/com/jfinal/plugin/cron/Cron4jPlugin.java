@@ -8,7 +8,6 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 import com.jfinal.plugin.IPlugin;
-import com.jfinal.plugin.quartz.QuartzPlugin;
 
 public class Cron4jPlugin implements IPlugin {
 	private Scheduler scheduler = null;
@@ -69,7 +68,7 @@ public class Cron4jPlugin implements IPlugin {
 	private void loadProperties() {
 		properties = new Properties();
 		System.out.println("config is: "+config);
-		InputStream is = QuartzPlugin.class.getClassLoader()
+		InputStream is = Cron4jPlugin.class.getClassLoader()
 				.getResourceAsStream(config);
 		try {
 			properties.load(is);
