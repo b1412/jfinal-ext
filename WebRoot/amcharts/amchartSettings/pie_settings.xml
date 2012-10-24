@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+  <background>
+    <alpha>100</alpha>
+  </background>
+  <balloon>
+    <show>{title}: {percents}%</show>
+  </balloon>
+  <legend>
+    <enabled>0</enabled>
+  </legend>
+  <pie>
+    <inner_radius>40</inner_radius>
+    <height>10</height>
+    <angle>10</angle>
+    <gradient>radial</gradient>
+    <gradient_ratio>-50,0,0,-50</gradient_ratio>
+  </pie>
+  <animation>
+    <start_time>2</start_time>
+    <start_effect>strong</start_effect>
+    <pull_out_time>1.5</pull_out_time>
+  </animation>
+  <data_labels>
+    <show>{title}: {percents}%</show>
+    <max_width>140</max_width>
+    <hide_labels_percent>3</hide_labels_percent>
+  </data_labels>
+  <labels>
+    <label lid="0">
+      <text><![CDATA[<b>Do you celebrate Christmas?</b>]]></text>
+      <y>10</y>
+      <text_size>12</text_size>
+      <align>center</align>
+    </label>
+  </labels>
+</settings>
