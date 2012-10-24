@@ -1,11 +1,8 @@
 package com.jfinal.plugin.quartz;
 
-import static org.quartz.CronScheduleBuilder.cronSchedule;
-import static org.quartz.JobBuilder.newJob;
-import static org.quartz.TriggerBuilder.newTrigger;
-
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -59,12 +56,23 @@ public class Quartz2Plugin implements IPlugin {
 			} catch (ClassNotFoundException e) {
 				throw new RuntimeException(e);
 			}
-			JobDetail job = newJob(clazz).withIdentity(jobClassName, jobClassName).build();
-			CronTrigger trigger = newTrigger().withIdentity(jobClassName, jobClassName)
-					.withSchedule(cronSchedule(jobCronExp)).build();
+	        JobDetail job = new JobDetail(jobClassName, jobClassName, clazz);
+//			JobDetail job = newJob(clazz).withIdentity(jobClassName, jobClassName).build();
+			CronTrigger trigger = null;
+			try {
+				trigger = new CronTrigger(jobClassName,jobClassName, jobCronExp);
+			} catch (ParseException e) {
+				e.printStackTrace();
+				return false;
+			}
+			
+//			CronTrigger trigger = newTrigger().withIdentity(jobClassName, jobClassName)
+//					.withSchedule(cronSchedule(jobCronExp)).build();
 			Date ft = null;
 			try {
-				ft = sched.scheduleJob(job, trigger);
+				sched.addJob(job, true);
+				ft = sched.scheduleJob(trigger);
+//				ft = sched.scheduleJob(job, trigger);
 				sched.start();
 			} catch (SchedulerException e) {
 				new RuntimeException(e);
