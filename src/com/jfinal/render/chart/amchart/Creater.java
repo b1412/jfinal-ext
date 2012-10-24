@@ -11,40 +11,8 @@ public class Creater {
 	
 	private Creater(){}
 	
-	private static boolean isFormat = false;
+	public static boolean isFormat = true;
 	
-	/**
-	 * 创建报表曲线图,区域图
-	 * 
-	 * @param chart
-	 *            报表实体
-	 * @return 创建的字符串
-	 * 
-	 * 
-	 * <?xml version="1.0" encoding="UTF-8"?>
-     * <chart>
-     *     <series>
-     *         <value xid="0">USA</value>
-     *         <value xid="1">UK</value>
-     *     </series>
-     *     <graphs>
-     *         <graph gid="0">
-     *             <value xid="0">4.2</value>
-     *             <value xid="1">3.1</value>
-     *         </graph>
-     *     </graphs>
-     * </chart>
-	 */
-	public static String createSimpleChart(SimpleChart chart) {
-		StringBuffer strXML = new StringBuffer("<?xml version='1.0' encoding='UTF-8'?>").append(newLine()).append("<chart>");
-		strXML.append(newLine());
-		strXML = appendSeries(strXML,chart.getSeriesNames());
-		strXML = appendSimpleGraphs(strXML,chart.getValues());
-		strXML.append(newLine()).append("</chart>");
-//		logger.debug(strXML.toString());
-		return strXML.toString();
-	}
-
 	/**
 	 *
 	 * Description: <br> 创建报表,曲线图,区域图
@@ -71,12 +39,19 @@ public class Creater {
 	 * 
      * @return 创建的字符串
 	 */
-	public static String createMultipleChart(MultipleChart chart) {
+	public static String createMultipleChart(GraphChart chart) {
 		StringBuffer strXML = new StringBuffer("<?xml version='1.0' encoding='UTF-8'?>").append(newLine()).append("<chart>").append(newLine());
+		strXML.append(newLine());
 		strXML = appendSeries(strXML,chart.getSeriesNames());
-		strXML = appendMultipleGraphs(strXML,chart.getValues());
+		List value = chart.getValues();
+		if(value!=null&&value.size()>0){
+			if(value.get(0) instanceof String){
+				strXML = appendSimpleGraphs(strXML, value);
+			}else if(value.get(0) instanceof List){
+				strXML = appendMultipleGraphs(strXML,value);
+			}
+		}
 		strXML.append(newLine()).append("</chart>");
-//		logger.debug(strXML.toString());
 		return strXML.toString();
 	}
 	/**
@@ -219,7 +194,7 @@ public class Creater {
 //		chart.setValues(values);
 //		String strXml = ChartCreater.createSimpleChart(chart);
 		
-		MultipleChart chart = new MultipleChart();
+		GraphChart chart = new GraphChart();
 		List<String> seriesNames = new ArrayList<String>();
 		for (int i = 0; i < 5; i++) {
 			seriesNames.add("系列"+i);

@@ -2,7 +2,7 @@ package com.jfinal.render.chart.amchart;
 
 import java.util.List;
 
-public class MultipleChart {
+public class GraphChart {
 	/**
 	 * 每条数据的说明（x轴）
 	 */
@@ -11,7 +11,7 @@ public class MultipleChart {
 	/**
 	 * 数据描述
 	 */
-	private List<List<String>> values;
+	private List<?>  values;
 
 	public List<String> getSeriesNames() {
 		return seriesNames;
@@ -21,11 +21,11 @@ public class MultipleChart {
 		this.seriesNames = seriesNames;
 	}
 
-	public List<List<String>> getValues() {
+	public List<?> getValues() {
 		return values;
 	}
 
-	public void setValues(List<List<String>> values) {
+	public void setValues(List<?>  values) {
 		this.values = values;
 	}
 	
