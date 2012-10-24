@@ -34,6 +34,7 @@ public class QuartzPlugin implements IPlugin {
 		try {
 			sched = sf.getScheduler();
 		} catch (SchedulerException e) {
+			e.printStackTrace();
 			new RuntimeException(e); 
 		}
 		loadProperties();
@@ -62,17 +63,14 @@ public class QuartzPlugin implements IPlugin {
 			try {
 				trigger = new CronTrigger(jobClassName,jobClassName, jobCronExp);
 			} catch (ParseException e) {
-				e.printStackTrace();
-				return false;
+				new RuntimeException(e); 
 			}
 			
 //			CronTrigger trigger = newTrigger().withIdentity(jobClassName, jobClassName)
 //					.withSchedule(cronSchedule(jobCronExp)).build();
 			Date ft = null;
 			try {
-				sched.addJob(job, true);
-				ft = sched.scheduleJob(trigger);
-//				ft = sched.scheduleJob(job, trigger);
+				ft = sched.scheduleJob(job, trigger);
 				sched.start();
 			} catch (SchedulerException e) {
 				new RuntimeException(e);
