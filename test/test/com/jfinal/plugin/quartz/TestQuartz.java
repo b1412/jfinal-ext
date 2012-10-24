@@ -6,12 +6,12 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
-import com.jfinal.plugin.quartz.Quartz2Plugin;
+import com.jfinal.plugin.quartz.QuartzPlugin;
 public class TestQuartz {
  
 	@Test
 	public void test() throws InterruptedException {
-		Quartz2Plugin quartzPlugin = new Quartz2Plugin("quzrtz2.properties");
+		QuartzPlugin quartzPlugin = new QuartzPlugin("quzrtz2.properties");
 		quartzPlugin.start();
 		TimeUnit.SECONDS.sleep(20);
 		assertEquals(4,JobA.callTime);

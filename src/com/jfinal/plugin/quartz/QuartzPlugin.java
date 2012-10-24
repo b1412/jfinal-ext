@@ -16,16 +16,16 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import com.jfinal.plugin.IPlugin;
 
-public class Quartz2Plugin implements IPlugin {
+public class QuartzPlugin implements IPlugin {
 	private SchedulerFactory sf = null;
 	private Scheduler sched = null;
 	private String config = "job.properties";
 	private Properties properties;
-	public Quartz2Plugin(String config) {
+	public QuartzPlugin(String config) {
 		this.config = config;
 	}
 
-	public Quartz2Plugin() {
+	public QuartzPlugin() {
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class Quartz2Plugin implements IPlugin {
 
 	private void loadProperties() {
 		properties = new Properties(); 
-		InputStream is = Quartz2Plugin.class.getClassLoader().getResourceAsStream(config);
+		InputStream is = QuartzPlugin.class.getClassLoader().getResourceAsStream(config);
 		try {
 			properties.load(is);
 		} catch (IOException e) {
