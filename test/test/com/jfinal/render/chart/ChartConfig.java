@@ -8,7 +8,7 @@ import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
 import com.jfinal.core.JFinal;
 
-public class Config extends JFinalConfig {
+public class ChartConfig extends JFinalConfig {
 
 	@Override
 	public void configConstant(Constants me) {

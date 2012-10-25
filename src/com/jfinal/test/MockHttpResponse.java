@@ -42,7 +42,8 @@ public class MockHttpResponse implements HttpServletResponse {
 
 	@Override
 	public ServletOutputStream getOutputStream() throws IOException {
-		// TODO Auto-generated method stub
+//		OutputStream os = new FileOutputStream(new File("/home/kid/mock"));
+//		return new MockServletOutputStream(os);
 		return null;
 	}
 

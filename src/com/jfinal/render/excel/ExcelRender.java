@@ -10,26 +10,46 @@ import com.jfinal.render.RenderException;
 
 @SuppressWarnings("serial")
 public class ExcelRender extends Render {
-
-	private String[] columns;
-	private String[] headers;
-	private String fileName = "defaultFilename";
-	
-	private String sheetName="sheet1";
+	private static final String DEFAULT_FILE_NAME = "file1.xls";
+	private static final String DEFAULT_SHEET_NAME = "sheet1";
 	
 	private List<Object>  data;
+	private String[] columns;
+	private String[] headers;
+	private String fileName;
+	private String sheetName;
 	
 	
-	public ExcelRender(String fileName ,String[]headers,List<Object>  data){
+	public ExcelRender (){}
+	public ExcelRender(String fileName ,String sheetName,String[]headers,List<Object> data){
 		this.fileName = fileName;
 		this.headers = headers;
 		this.data=data;
 	}
-	public ExcelRender(String fileName ,String[]headers,String[]columns,List<Object> data){
+	public ExcelRender(String fileName ,String sheetName,String[]headers,String[]columns,List<Object> data){
 		this.fileName = fileName;
 		this.headers = headers;
 		this.columns=columns;
 		this.data=data;
+	}
+	
+	public static ExcelRender excel(List<Object>  data,String[]headers){
+		return new ExcelRender(DEFAULT_FILE_NAME,DEFAULT_SHEET_NAME, headers, data);
+	}
+	
+	public static ExcelRender excel(List<Object>  data,String fileName,String[]headers){
+		return new ExcelRender(fileName, DEFAULT_SHEET_NAME,headers, data);
+	}
+	public static ExcelRender excel(List<Object>  data,String fileName,String sheetName,String[]headers){
+		ExcelRender render = new ExcelRender(fileName, sheetName,headers, data);
+		render.setSheetName(sheetName);
+		return render;
+	}
+	public static ExcelRender excel(List<Object>  data,String fileName,String sheetName,String[]headers,String[]columns){
+		ExcelRender render = new ExcelRender(fileName, sheetName,headers, data);
+		render.setSheetName(sheetName);
+		render.setColumns(columns);
+		return render;
 	}
 	@Override
 	public void render() {
@@ -46,5 +66,37 @@ public class ExcelRender extends Render {
 			throw new RenderException(e);
 		}
 	}
+	public String[] getColumns() {
+		return columns;
+	}
+	public void setColumns(String[] columns) {
+		this.columns = columns;
+	}
+	public String[] getHeaders() {
+		return headers;
+	}
+	public void setHeaders(String[] headers) {
+		this.headers = headers;
+	}
+	public String getFileName() {
+		return fileName;
+	}
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+	public String getSheetName() {
+		return sheetName;
+	}
+	public void setSheetName(String sheetName) {
+		this.sheetName = sheetName;
+	}
+	public List<Object> getData() {
+		return data;
+	}
+	public void setData(List<Object> data) {
+		this.data = data;
+	}
+	
+	
 
 }
