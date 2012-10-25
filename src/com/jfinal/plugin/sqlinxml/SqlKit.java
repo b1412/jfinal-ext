@@ -9,12 +9,17 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-public class SqlManager {
+import com.jfinal.log.Logger;
+
+public class SqlKit {
+	
+	protected final static Logger logger = Logger.getLogger(SqlKit.class);
+	
 	private static Map<String, String> sqlMap;
 
 	public static String sql(String groupNameAndsqlId) {
 		if(sqlMap ==null){
-			System.err.println("SqlInXmlPlugin not start");
+			throw new NullPointerException("SqlInXmlPlugin not start");
 		}
 		return sqlMap.get(groupNameAndsqlId);
 	}
@@ -25,7 +30,7 @@ public class SqlManager {
 
 	static void init() {
 		sqlMap =  new HashMap<String, String>();
-		File file = new File(SqlManager.class.getClassLoader().getResource("").getFile());
+		File file = new File(SqlKit.class.getClassLoader().getResource("").getFile());
 		File[] files = file.listFiles(new FileFilter() {
 
 			@Override
