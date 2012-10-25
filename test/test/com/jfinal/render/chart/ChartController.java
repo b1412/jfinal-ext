@@ -8,7 +8,7 @@ import com.jfinal.render.chart.KeyLabel;
 import com.jfinal.render.chart.amchart.AmChartsRender;
 
 public class ChartController extends Controller {
-	public void index(){
+	public void pie(){
 		List<KeyLabel> pies = new ArrayList<KeyLabel>();
 		KeyLabel e= new KeyLabel("java","111");
 		pies.add(e);
