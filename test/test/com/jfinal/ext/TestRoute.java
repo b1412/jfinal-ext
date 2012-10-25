@@ -12,9 +12,14 @@ public class TestRoute extends ControllerTestCase {
 		start(new Config());
 	}
 	@Test
-	public void test() throws Exception {
-		invoke("/t");
-//		invoke("/dwz/delete");
+	public void testAController() throws Exception {
+		invoke("/aa");
+		assertEquals("zhoulei", findAttrAfterInvoke("name"));
+		assertEquals(24, findAttrAfterInvoke("age"));
+	}
+	@Test
+	public void testBController() throws Exception {
+		invoke("/bb");
 		assertEquals("zhoulei", findAttrAfterInvoke("name"));
 		assertEquals(24, findAttrAfterInvoke("age"));
 	}
