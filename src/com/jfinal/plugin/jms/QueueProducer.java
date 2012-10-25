@@ -12,8 +12,12 @@ import javax.jms.Session;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-public class QueueProducer {
+import com.jfinal.log.Logger;
 
+public class QueueProducer {
+	
+	protected final Logger logger = Logger.getLogger(getClass());
+	
 	protected String serverUrl;
 	protected String username;
 	protected String password;
@@ -87,7 +91,7 @@ public class QueueProducer {
 					return false;
 				}
 			}
-			System.out.println("send message, msg_type:" + msg_type);
+			logger.debug("send message, msg_type:" + msg_type);
 			ObjectMessage om = session.createObjectMessage(object);
 			om.setIntProperty(JMSConstants.JMS_MESSAGE_TYPE, msg_type);
 			producer.send(destination, om);
@@ -102,7 +106,7 @@ public class QueueProducer {
 	private boolean reConnect() {
 		int times = reConnectTimes;
 		while (times-- > 0) {
-			System.out.println("reConnectTimes" + times);
+			logger.debug("reConnectTimes" + times);
 			initConnection();
 			if (session != null) {
 				return true;

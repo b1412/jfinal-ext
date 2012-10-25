@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import com.jfinal.render.Render;
+import com.jfinal.render.RenderException;
 
 @SuppressWarnings("serial")
 public class ExcelRender extends Render {
@@ -41,8 +42,8 @@ public class ExcelRender extends Render {
 			wb.write(os);
 			os.flush();
 			os.close();
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		} catch (Exception e) {
+			throw new RenderException(e);
 		}
 	}
 

@@ -4,26 +4,30 @@ import java.util.List;
 
 import com.jfinal.config.Routes;
 import com.jfinal.core.Controller;
+import com.jfinal.log.Logger;
 import com.jfinal.plugin.tablebind.ClassSearcher;
 import com.jfinal.util.StringKit;
 
 public class AutoControllerRegist {
+	
+	protected final static Logger logger = Logger.getLogger(AutoControllerRegist.class);
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void regist(Routes routes) {
+
 		List<Class> controllerClasses = ClassSearcher.findInClasspath(Controller.class);
 		ControllerBind controllerBind = null;
 		for (Class controller : controllerClasses) {
 			controllerBind = (ControllerBind) controller.getAnnotation(ControllerBind.class);
 			if (controllerBind == null) {
 				routes.add(controllerKey(controller), controller);
-				System.out.println("routes.add("+controllerKey(controller)+", "+controller.getName()+")");
+				logger.debug("routes.add("+controllerKey(controller)+", "+controller.getName()+")");
 			} else if(StringKit.isBlank(controllerBind.viewPath())){
 				routes.add(controllerBind.controllerKey(), controller);
-				System.out.println("routes.add("+controllerBind.controllerKey()+", "+controller.getName()+")");
+				logger.debug("routes.add("+controllerBind.controllerKey()+", "+controller.getName()+")");
 			}else{
 				routes.add(controllerKey(controller), controller,controllerBind.viewPath());
-				System.out.println("routes.add("+controllerBind.controllerKey()+", "+controller+","+controllerBind.viewPath()+")");
+				logger.debug("routes.add("+controllerBind.controllerKey()+", "+controller+","+controllerBind.viewPath()+")");
 			}
 		}
 	}

@@ -22,7 +22,7 @@ public class FreeMarkerXMLRender extends FreeMarkerRender {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void render() {
 		response.setContentType(contentType);
 		

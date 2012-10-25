@@ -7,9 +7,13 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import com.jfinal.log.Logger;
 import com.jfinal.plugin.IPlugin;
 
 public class Cron4jPlugin implements IPlugin {
+	
+	protected final Logger logger = Logger.getLogger(getClass());
+	
 	private Scheduler scheduler = null;
 	private String config = "job.properties";
 	private Properties properties;
@@ -52,7 +56,7 @@ public class Cron4jPlugin implements IPlugin {
 				e.printStackTrace();
 			}
 			scheduler.start();
-			System.out.println(jobClassName + " has been scheduled to run and repeat based on expression: "+jobCronExp);
+			logger.debug(jobClassName + " has been scheduled to run and repeat based on expression: "+jobCronExp);
 		}
 		return true;
 	}
@@ -67,7 +71,7 @@ public class Cron4jPlugin implements IPlugin {
 
 	private void loadProperties() {
 		properties = new Properties();
-		System.out.println("config is: "+config);
+		logger.debug("config is: "+config);
 		InputStream is = Cron4jPlugin.class.getClassLoader()
 				.getResourceAsStream(config);
 		try {
@@ -75,9 +79,9 @@ public class Cron4jPlugin implements IPlugin {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		System.out.println("------------load Propteries---------------");
-		System.out.println(properties);
-		System.out.println("------------------------------------------");
+		logger.debug("------------load Propteries---------------");
+		logger.debug(properties.toString());
+		logger.debug("------------------------------------------");
 	}
 
 	@Override

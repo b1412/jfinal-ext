@@ -10,8 +10,12 @@ import javax.jms.ObjectMessage;
 import javax.jms.Session;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-public class TopicPublisher {
 
+import com.jfinal.log.Logger;
+public class TopicPublisher {
+	
+	protected final Logger logger = Logger.getLogger(getClass());
+	
 	protected String serverUrl;
 	protected String username;
 	protected String password;
@@ -49,7 +53,7 @@ public class TopicPublisher {
 			producer = session.createProducer(destination);
 			producer.setTimeToLive(10L);
 		} catch (JMSException e) {
-			System.out.println("init publisher error");
+			logger.debug("init publisher error");
 			e.printStackTrace();
 		}
 	}
@@ -58,16 +62,16 @@ public class TopicPublisher {
 		try {
 			if (session == null) {
 				if (!reConnect()) {
-					System.out.println("cant connected to JMS server");
+					logger.debug("cant connected to JMS server");
 					return false;
 				}
 			}
-			System.out.println("publish message, msg_type:" + msg_type);
+			logger.debug("publish message, msg_type:" + msg_type);
 			ObjectMessage om = session.createObjectMessage(object);
 			om.setIntProperty(JMSConstants.JMS_MESSAGE_TYPE, msg_type);
 			producer.send(om);
 		} catch (JMSException e) {
-			System.out.println("publish message error");
+			logger.debug("publish message error");
 			e.printStackTrace();
 			return false;
 		}
@@ -77,7 +81,7 @@ public class TopicPublisher {
 	private boolean reConnect() {
 		int times = reConnectTimes;
 		while (times-- > 0) {
-			System.out.println("reConnectTimes" + times);
+			logger.debug("reConnectTimes" + times);
 			initConnection();
 			if (session != null) {
 				return true;

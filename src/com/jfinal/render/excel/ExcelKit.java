@@ -15,7 +15,6 @@ import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
 
 /**
- * description:
  * 
  * @author liyupeng
  * 

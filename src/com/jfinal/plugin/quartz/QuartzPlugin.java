@@ -14,9 +14,13 @@ import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.impl.StdSchedulerFactory;
 
+import com.jfinal.log.Logger;
 import com.jfinal.plugin.IPlugin;
 
 public class QuartzPlugin implements IPlugin {
+	
+	protected final Logger logger = Logger.getLogger(getClass());
+	
 	private SchedulerFactory sf = null;
 	private Scheduler sched = null;
 	private String config = "job.properties";
@@ -34,7 +38,6 @@ public class QuartzPlugin implements IPlugin {
 		try {
 			sched = sf.getScheduler();
 		} catch (SchedulerException e) {
-			e.printStackTrace();
 			new RuntimeException(e); 
 		}
 		loadProperties();
@@ -75,7 +78,7 @@ public class QuartzPlugin implements IPlugin {
 			} catch (SchedulerException e) {
 				new RuntimeException(e);
 			}
-			System.out.println(job.getKey() + " has been scheduled to run at: " + ft + " and repeat based on expression: "
+			logger.debug(job.getKey() + " has been scheduled to run at: " + ft + " and repeat based on expression: "
 					+ trigger.getCronExpression());
 		}
 		return true;
@@ -98,9 +101,9 @@ public class QuartzPlugin implements IPlugin {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		System.out.println("------------load Propteries---------------");
-		System.out.println(properties);
-		System.out.println("------------------------------------------");
+		logger.debug("------------load Propteries---------------");
+		logger.debug(properties.toString());
+		logger.debug("------------------------------------------");
 	}
 
 	@Override

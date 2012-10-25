@@ -10,8 +10,12 @@ import javax.jms.Session;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-public class QueueListener implements MessageListener {
+import com.jfinal.log.Logger;
 
+public class QueueListener implements MessageListener {
+	
+	protected final Logger logger = Logger.getLogger(getClass());
+	
     protected String serverUrl;
     protected String username;
     protected String password;

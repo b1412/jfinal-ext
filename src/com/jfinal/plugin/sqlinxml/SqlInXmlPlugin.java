@@ -4,16 +4,12 @@ import com.jfinal.plugin.IPlugin;
 
 public class SqlInXmlPlugin implements IPlugin {
 
-	public SqlInXmlPlugin() {
-		
-	}
-	public SqlInXmlPlugin(String string) {
-	}
+	public SqlInXmlPlugin() {}
 
 	@Override
 	public boolean start() {
 		try {
-			SqlManager.init();
+			SqlKit.init();
 		} catch (Exception e) {
 			new RuntimeException(e);
 		}
@@ -22,7 +18,7 @@ public class SqlInXmlPlugin implements IPlugin {
 
 	@Override
 	public boolean stop() {
-		SqlManager.clearSqlMap();
+		SqlKit.clearSqlMap();
 		return true;
 	}
 

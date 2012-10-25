@@ -3,9 +3,12 @@ package com.jfinal.plugin.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jfinal.log.Logger;
 import com.jfinal.plugin.IPlugin;
 
 public class ConfigPlugin implements IPlugin {
+	
+	protected  Logger logger = Logger.getLogger(getClass());
 	private final  List<String> resources = new ArrayList<String>();
 	
 	public ConfigPlugin() {

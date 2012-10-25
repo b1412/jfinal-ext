@@ -11,8 +11,11 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import com.jfinal.core.Controller;
+import com.jfinal.log.Logger;
 
 public class ClassSearcher {
+	
+	protected final static Logger logger = Logger.getLogger(ClassSearcher.class);
 	static URL classPathUrl = ClassSearcher.class.getResource("/");
 	static String lib = new File(classPathUrl.getFile()).getParent() + "/lib/";
 
@@ -24,8 +27,7 @@ public class ClassSearcher {
 	 * @param targetFileName
 	 *            需要查找的文件名
 	 */
-	private static List<String> findFiles(String baseDirName,
-			String targetFileName) {
+	private static List<String> findFiles(String baseDirName,String targetFileName) {
 		/**
 		 * 算法简述： 从某个给定的需查找的文件夹出发，搜索该文件夹的所有子文件夹及文件，
 		 * 若为文件，则进行匹配，匹配成功则加入结果集，若为子文件夹，则进队列。 队列不空，重复上述操作，队列为空，程序结束，返回结果。
@@ -45,20 +47,16 @@ public class ClassSearcher {
 					tempName = readfile.getName();
 					if (ClassSearcher.wildcardMatch(targetFileName, tempName)) {
 						String classname;
-						String tem = readfile.getAbsoluteFile().toString()
-								.toString().replaceAll("\\\\", "/");
-						classname = tem.substring(tem.indexOf("/classes")
-								+ "/classes".length(), tem.indexOf(".class"));
+						String tem = readfile.getAbsoluteFile().toString().toString().replaceAll("\\\\", "/");
+						classname = tem.substring(tem.indexOf("/classes")+ "/classes".length(), tem.indexOf(".class"));
 						if (classname.startsWith("/")) {
-							classname = classname.substring(classname
-									.indexOf("/") + 1);
+							classname = classname.substring(classname.indexOf("/") + 1);
 						}
 						classname = className(classname, "/classes");
 						classFiles.add(classname);
 					}
 				} else if (readfile.isDirectory()) {
-					classFiles.addAll(findFiles(baseDirName + File.separator
-							+ filelist[i], targetFileName));
+					classFiles.addAll(findFiles(baseDirName + File.separator+ filelist[i], targetFileName));
 				}
 			}
 		}
@@ -113,12 +111,14 @@ public class ClassSearcher {
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	public static List<Class> findInClasspathAndInJars(Class clazz, List<String> includeJars) {
 		List<String> classFileList = findFiles(classPathUrl.getFile(),"*.class");
 		classFileList.addAll(findjarFiles(lib,includeJars));
 		return extraction(clazz,classFileList);
 	}
 
+	@SuppressWarnings("rawtypes")
 	private static List<Class> extraction(Class clazz,List<String> classFileList) {
 		List<Class> classList = new ArrayList<Class>();
 		for (String classFile : classFileList) {

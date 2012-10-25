@@ -13,7 +13,12 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import com.jfinal.ext.route.AutoControllerRegist;
+import com.jfinal.log.Logger;
+
 public class ConfigKit {
+	protected static Logger logger = Logger.getLogger(AutoControllerRegist.class);
+
 	private static Map<String, String> map;
 
 	private static Map<String, String> testMap;
@@ -28,26 +33,26 @@ public class ConfigKit {
 	 */
 	static void init(List<String> resources) {
 		classpath = ConfigKit.class.getClassLoader().getResource("").getFile();
-		System.out.println("classpath: "+classpath);
+		logger.debug("classpath: "+classpath);
 		map = new HashMap<String, String>();
 		testMap = new HashMap<String, String>();
 		for (final String resource : resources) {
-			System.out.println("floder :" + resource);
+			logger.debug("floder :" + resource);
 			File[] propertiesFiles = null;
 			propertiesFiles = new File(classpath)
 					.listFiles(new FileFilter() {
 
 						@Override
 						public boolean accept(File pathname) {
-							System.out.println("fileName: "+pathname.getName());
+							logger.debug("fileName: "+pathname.getName());
 							return Pattern.compile(resource).matcher(pathname.getName()).matches();
 						}
 					});
-			System.out.println("propertiesFiles size :"
+			logger.debug("propertiesFiles size :"
 					+ propertiesFiles.length);
 			for (File file : propertiesFiles) {
 				String fileName = file.getAbsolutePath();
-				System.out.println("fileName:" + fileName);
+				logger.debug("fileName:" + fileName);
 				if (fileName.endsWith("-test.properties"))
 					continue;
 				Properties prop = new Properties();
@@ -60,7 +65,7 @@ public class ConfigKit {
 				}
 				Set<Object> keys = prop.keySet();
 				for (Object key : keys) {
-					System.out.println("[" + key + "="
+					logger.debug("[" + key + "="
 							+ prop.getProperty(key + "", "") + "]");
 					map.put(key + "", prop.getProperty(key + "", ""));
 				}
@@ -68,7 +73,7 @@ public class ConfigKit {
 				String testFileName = fileName.substring(0,
 						fileName.indexOf(".properties"))
 						+ "-test.properties";
-				System.out.println("testFileName : " + testFileName);
+				logger.debug("testFileName : " + testFileName);
 
 				Properties tprop = new Properties();
 				try {
@@ -79,16 +84,16 @@ public class ConfigKit {
 				}
 				Set<Object> tkeys = prop.keySet();
 				for (Object tkey : tkeys) {
-					System.out.println("[" + tkey + "="
+					logger.debug("[" + tkey + "="
 							+ tprop.getProperty(tkey + "", "") + "]");
 					testMap.put(tkey + "", tprop.getProperty(tkey + "", ""));
 				}
 
 			}
 		}
-		System.out.println("map" + map);
-		System.out.println("testMap" + testMap);
-		System.out.println("init success!");
+		logger.debug("map" + map);
+		logger.debug("testMap" + testMap);
+		logger.debug("init success!");
 	}
 
 	public static String getStr(String key) {

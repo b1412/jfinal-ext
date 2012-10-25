@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+import com.jfinal.log.Logger;
 import com.jfinal.render.Render;
 import com.jfinal.render.RenderException;
 import com.jfinal.render.chart.KeyLabel;
 
 @SuppressWarnings("serial")
 public class AmChartsRender extends Render implements AmChartsConstans {
+	
+	private Logger logger = Logger.getLogger(AmChartsRender.class);
 	
 	private static final String contentType = "text/html;charset=" + getEncoding();
 	
@@ -18,7 +21,7 @@ public class AmChartsRender extends Render implements AmChartsConstans {
 	public static int GLOBAL_WIDTH = 400;
 	
 	/** 数据源*/
-	private List data;
+	private List<?> data;
 	
 	/** 数据描述*/
 	private List<String> series;
@@ -70,10 +73,10 @@ public class AmChartsRender extends Render implements AmChartsConstans {
 		return render;
 	}
 	
-	public static AmChartsRender graph(List data,List<String> series,String flashFile,String settingsFile){
+	public static AmChartsRender graph(List<?> data,List<String> series,String flashFile,String settingsFile){
 		return graph(data,series,flashFile, settingsFile,0,0);
 	}
-	public static AmChartsRender graph(List data,List<String> series,String flashFile,String settingsFile,int height,int width){
+	public static AmChartsRender graph(List<?> data,List<String> series,String flashFile,String settingsFile,int height,int width){
 		AmChartsRender render = new AmChartsRender(GRAPH ,height>0?height:GLOBAL_HEIGHT, width>0?width:GLOBAL_WIDTH, flashFile, settingsFile);
 		render.setData(data);
 		render.setSeries(series);
@@ -83,8 +86,8 @@ public class AmChartsRender extends Render implements AmChartsConstans {
 	@Override
 	public void render() {
 		  genChartXml();
-		    StringBuffer chartJsp = new StringBuffer();
-		    chartJsp.append("<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'><title>amCharts Example</title></head><body style='background-color:#EEEEEE'>")
+		    StringBuffer chart = new StringBuffer();
+		    chart.append("<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'><title>amCharts Example</title></head><body style='background-color:#EEEEEE'>")
 		    .append("<script type='text/javascript' src='").append(path).append("/flash/swfobject.js'></script><div id='chartdiv'></div><script type='text/javascript'>")
 		    .append("var params = {bgcolor:'#FFFFFF'}; var flashVars = {path: '").append(path).append("/flash/',settings_file:  encodeURIComponent('").append(SETTINGS_FILE_BASE).append(settingsFile).append("'),")
 		    .append("chart_data: \"").append(chartXml).append("\"};")
@@ -96,8 +99,8 @@ public class AmChartsRender extends Render implements AmChartsConstans {
 		        response.setDateHeader("Expires", 0);
 				response.setContentType(contentType);
 				writer = response.getWriter();
-				System.out.println(chartJsp.toString());
-				writer.write(chartJsp.toString());
+				logger.debug("chart: "+chart.toString());
+				writer.write(chart.toString());
 				writer.flush();
 			} catch (IOException e) {
 				throw new RenderException(e);
@@ -139,11 +142,11 @@ public class AmChartsRender extends Render implements AmChartsConstans {
 		GLOBAL_WIDTH = gLOBAL_WIDTH;
 	}
 
-	public List getData() {
+	public List<?> getData() {
 		return data;
 	}
 
-	public void setData(List data) {
+	public void setData(List<?> data) {
 		this.data = data;
 	}
 

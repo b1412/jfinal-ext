@@ -3,8 +3,12 @@ package com.jfinal.plugin.jms;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ReceiveResolverFactory  {
+import com.jfinal.log.Logger;
 
+public class ReceiveResolverFactory  {
+	
+	protected final Logger logger = Logger.getLogger(getClass());
+	
 	public static final String RESOLVER_SUFFIX = ".resolver";
 
 	private Map<Integer, ReceiveResolver> receiveResolverMap = new HashMap<Integer, ReceiveResolver>();
@@ -19,7 +23,7 @@ public class ReceiveResolverFactory  {
 	}
 
 	public ReceiveResolver createReceiveResolver(Integer messageType) {
-		System.out.println(" receive messageType " + messageType);
+		logger.debug(" receive messageType " + messageType);
 		if (messageTypeMap ==null) {
 			init();
 		}
@@ -38,10 +42,10 @@ public class ReceiveResolverFactory  {
 		try {
 			loadReceiveResolver();
 		} catch (Exception e) {
-			System.out.println("load ReceiveResolver error, it is defined in file" + resoruceLocation);
+			logger.debug("load ReceiveResolver error, it is defined in file" + resoruceLocation);
 			e.printStackTrace();
 		}
-		System.out.println("resolvers in  "+typeFilter+" :"+ receiveResolverMap);
+		logger.debug("resolvers in  "+typeFilter+" :"+ receiveResolverMap);
 	}
 
 	private void loadReceiveResolver() {
@@ -54,7 +58,7 @@ public class ReceiveResolverFactory  {
 					receiveResolverMap.put(messageType,
 							(ReceiveResolver) Class.forName(messageResolver).newInstance());
 				} catch (Exception e) {
-					System.out.println("cant create " + messageResolver);
+					logger.debug("cant create " + messageResolver);
 					e.printStackTrace();
 				}
 			}

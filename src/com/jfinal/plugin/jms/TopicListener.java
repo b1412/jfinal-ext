@@ -10,8 +10,12 @@ import javax.jms.Session;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-public class TopicListener implements MessageListener {
+import com.jfinal.log.Logger;
 
+public class TopicListener implements MessageListener {
+	
+	protected final Logger logger = Logger.getLogger(getClass());
+	
     protected String serverUrl;
     protected String username;
     protected String password;
@@ -49,6 +53,7 @@ public class TopicListener implements MessageListener {
     @Override
 	public void onMessage(Message message) {
         if (messageHandler != null) {
+        	logger.error("MessageHandler is null!please set a messageHandler");
             messageHandler.handleMessage(message);
         } else {
             new DefaultMessageHandler().handleMessage(message);
