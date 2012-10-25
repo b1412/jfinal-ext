@@ -6,7 +6,6 @@ import com.jfinal.config.Interceptors;
 import com.jfinal.config.JFinalConfig;
 import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
-import com.jfinal.ext.route.AutoControllerRegist;
 import com.jfinal.plugin.activerecord.tx.TxByRegex;
 import com.jfinal.render.ViewType;
 
@@ -21,7 +20,7 @@ public class DwzConfig extends JFinalConfig {
    
 	@Override
 	public void configRoute(Routes me) {
-		AutoControllerRegist.regist(me);
+		me.add("/dwz",DwzController.class,"WEB-INF/");
 	}
 
 	@Override

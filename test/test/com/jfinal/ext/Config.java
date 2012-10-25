@@ -1,4 +1,4 @@
-package test.com.jfinal.plugin.ext;
+package test.com.jfinal.ext;
 
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
@@ -22,6 +22,8 @@ public class Config extends JFinalConfig {
 	@Override
 	public void configRoute(Routes me) {
 		AutoControllerRegist.regist(me);
+//		me.add("/t", AController.class,"WEB-INF");
+
 //		me.add("/t",AController.class);
 	}
 

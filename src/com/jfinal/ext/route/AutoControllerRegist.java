@@ -26,7 +26,7 @@ public class AutoControllerRegist {
 				routes.add(controllerBind.controllerKey(), controller);
 				logger.debug("routes.add("+controllerBind.controllerKey()+", "+controller.getName()+")");
 			}else{
-				routes.add(controllerKey(controller), controller,controllerBind.viewPath());
+				routes.add(controllerBind.controllerKey(), controller,controllerBind.viewPath());
 				logger.debug("routes.add("+controllerBind.controllerKey()+", "+controller+","+controllerBind.viewPath()+")");
 			}
 		}

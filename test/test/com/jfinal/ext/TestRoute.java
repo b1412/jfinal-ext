@@ -1,4 +1,4 @@
-package test.com.jfinal.plugin.ext;
+package test.com.jfinal.ext;
 
 import static org.junit.Assert.assertEquals;
 
@@ -13,7 +13,8 @@ public class TestRoute extends ControllerTestCase {
 	}
 	@Test
 	public void test() throws Exception {
-		invoke("/t/index");
+		invoke("/t");
+//		invoke("/dwz/delete");
 		assertEquals("zhoulei", findAttrAfterInvoke("name"));
 		assertEquals(24, findAttrAfterInvoke("age"));
 	}
