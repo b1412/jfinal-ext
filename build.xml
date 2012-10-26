@@ -8,7 +8,7 @@
     <property name="build.classes.dir" location="${build.dir}/classes"/>
     <property name="debug" value="off"/>
     <property name="jdk.version" value="1.7"/>
-    <property name="release.version" value="1.0"/>
+    <property name="release.version" value="1.1"/>
     <property name="build.jar" location="${build.dir}/jfinal-ext-${release.version}-b${now}-${jdk.version}.jar"/>
     <path id="compile.lib">
         <fileset dir="${lib.dir}">
@@ -44,8 +44,27 @@
 	   	    </classpath>
 	   	</javac>
 	    </target>
-
+		<target name="copysrc" depends="compile">
+	        <echo>
+            ###################################
+	        # copy src                        #
+	        ###################################
+	        </echo>
+	        <copy todir="${build.classes.dir}">
+	        <fileset dir="${src}">
+	        	<include name="**/*"/>
+	        </fileset>
+	        </copy>
+		</target>
 	    <target name="jar" depends="compile">
+	        <echo>
+	            ###################################
+	            # JFinal-Ext jar                  #
+	            ###################################
+	        </echo>
+	        <jar jarfile="${build.jar}" basedir="${build.classes.dir}"/>
+	    </target>
+	    <target name="jarwithsrc" depends="copysrc">
 	        <echo>
 	            ###################################
 	            # JFinal-Ext jar                  #
