@@ -10,7 +10,8 @@
 #+LATEX_CLASS: cn-article
 
 
-Jfinal-ext是对java极速web框架jfinal(https://github.com/jfinal/jfinal)的一个补充。
+Jfinal-ext是对java极速web框架jfinal (https://github.com/jfinal/jfinal) 的一个补充。
+使用手册 https://github.com/b1412/jfinal-ext/blob/master/doc/doc.org
 *  Plugin扩展
 ** 自定绑定表 AutoTableBindPlugin 
 扫描clsspath和lib中继承了model的类自动注册，可选择不同的命名规则自定映射表名，也可以在每一个model上用注解指定表名
@@ -70,143 +71,12 @@ b.enable=false
    分优先级加载配置文件
    在团队开发中如果自己有测试配置需要长期存在但是又不需要提交中心库的时候 
 可以采用分级配置加载的策略。 如中心库中有config.properties这个配置，你可以创建 config-test.properties文件，配置相同的key，ConfigKit中的方法会优先加载 xx-test.properties文件。
-**
-
 
 * Render扩展
 ** DwzRender
-#+BEGIN_SRC elisp
-       public void save() {
-		Blog model = getModel(Blog.class);
-		if (model.getInt("id") == null) {
-			model.save();
-		} else {
-			model.update();
-		}
-		render(DwzRender.closeCurrentAndRefresh("pageBlog"));
-	}
-
-	public void edit() {
-		int id = getParaToInt(0);
-		Blog blog = Blog.dao.findById(id);
-		if (id == -1) {
-			blog = new Blog();
-		} else if (blog == null) {
-			render(DwzRender.error("该记录已被删除，请您先刷新列表"));
-		}
-		setAttr("blog", blog);
-	}
-
-	public void delete() {
-		Blog.dao.deleteById(getParaToInt());
-		render(DwzRender.success());
-	}
-#+END_SRC
-
 ** ExcelRender
-
 通过list数据生成excel,支持的数据类型为map ,record , model。
-
 ** AmChartsRender
-新增AmChartsRener,对AmCharts报表工具进行了简单的封装
-
-#+BEGIN_SRC elisp
-       public void pie(){
-		List<KeyLabel> pies = new ArrayList<KeyLabel>();
-		KeyLabel e= new KeyLabel("java","111");
-		pies.add(e);
-		KeyLabel e2= new KeyLabel("c","11");
-		pies.add(e2);
-		render(AmChartsRender.pie(pies, "ampie.swf", "pie_settings.xml",500,500));
-	}
-	
-	public void multiple(){
-		List<String> data = new ArrayList<String>();
-		data.add("10");
-		data.add("11");
-		data.add("12");
-		data.add("13");
-		data.add("14");
-		List<String> data1 = new ArrayList<String>();
-		data1.add("20");
-		data1.add("21");
-		data1.add("22");
-		data1.add("23");
-		data1.add("24");
-		List<List<String>> list = new ArrayList<List<String>>();
-		list.add(data);
-		list.add(data1);
-		List<String> series = new ArrayList<String>();
-		series.add("1月");
-		series.add("2月");
-		series.add("3月");
-		series.add("4月");
-		series.add("5月");
-		render(AmChartsRender.graph(list, series, "amline.swf", "line_settings.xml"));
-	}
-	public void simple(){
-		List<String> data = new ArrayList<String>();
-		data.add("10");
-		data.add("11");
-		data.add("12");
-		data.add("13");
-		data.add("14");
-		List<String> series = new ArrayList<String>();
-		series.add("1月");
-		series.add("2月");
-		series.add("3月");
-		series.add("4月");
-		series.add("5月");
-		render(AmChartsRender.graph(data, series, "amline.swf", "line_settings.xml"));
-	}public void pie(){
-		List<KeyLabel> pies = new ArrayList<KeyLabel>();
-		KeyLabel e= new KeyLabel("java","111");
-		pies.add(e);
-		KeyLabel e2= new KeyLabel("c","11");
-		pies.add(e2);
-		render(AmChartsRender.pie(pies, "ampie.swf", "pie_settings.xml",500,500));
-	}
-	
-	public void multiple(){
-		List<String> data = new ArrayList<String>();
-		data.add("10");
-		data.add("11");
-		data.add("12");
-		data.add("13");
-		data.add("14");
-		List<String> data1 = new ArrayList<String>();
-		data1.add("20");
-		data1.add("21");
-		data1.add("22");
-		data1.add("23");
-		data1.add("24");
-		List<List<String>> list = new ArrayList<List<String>>();
-		list.add(data);
-		list.add(data1);
-		List<String> series = new ArrayList<String>();
-		series.add("1月");
-		series.add("2月");
-		series.add("3月");
-		series.add("4月");
-		series.add("5月");
-		render(AmChartsRender.graph(list, series, "amline.swf", "line_settings.xml"));
-	}
-	public void simple(){
-		List<String> data = new ArrayList<String>();
-		data.add("10");
-		data.add("11");
-		data.add("12");
-		data.add("13");
-		data.add("14");
-		List<String> series = new ArrayList<String>();
-		series.add("1月");
-		series.add("2月");
-		series.add("3月");
-		series.add("4月");
-		series.add("5月");
-		render(AmChartsRender.graph(data, series, "amline.swf", "line_settings.xml"));
-	}
-#+END_SRC
 ** FreeMarkerXMLRender
 利用freemaker生成xml
 
