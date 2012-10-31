@@ -5,6 +5,10 @@
 /.settings
 /bin/*
 *.tmp
+*.aux
+*.out
+*.tex
+*.toc
 /WebRoot/WEB-INF/classes/*
-/*.log
+*.log
 build/*
