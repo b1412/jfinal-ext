@@ -45,12 +45,13 @@
 
 #+END_SRC
 
+
 * Plugin扩展
 ** 自定绑定表 AutoTableBindPlugin 
 *** 简介
    扫描clsspath和lib中继承了model的类自动注册，可选择不同的命名规则自定映射表名，也可以在每一个model上用注解指定表名
 *** AutoTableBindPlugin使用示例
-   1. 基本使用
+****  基本使用
    AutoTableBindPlugin 继承自ActivitiRecordPlugin，所以如果你使用
    AutoTableBindPlugin则不用再使用ActivitiRecordPlugin。
    #+BEGIN_SRC elisp
@@ -58,13 +59,13 @@
 	AutoTableBindPlugin atbp = new AutoTableBindPlugin(druid);
    #+END_SRC
    记住一定要在启动atbp之前启动连接池的plugin
-   2.jar包扫描
+****  jar包扫描
    如果你需要载入jar包中的model，需要调用以下的api将jar包加入扫描
    #+BEGIN_SRC elisp
 		atbp.addJar("modelInJar.jar");
 		atbp.addJars("jar1,jar2");
    #+END_SRC
-   3 表名风格TableNameStyle 配置
+**** 表名风格TableNameStyle 配置
    一个model自动绑定的表明默认是该类的simpleClassname，如果需要用其他
    的命名风格，需要在构造函数中指定，如
    #+BEGIN_SRC 
@@ -75,6 +76,11 @@
 
    |              | DEFAULT | FIRST_LOWER | UP      | LOWER   | UP_UNDERLINE | LOWER_UNDERLINE |
    | DevInfo.java | DevInfo | devInfo     | DEVINFO | devinfo | DEV_INFO     | dev_info        |
+****  TableName 配置
+   如果有Model到表的映射命名不符合规范需要单独配置，则在Model上加上
+   TableName注解，属性说明如下：
+   | tableName | 表名   |
+   | pkName    | 外键名 |
    
 **  SqlInXmlPlugin 
 *** 简介
@@ -93,7 +99,6 @@
 在java中获取该sql的方法为
 SqlKit.sql("blog.findBlog")
 ** jms消息处理 JmsPlugin
-   //TODO
    JmsKit.sendQueue("q1", new M(), "a");
 ** 任务调度  QuartzPlugin Cron4jPlugin
   
@@ -125,10 +130,7 @@ a和b为任务的名字，仅作为标识，无其他用处。
 | 任务名字.job    | 调度任务的类全名     |
 | 任务名字.cron   | 调度任务的cron表达式 |
 | 任务名字.enable | 调度任务是否启用     |
-        
-
-job.properties中配置任务
-
+       
 ** ConfigPlugin
    分优先级加载配置文件
    在团队开发中如果自己有测试配置需要长期存在但是又不需要提交中心库的时候 
@@ -276,3 +278,27 @@ job.properties中配置任务
 
 
 
+
+* 其他扩展
+ 
+** AutoControllerRegist自动注册Route
+
+*** 简介
+   扫描clsspath和lib中继承了Route的类按照约定的规则自动注册，也可以在
+   每一个Route上用注解配置
+*** 示例代码
+#+BEGIN_SRC elisp
+    public void configRoute(Routes me) {
+        AutoControllerRegist.regist(me);
+    }
+#+END_SRC
+    如果我们有一个AController，以上代码则相当于
+#+BEGIN_SRC elisp
+   public void configRoute(Routes me) {
+        me.add("/a",AController.class);
+    }
+#+END_SRC
+默认的注册规则是截取类名Controller前的部分并首字母小写.
+
+*** ControllerBind配置
+    如果需要单独配置Route，需要在Controller上加上ControllerBind注解
