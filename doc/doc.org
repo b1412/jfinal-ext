@@ -1,0 +1,278 @@
+#+TITLE:     Jfinal-ext文档
+#+AUTHOR:    Kid Zhou
+#+EMAIL:     zhouleib1412@gmail.com.cn
+#+DATE:      2012-10-30
+#+DESCRIPTION: 
+#+KEYWORDS: 
+#+LANGUAGE:  zh_CN
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+LATEX_CLASS: cn-article
+
+* JFinal测试框架
+  在非web环境下对jfinal组件进行单元测试
+** Controller测试
+
+*** 使用说明
+
+  所有对Controller的测试必须继承ControllerTestCase,此类中方法说明如下
+  | start               | 初始化测试用的Config      |
+  | invoke              | 调用的url                 |
+  | findAttrAfterInvoke | action调用之后getAttr的值 |
+ 
+*** 示例代码 
+#+BEGIN_SRC elisp
+  public class TestRoute extends ControllerTestCase {
+	@BeforeClass
+	public static void init() throws Exception{
+		start(new Config());
+	}
+	@Test
+	public void testAController() throws Exception {
+		invoke("/aa");
+		assertEquals("zhoulei", findAttrAfterInvoke("name"));
+		assertEquals(24, findAttrAfterInvoke("age"));
+	}
+	@Test
+	public void testBController() throws Exception {
+		invoke("/bb");
+		assertEquals("zhoulei", findAttrAfterInvoke("name"));
+		assertEquals(24, findAttrAfterInvoke("age"));
+	}
+
+
+}
+
+#+END_SRC
+
+* Plugin扩展
+** 自定绑定表 AutoTableBindPlugin 
+*** 简介
+   扫描clsspath和lib中继承了model的类自动注册，可选择不同的命名规则自定映射表名，也可以在每一个model上用注解指定表名
+*** AutoTableBindPlugin使用示例
+   1. 基本使用
+   AutoTableBindPlugin 继承自ActivitiRecordPlugin，所以如果你使用
+   AutoTableBindPlugin则不用再使用ActivitiRecordPlugin。
+   #+BEGIN_SRC elisp
+	DruidPlugin druid = new DruidPlugin("jdbc:mysql://127.0.0.1/jfinal_demo", "root", "root");
+	AutoTableBindPlugin atbp = new AutoTableBindPlugin(druid);
+   #+END_SRC
+   记住一定要在启动atbp之前启动连接池的plugin
+   2.jar包扫描
+   如果你需要载入jar包中的model，需要调用以下的api将jar包加入扫描
+   #+BEGIN_SRC elisp
+		atbp.addJar("modelInJar.jar");
+		atbp.addJars("jar1,jar2");
+   #+END_SRC
+   3 表名风格TableNameStyle 配置
+   一个model自动绑定的表明默认是该类的simpleClassname，如果需要用其他
+   的命名风格，需要在构造函数中指定，如
+   #+BEGIN_SRC 
+     AutoTableBindPlugin atbp = new AutoTableBindPlugin(cp,TableNameStyle.LOWER);
+   #+END_SRC
+   
+   TableNameStyle中已有的命名风格以及映射的表明如下表：
+
+   |              | DEFAULT | FIRST_LOWER | UP      | LOWER   | UP_UNDERLINE | LOWER_UNDERLINE |
+   | DevInfo.java | DevInfo | devInfo     | DEVINFO | devinfo | DEV_INFO     | dev_info        |
+   
+**  SqlInXmlPlugin 
+*** 简介
+    类似ibatis的在xml中管理sql.主要用于复杂的sql管理或者有dba的开发团
+    队
+*** 使用示例
+ 插件会扫描classpath根目录下以sql结尾的xml文件，如user-sql.xml，内容如
+ 下
+#+BEGIN_SRC elisp
+ <sqlGroup name="blog" >
+       <sql id="findBlog">select * from blog</sql>
+       <sql id="findUser">select * from user</sql>
+ </sqlGroup>
+#+END_SRC
+插件会将name+id作为一个sql语句的唯一标识，
+在java中获取该sql的方法为
+SqlKit.sql("blog.findBlog")
+** jms消息处理 JmsPlugin
+   //TODO
+   JmsKit.sendQueue("q1", new M(), "a");
+** 任务调度  QuartzPlugin Cron4jPlugin
+  
+*** 业务如何调度
+**** QuartzPlugin 
+需要进行的调度任务实现必须实现org.quartz.Job接口
+
+**** Cron4jPlugin
+需要进行的调度任务实现必须实现java.lang.Runnable接口
+*** 如何加载配置
+  插件默认加载classpath根目录下job.properties文件。
+  如果需要加载指定的配置文件，需要在构造方法中传入参数
+*** 配置文件说明
+job.properties配置示例
+#+BEGIN_SRC elisp
+#JobA
+a.job=test.com.jfinal.plugin.quzrtz.JobA
+a.cron=*/5 * * * * ?
+a.enable=true
+#JobB
+b.job=test.com.jfinal.plugin.quartz.JobB
+b.cron=*/10 * * * * ?
+b.enable=false
+#+END_SRC
+配置说明
+job cron enable为配置关键字
+a和b为任务的名字，仅作为标识，无其他用处。
+
+| 任务名字.job    | 调度任务的类全名     |
+| 任务名字.cron   | 调度任务的cron表达式 |
+| 任务名字.enable | 调度任务是否启用     |
+        
+
+job.properties中配置任务
+
+** ConfigPlugin
+   分优先级加载配置文件
+   在团队开发中如果自己有测试配置需要长期存在但是又不需要提交中心库的时候 
+可以采用分级配置加载的策略。 如中心库中有config.properties这个配置，你可以创建 config-test.properties文件，配置相同的key，ConfigKit中的方法会优先加载 xx-test.properties文件。
+**
+
+
+
+* Render扩展
+** DwzRender
+#+BEGIN_SRC elisp
+       public void save() {
+		Blog model = getModel(Blog.class);
+		if (model.getInt("id") == null) {
+			model.save();
+		} else {
+			model.update();
+		}
+		render(DwzRender.closeCurrentAndRefresh("pageBlog"));
+	}
+
+	public void edit() {
+		int id = getParaToInt(0);
+		Blog blog = Blog.dao.findById(id);
+		if (id == -1) {
+			blog = new Blog();
+		} else if (blog == null) {
+			render(DwzRender.error("该记录已被删除，请您先刷新列表"));
+		}
+		setAttr("blog", blog);
+	}
+
+	public void delete() {
+		Blog.dao.deleteById(getParaToInt());
+		render(DwzRender.success());
+	}
+#+END_SRC
+
+** ExcelRender
+
+通过list数据生成excel,支持的数据类型为map ,record , model。
+
+** AmChartsRender
+新增AmChartsRener,对AmCharts报表工具进行了简单的封装
+
+#+BEGIN_SRC elisp
+       public void pie(){
+		List<KeyLabel> pies = new ArrayList<KeyLabel>();
+		KeyLabel e= new KeyLabel("java","111");
+		pies.add(e);
+		KeyLabel e2= new KeyLabel("c","11");
+		pies.add(e2);
+		render(AmChartsRender.pie(pies, "ampie.swf", "pie_settings.xml",500,500));
+	}
+	
+	public void multiple(){
+		List<String> data = new ArrayList<String>();
+		data.add("10");
+		data.add("11");
+		data.add("12");
+		data.add("13");
+		data.add("14");
+		List<String> data1 = new ArrayList<String>();
+		data1.add("20");
+		data1.add("21");
+		data1.add("22");
+		data1.add("23");
+		data1.add("24");
+		List<List<String>> list = new ArrayList<List<String>>();
+		list.add(data);
+		list.add(data1);
+		List<String> series = new ArrayList<String>();
+		series.add("1月");
+		series.add("2月");
+		series.add("3月");
+		series.add("4月");
+		series.add("5月");
+		render(AmChartsRender.graph(list, series, "amline.swf", "line_settings.xml"));
+	}
+	public void simple(){
+		List<String> data = new ArrayList<String>();
+		data.add("10");
+		data.add("11");
+		data.add("12");
+		data.add("13");
+		data.add("14");
+		List<String> series = new ArrayList<String>();
+		series.add("1月");
+		series.add("2月");
+		series.add("3月");
+		series.add("4月");
+		series.add("5月");
+		render(AmChartsRender.graph(data, series, "amline.swf", "line_settings.xml"));
+	}public void pie(){
+		List<KeyLabel> pies = new ArrayList<KeyLabel>();
+		KeyLabel e= new KeyLabel("java","111");
+		pies.add(e);
+		KeyLabel e2= new KeyLabel("c","11");
+		pies.add(e2);
+		render(AmChartsRender.pie(pies, "ampie.swf", "pie_settings.xml",500,500));
+	}
+	
+	public void multiple(){
+		List<String> data = new ArrayList<String>();
+		data.add("10");
+		data.add("11");
+		data.add("12");
+		data.add("13");
+		data.add("14");
+		List<String> data1 = new ArrayList<String>();
+		data1.add("20");
+		data1.add("21");
+		data1.add("22");
+		data1.add("23");
+		data1.add("24");
+		List<List<String>> list = new ArrayList<List<String>>();
+		list.add(data);
+		list.add(data1);
+		List<String> series = new ArrayList<String>();
+		series.add("1月");
+		series.add("2月");
+		series.add("3月");
+		series.add("4月");
+		series.add("5月");
+		render(AmChartsRender.graph(list, series, "amline.swf", "line_settings.xml"));
+	}
+	public void simple(){
+		List<String> data = new ArrayList<String>();
+		data.add("10");
+		data.add("11");
+		data.add("12");
+		data.add("13");
+		data.add("14");
+		List<String> series = new ArrayList<String>();
+		series.add("1月");
+		series.add("2月");
+		series.add("3月");
+		series.add("4月");
+		series.add("5月");
+		render(AmChartsRender.graph(data, series, "amline.swf", "line_settings.xml"));
+	}
+#+END_SRC
+** FreeMarkerXMLRender
+利用freemaker生成xml
+
+
+
