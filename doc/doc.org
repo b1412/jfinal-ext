@@ -82,7 +82,7 @@
    | tableName | 表名   |
    | pkName    | 外键名 |
    
-**  SqlInXmlPlugin 
+** SqlInXmlPlugin 
 *** 简介
     类似ibatis的在xml中管理sql.主要用于复杂的sql管理或者有dba的开发团
     队
@@ -99,7 +99,70 @@
 在java中获取该sql的方法为
 SqlKit.sql("blog.findBlog")
 ** jms消息处理 JmsPlugin
-   JmsKit.sendQueue("q1", new M(), "a");
+*** 消息接收
+如果你需要处理某个消息号对应的消息，需要实现com.jfinal.plugin.jms.ReceiveResolver
+#+BEGIN_SRC elisp
+public class AReceiveResolver implements ReceiveResolver {
+
+	@Override
+	public void resolve(Serializable objectMessage) throws Exception {
+		System.out.println("AReceiveResolver");
+	}
+
+}
+
+#+END_SRC
+*** 消息发送
+ - 示例 JmsKit.sendQueue("q1", new M(), "a");
+
+ - 接口 public static boolean sendQueue(String queueName, Serializable
+ message, String msgName)
+ 
+ - 参数说明
+    | queueName      | message        | msgName        |
+    | 发送队列的名字 | 发送的消息对象 | 发送的消息名字 |
+
+*** 配置文件说明
+#+BEGIN_SRC elisp
+
+################################
+#          server info         #
+################################
+# jms服务器地址
+serverUrl=tcp://localhost:61616
+username=system
+password=manager
+
+################################
+#          queue info          #
+################################
+# 发送的队列名字，用“，”号分隔
+sendQueues=q1,q2
+
+# 接受的队列的名字，用“，”号分隔
+receiveQueues=q1,q3
+# 队列q1上消息名字为a的消息号
+queue.q1.a=10000
+#接受到队列q1上消息名字为a的消息的时候调用的处理器
+queue.q1.a.resolver=test.com.jfinal.plugin.jms.AReceiveResolver
+
+queue.q1.b=20000
+queue.q1.b.resolver=test.com.jfinal.plugin.jms.BReceiveResolver
+
+################################
+#          topic info          #
+################################
+
+sendTopics=t1,t2
+
+receiveTopics=t1,t3
+topic.t1.c=30000
+topic.t1.c.resolver=test.com.jfinal.plugin.jms.CReceiveResolver
+
+topic.t3.d=40000
+topic.t3.d.resolver=test.com.jfinal.plugin.jms.DReceiveResolver
+#+END_SRC
+
 ** 任务调度  QuartzPlugin Cron4jPlugin
   
 *** 业务如何调度
@@ -135,7 +198,36 @@ a和b为任务的名字，仅作为标识，无其他用处。
    分优先级加载配置文件
    在团队开发中如果自己有测试配置需要长期存在但是又不需要提交中心库的时候 
 可以采用分级配置加载的策略。 如中心库中有config.properties这个配置，你可以创建 config-test.properties文件，配置相同的key，ConfigKit中的方法会优先加载 xx-test.properties文件。
-**
+** 如何加载配置
+
+#+BEGIN_SRC elisp
+	ConfigPlugin configPlugin = new ConfigPlugin();
+		configPlugin.addResource(".*.properties");
+#+END_SRC
+addResource支持正则表达式
+当我们加载config.properties时候会找config-test.properties一起加载.
+** 配置说明
+ 如果我们加载了以下两个配置,下面的测试用列能通过,也就是说当*-test中同
+ 名的key优先读取.
+config.properties
+#+BEGIN_SRC elisp
+name=aa
+age=1
+#+END_SRC
+
+config-test.properties
+#+BEGIN_SRC elisp
+name=test
+#+END_SRC
+
+#+BEGIN_SRC elisp
+	@Test
+	public void testGetStr() throws InterruptedException {
+		Assert.assertEquals("test",ConfigKit.getStr("name"));
+		Assert.assertEquals(1,ConfigKit.getInt("age"));
+	}
+#+END_SRC
+
 
 
 
