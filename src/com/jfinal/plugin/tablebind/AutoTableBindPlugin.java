@@ -16,9 +16,11 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
 	
 	protected final Logger logger = Logger.getLogger(getClass());
 	
-	private final TableNameStyle tableNameStyle;
+	private  TableNameStyle tableNameStyle;
 	
-	private final List<String> includeJars = new ArrayList<String>();
+	private  INameStyle nameStyle;
+	
+	private  List<String> includeJars = new ArrayList<String>();
 	
 	boolean includeAllJarsInLib ;
 	
@@ -52,20 +54,30 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
 		this(dataSource, TableNameStyle.DEFAULT);
 	}
 	
+	public AutoTableBindPlugin(IDataSourceProvider dataSourceProvider) {
+		this(dataSourceProvider, TableNameStyle.DEFAULT);
+	}
+	
+	@Deprecated
 	public AutoTableBindPlugin(DataSource dataSource,TableNameStyle tableNameStyle) {
 		super(dataSource);
 		this.tableNameStyle = tableNameStyle;
 	}
 	
-	
-
-	public AutoTableBindPlugin(IDataSourceProvider dataSourceProvider) {
-		this(dataSourceProvider, TableNameStyle.DEFAULT);
+	public AutoTableBindPlugin(DataSource dataSource,INameStyle nameStyle) {
+		super(dataSource);
+		this.nameStyle = nameStyle;
 	}
-
+   
+	@Deprecated
 	public AutoTableBindPlugin(IDataSourceProvider dataSourceProvider,TableNameStyle tableNameStyle) {
 		super(dataSourceProvider);
 		this.tableNameStyle = tableNameStyle;
+	}
+	
+	public AutoTableBindPlugin(IDataSourceProvider dataSourceProvider,INameStyle nameStyle) {
+		super(dataSourceProvider);
+		this.nameStyle = nameStyle;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -76,15 +88,24 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
 			TableBind tb = null;
 			for (Class modelClass : modelClasses) {
 				tb = (TableBind) modelClass.getAnnotation(TableBind.class);
+				String tableName;
 				if (tb == null) {
-					this.addMapping(tableNameStyle.tableName(modelClass.getSimpleName()), modelClass);
-					logger.debug("addMapping("+ tableNameStyle.tableName(modelClass.getSimpleName()) + ", "+ modelClass.getName() + ")");
-				} else if (StringKit.notBlank(tb.pkName())) {
-					this.addMapping(tb.tableName(), tb.pkName(), modelClass);
-						logger.debug("addMapping("+ tb.tableName() + ", " + tb.pkName() + ","+ modelClass.getName() + ")");
+					if(tableNameStyle!=null){
+						tableName = tableNameStyle.tableName(modelClass.getSimpleName());
+					}else{
+						tableName = nameStyle.name(modelClass.getSimpleName());
+					}
+					this.addMapping(tableName, modelClass);
+					logger.debug("addMapping("+ tableName + ", "+ modelClass.getName() + ")");
 				} else {
-					this.addMapping(tb.tableName(), modelClass);
-					logger.debug("addMapping("+ tb.tableName() + ", " + modelClass.getName()+ ")");
+					tableName = tb.tableName();
+					if (StringKit.notBlank(tb.pkName())) {
+						this.addMapping(tableName, tb.pkName(), modelClass);
+						logger.debug("addMapping("+ tableName + ", " + tb.pkName() + ","+ modelClass.getName() + ")");
+					} else {
+						this.addMapping(tableName, modelClass);
+						logger.debug("addMapping("+ tableName + ", " + modelClass.getName()+ ")");
+					}
 				}
 			}
 		} catch (Exception e) {

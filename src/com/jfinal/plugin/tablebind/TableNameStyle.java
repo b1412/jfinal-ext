@@ -2,6 +2,13 @@ package com.jfinal.plugin.tablebind;
 
 import com.jfinal.util.StringKit;
 
+/**
+ * 1.2之后使用NameStyles代替
+ * @see com.jfinal.plugin.tablebind.SimpleNameStyles
+ * @author kid
+ * 
+ */
+@Deprecated
 public enum TableNameStyle {
 	DEFAULT {
 		@Override
