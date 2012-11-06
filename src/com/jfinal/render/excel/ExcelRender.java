@@ -37,6 +37,12 @@ public class ExcelRender extends Render {
 		return new ExcelRender(DEFAULT_FILE_NAME,DEFAULT_SHEET_NAME, headers, data);
 	}
 	
+	public static ExcelRender excel(List<Object> data,String[]headers,String[]columns){
+		ExcelRender render = new ExcelRender(DEFAULT_FILE_NAME,DEFAULT_SHEET_NAME, headers, data);
+		render.setColumns(columns);
+		return render;
+	}
+	
 	public static ExcelRender excel(List<Object>  data,String fileName,String[]headers){
 		return new ExcelRender(fileName, DEFAULT_SHEET_NAME,headers, data);
 	}
