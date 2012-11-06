@@ -58,6 +58,6 @@ public class SqlKit {
 				sqlMap.put(name + "." + sqlItem.id, sqlItem.value);
 			}
 		}
-		System.out.println("sqlMap"+sqlMap);
+		logger.debug("sqlMap"+sqlMap);
 	}
 }
