@@ -117,7 +117,36 @@ ${image}.setImage(${word_selection}${});
 ${imp:import(org.eclipse.swt.SWT)}${cursor}</template><template autoinsert="false" context="java-statements" deleted="false" description="dynamic type test and cast" enabled="true" id="org.eclipse.jdt.ui.templates.instanceof" name="instanceof">if (${name:var} instanceof ${type}) {
 	${type} ${new_name} = (${type})${name};
 	${cursor}
-}</template><template autoinsert="true" context="java" deleted="false" description="jfinal model dao" enabled="true" name="jfd">public final static ${enclosing_type} dao = new ${enclosing_type}();</template><template autoinsert="true" context="java" deleted="false" description="jfinal logger" enabled="true" name="jfl">${:import(com.jfinal.log.Logger)}
+}</template><template autoinsert="true" context="java" deleted="false" description="jfinal controller crud" enabled="true" name="jfc">
+	public void index() {
+		setAttr("page", ${model}.dao.paginate(getParaToInt(0, 1), 10, "select *", "from ${model} order by id asc"));
+		render("${enclosing_type}.html");
+	}
+	
+	public void add() {
+	}
+	
+	public void save() {
+		getModel(${model}.class).save();
+		forwardAction("/${model}");
+	}
+	
+	public void edit() {
+		setAttr("${model}", ${model}.dao.findById(getParaToInt()));
+	}
+	
+	public void update() {
+		getModel(${model}.class).update();
+		forwardAction("/${model}");
+	}
+	
+	public void delete() {
+		${model}.dao.deleteById(getParaToInt());
+		forwardAction("/${model}");
+	}
+
+
+</template><template autoinsert="true" context="java" deleted="false" description="jfinal model dao" enabled="true" name="jfd">public final static ${enclosing_type} dao = new ${enclosing_type}();</template><template autoinsert="true" context="java" deleted="false" description="jfinal logger" enabled="true" name="jfl">${:import(com.jfinal.log.Logger)}
 protected final Logger logger = Logger.getLogger(getClass());</template><template autoinsert="true" context="java" deleted="false" description="jfinal static logger" enabled="true" name="jfl">${:import(com.jfinal.log.Logger)}
 protected final static Logger logger = Logger.getLogger(${enclosing_type}.class);</template><template autoinsert="false" context="swt-statements" deleted="false" description="new Label" enabled="true" id="org.eclipse.jdt.ui.text.codetemplates.swt.label" name="Label">${labelType:newType(org.eclipse.swt.widgets.Label)} ${label:newName(org.eclipse.swt.widgets.Label)}= new ${labelType}(${parent:var(org.eclipse.swt.widgets.Composite)}, ${style:link(SWT.NONE, SWT.WRAP, 'SWT.SEPARATOR | SWT.HORIZONTAL', 'SWT.SEPARATOR | SWT.VERTICAL')});
 ${label}.setLayoutData(new ${type:newType(org.eclipse.swt.layout.GridData)}(SWT.${horizontal:link(BEGINNING, CENTER, END, FILL)}, SWT.${vertical:link(CENTER, TOP, BOTTOM, FILL)}, ${hex:link(false, true)}, ${vex:link(false, true)}));
