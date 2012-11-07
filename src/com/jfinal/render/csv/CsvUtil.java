@@ -7,7 +7,22 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import com.jfinal.plugin.activerecord.Model;
+import com.jfinal.plugin.activerecord.Record;
+
+/**
+ * 该类是把数据转化成csv字符串做了简要的封装 List headers是显示数据每列的属性，建议使用字符 List
+ * data数据，单个元素格式可以为Array，list，map，model，record List columns
+ * 表示需要显示的数据，如果data是Array与list，输入希望显示列的下标即可
+ * 如果data是map，model，record，输入希望显示列的key值即可。
+ * 
+ * @author
+ * 
+ */
 public class CsvUtil {
 
 	private static UserSettings userSettings = new UserSettings();
@@ -15,53 +30,140 @@ public class CsvUtil {
 	private CsvUtil() {
 	}
 
-	public static String createCSV(List<Object[]> list) {
-		if (list.isEmpty())
-			return null;
-
+	/**
+	 * 将文本头与数据共同转成csv字符串
+	 * 
+	 * @param headers
+	 *            列属性
+	 * @param data
+	 *            数据
+	 * @param columns
+	 *            需要显示列的key值
+	 * @return csv字符串
+	 */
+	public static String createCSV(List headers, List data, List columns) {
 		StringBuffer strOut = new StringBuffer("");
-		Iterator itr = list.iterator();
+		if (null != headers && !headers.isEmpty()) { // 如果文本不为空则添加到csv字符串中
+			listToCSV(strOut, headers);
+		}
+		if (null == data || data.isEmpty())
+			return strOut.toString();
 
-		Object obj = list.get(0);
-		Class cls = obj.getClass();
-		if (cls.isArray()) {
-			while (itr.hasNext()) {
-				Object[] objs = (Object[]) itr.next();
+		Iterator itr = data.iterator();
+		while (itr.hasNext()) {
+			Object obj = itr.next(); // 讲数据添加到csv字符串
+			Class cls = obj.getClass();
+			if (cls.isArray()) {
+				Object[] objs = (Object[]) obj;
 				if (objs != null) {
-					int col_num = objs.length;
 					for (short i = 0; i < objs.length; i++) {
 						createCol(strOut, objs[i]);
-						if (i < col_num - 1) {
-							strOut.append(",");
-						}
+						strOut.append(",");
 					}
+					strOut = strOut.deleteCharAt(strOut.length() - 1); // 去点多余逗号
 					strOut.append("\n");
 				}
-			}
-		} else {
-			while (itr.hasNext()) {
-				Object objs = itr.next();
-				if (objs != null) {
-					createCol(strOut, objs);
+			} else if (obj instanceof List) {
+				List objlist = (List) obj;
+				if (null == columns || columns.isEmpty()) { // 如果没有限制，默认全部显示
+					listToCSV(strOut, objlist);
+				} else {
+					for (int i = 0; i < columns.size(); i++) {
+						createCol(strOut, objlist.get((Integer) columns.get(i)));
+						strOut.append(",");
+					}
+					strOut = strOut.deleteCharAt(strOut.length() - 1);
 					strOut.append("\n");
 				}
-
+			} else if (obj instanceof Map) {
+				Map objmap = (Map) obj;
+				if (null == columns || columns.isEmpty()) { // 如果没有限制，默认全部显示
+					Set keyset = objmap.keySet();
+					for (Object key : keyset) {
+						createCol(strOut, objmap.get(key));
+						strOut.append(",");
+					}
+					strOut = strOut.deleteCharAt(strOut.length() - 1);
+					strOut.append("\n");
+				} else {
+					for (int i = 0; i < columns.size(); i++) {
+						createCol(strOut, objmap.get(columns.get(i)));
+						strOut.append(",");
+					}
+					strOut = strOut.deleteCharAt(strOut.length() - 1);
+					strOut.append("\n");
+				}
+			} else if (obj instanceof Model) {
+				Model objmodel = (Model) obj;
+				if (null == columns || columns.isEmpty()) { // 如果没有限制，默认全部显示
+					Set<Entry<String, Object>> entries = objmodel.getAttrsEntrySet();
+					for (Entry entry : entries) {
+						createCol(strOut, entry.getValue());
+						strOut.append(",");
+					}
+					strOut = strOut.deleteCharAt(strOut.length() - 1);
+					strOut.append("\n");
+				} else {
+					for (int i = 0; i < columns.size(); i++) {
+						createCol(strOut, objmodel.get(columns.get(i) + ""));
+						strOut.append(",");
+					}
+					strOut = strOut.deleteCharAt(strOut.length() - 1);
+					strOut.append("\n");
+				}
+			} else if (obj instanceof Record) {
+				Record objrecord = (Record) obj;
+				Map<String, Object> map = objrecord.getColumns();
+				if (null == columns || columns.isEmpty()) { // 如果没有限制，默认全部显示
+					Set<String> keys = map.keySet();
+					for (String key : keys) {
+						createCol(strOut, objrecord.get(key));
+						strOut.append(",");
+					}
+					strOut = strOut.deleteCharAt(strOut.length() - 1);
+					strOut.append("\n");
+				} else {
+					for (int i = 0; i < columns.size(); i++) {
+						createCol(strOut, objrecord.get(columns.get(i) + ""));
+						strOut.append(",");
+					}
+					strOut = strOut.deleteCharAt(strOut.length() - 1);
+					strOut.append("\n");
+				}
+			} else {
+				while (itr.hasNext()) {
+					Object objs = itr.next();
+					if (objs != null) {
+						createCol(strOut, objs);
+						strOut.append("\n");
+					}
+				}
 			}
+			obj = null;
 		}
-
 		return strOut.toString();
 	}
 
 	/**
-	 * 创建CSV文件列值
+	 * 把单纯的集合转化成csv字符串
 	 * 
-	 * @param tmpRow
-	 *            行
-	 * @param obj
-	 *            需要输入的单元格值
-	 * @param i
-	 *            单元格的顺序值
+	 * @param strOut
+	 *            StringBuffer
+	 * @param list
+	 *            数据
 	 */
+	public static void listToCSV(StringBuffer strOut, List list) {
+		if (null != list && !list.isEmpty()) { // 如果文本不为空则添加到csv字符串中
+			for (short i = 0; i < list.size(); i++) {
+				createCol(strOut, list.get(i));
+				strOut.append(",");
+			}
+			strOut = strOut.deleteCharAt(strOut.length() - 1);
+			strOut.append("\n");
+		}
+	}
+
+	// 把单个元素转化
 	public static void createCol(StringBuffer strOut, Object obj) {
 		if (obj != null) {
 			strOut.append("\"");
@@ -84,9 +186,7 @@ public class CsvUtil {
 					e.printStackTrace();
 				}
 			}
-
 			strOut.append(content);
-
 			strOut.append("\"");
 		} else {
 			strOut.append("\" \" ");
@@ -101,14 +201,12 @@ public class CsvUtil {
 			content = content.trim();
 		}
 
-		if (!textQualify
-				&& userSettings.UseTextQualifier
+		if (!textQualify && userSettings.UseTextQualifier
 				&& (content.indexOf(userSettings.TextQualifier) > -1
-						|| content.indexOf(userSettings.Delimiter) > -1
-						|| (content.indexOf(Letters.LF) > -1 || content
-								.indexOf(Letters.CR) > -1)
-						|| (content.indexOf(userSettings.RecordDelimiter) > -1)
-						|| (content.length() > 0 && content.charAt(0) == userSettings.Comment) || (content
+				|| content.indexOf(userSettings.Delimiter) > -1
+				|| (content.indexOf(Letters.LF) > -1 || content.indexOf(Letters.CR) > -1)
+				|| (content.indexOf(userSettings.RecordDelimiter) > -1)
+				|| (content.length() > 0 && content.charAt(0) == userSettings.Comment) || (content
 						.length() == 0))) {
 			textQualify = true;
 		}
@@ -152,30 +250,23 @@ public class CsvUtil {
 					+ Letters.CR);
 			content = replace(content, "" + Letters.LF, "" + Letters.BACKSLASH
 					+ Letters.LF);
-
 		}
-
 		return content;
-
 	}
-
+	//特殊字符的转换  "\t" -> "\\t" 
 	public static String replace(String original, String pattern, String replace) {
 		final int len = pattern.length();
 		int found = original.indexOf(pattern);
-
 		if (found > -1) {
 			StringBuffer sb = new StringBuffer();
 			int start = 0;
-
 			while (found != -1) {
 				sb.append(original.substring(start, found));
 				sb.append(replace);
 				start = found + len;
 				found = original.indexOf(pattern, start);
 			}
-
 			sb.append(original.substring(start));
-
 			return sb.toString();
 		} else {
 			return original;
