@@ -1,7 +1,5 @@
 package com.jfinal.test;
 
-import groovy.ui.Console;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
