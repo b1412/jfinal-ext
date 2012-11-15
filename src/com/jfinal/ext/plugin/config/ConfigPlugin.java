@@ -9,22 +9,24 @@ import com.jfinal.plugin.IPlugin;
 public class ConfigPlugin implements IPlugin {
 	
 	protected  Logger logger = Logger.getLogger(getClass());
-	private final  List<String> resources = new ArrayList<String>();
+	private final  List<String> includeResources = new ArrayList<String>();
 	
-	public ConfigPlugin() {
-	}
+	private final List<String> excludeResources = new ArrayList<String>();
+	
+	public ConfigPlugin() {}
 	public ConfigPlugin(String resource) {
-		this.resources.add(resource);
+		this.includeResources.add(resource);
 	}
-	public void addResource(String resource) {
-		this.resources.add(resource);
+	public boolean excludeResource(String resource){
+		return excludeResources.add(resource);
 	}
-	public void addResources(String resources){
-		this.resources.add(resources);
+	
+	public boolean addResource(String resource) {
+		return includeResources.add(resource);
 	}
 	@Override
 	public boolean start() {
-		ConfigKit.init(resources);
+		ConfigKit.init(includeResources,excludeResources);
 		return true;
 	}
 

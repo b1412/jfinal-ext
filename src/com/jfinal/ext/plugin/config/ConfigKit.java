@@ -25,36 +25,39 @@ public class ConfigKit {
 
 	private static String classpath ;
 	
-	
 	/**
-	 * the floders in classpath
 	 * 
-	 * @param resources
+	 * @param includeResources
+	 * @param excludeResources
 	 */
-	static void init(List<String> resources) {
+	 static void init(List<String> includeResources,List<String> excludeResources) {
 		classpath = ConfigKit.class.getClassLoader().getResource("").getFile();
 		logger.debug("classpath: "+classpath);
 		map = new HashMap<String, String>();
 		testMap = new HashMap<String, String>();
-		for (final String resource : resources) {
-			logger.debug("floder :" + resource);
+		for (final String resource : includeResources) {
+			logger.debug("include :" + resource);
 			File[] propertiesFiles = null;
-			propertiesFiles = new File(classpath)
-					.listFiles(new FileFilter() {
-
-						@Override
-						public boolean accept(File pathname) {
-							logger.debug("fileName: "+pathname.getName());
-							return Pattern.compile(resource).matcher(pathname.getName()).matches();
-						}
-					});
-			logger.debug("propertiesFiles size :"
-					+ propertiesFiles.length);
+			propertiesFiles = new File(classpath).listFiles(new FileFilter() {
+				@Override
+				public boolean accept(File pathname) {
+					return Pattern.compile(resource).matcher(pathname.getName()).matches();
+				}
+			});
 			for (File file : propertiesFiles) {
 				String fileName = file.getAbsolutePath();
 				logger.debug("fileName:" + fileName);
 				if (fileName.endsWith("-test.properties"))
 					continue;
+				boolean excluded = false;
+				for (final String exclude : excludeResources) {
+					 if (Pattern.compile(exclude).matcher(file.getName()).matches()) {
+						 excluded = true;
+					 }
+				}
+				if (excluded) {
+					continue;
+				}
 				Properties prop = new Properties();
 				InputStream is;
 				try {
@@ -65,16 +68,9 @@ public class ConfigKit {
 				}
 				Set<Object> keys = prop.keySet();
 				for (Object key : keys) {
-					logger.debug("[" + key + "="
-							+ prop.getProperty(key + "", "") + "]");
 					map.put(key + "", prop.getProperty(key + "", ""));
 				}
-
-				String testFileName = fileName.substring(0,
-						fileName.indexOf(".properties"))
-						+ "-test.properties";
-				logger.debug("testFileName : " + testFileName);
-
+				String testFileName = fileName.substring(0,fileName.indexOf(".properties"))+ "-test.properties";
 				Properties tprop = new Properties();
 				try {
 					InputStream tis = new FileInputStream(testFileName);
@@ -84,11 +80,8 @@ public class ConfigKit {
 				}
 				Set<Object> tkeys = prop.keySet();
 				for (Object tkey : tkeys) {
-					logger.debug("[" + tkey + "="
-							+ tprop.getProperty(tkey + "", "") + "]");
 					testMap.put(tkey + "", tprop.getProperty(tkey + "", ""));
 				}
-
 			}
 		}
 		logger.debug("map" + map);
