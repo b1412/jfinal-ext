@@ -11,6 +11,12 @@ public class ParamNameStyles {
 	public static INameStyle upModule(String moduleName) {
 		return new UpModuleNameStyle(moduleName);
 	}
+	public static INameStyle upUnderlineModule(String moduleName) {
+		return new UpUnderlineModuleNameStyle(moduleName);
+	}
+	public static INameStyle lowerUnderlineModule(String moduleName) {
+		return new LowerUnderlineModuleNameStyle(moduleName);
+	}
 }
 
 class ModuleNameStyle implements INameStyle {
@@ -53,5 +59,50 @@ class UpModuleNameStyle implements INameStyle {
 	@Override
 	public String name(String className) {
 		return moduleName + className.toUpperCase();
+	}
+}
+
+class UpUnderlineModuleNameStyle implements INameStyle{
+	private String moduleName;
+	
+	public UpUnderlineModuleNameStyle(String moduleName) {
+		this.moduleName = moduleName;
+	}
+
+	@Override
+	public String name(String className) {
+		String tableName="";
+		for (int i = 0; i < className.length(); i++) {
+			char ch = className.charAt(i);
+			if(Character.isUpperCase(ch)){
+				tableName+=("_"+ch);
+			}else{
+				tableName+=Character.toUpperCase(ch);
+			}
+		}		
+		return moduleName+tableName;
+	}
+
+}
+
+class LowerUnderlineModuleNameStyle implements INameStyle{
+	private String moduleName;
+	
+	public LowerUnderlineModuleNameStyle(String moduleName) {
+		this.moduleName = moduleName;
+	}
+	
+	@Override
+	public String name(String className) {
+		String tableName="";
+		for (int i = 0; i < className.length(); i++) {
+			char ch = className.charAt(i);
+			if(Character.isUpperCase(ch)){
+				tableName+=("_"+Character.toLowerCase(ch));
+			}else{
+				tableName+=ch;
+			}
+		}	
+		return moduleName+tableName;
 	}
 }

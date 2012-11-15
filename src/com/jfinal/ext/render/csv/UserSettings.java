@@ -1,4 +1,4 @@
-package com.jfinal.render.csv;
+package com.jfinal.ext.render.csv;
 
 public class UserSettings {
 	public static final int ESCAPE_MODE_DOUBLED = 1;
