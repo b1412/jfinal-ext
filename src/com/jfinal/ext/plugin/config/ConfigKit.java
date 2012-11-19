@@ -93,7 +93,7 @@ public class ConfigKit {
 		 if (testMap == null || map == null) {
 			 throw new RuntimeException(" the ConfigPlugin dident start");
 		 }
-		 Object val = testMap.get(key);
+		 Object val = testMap.get(key).trim();
 		 if ("".equals(val)) {
 			 val = map.get(key);
 		 }
@@ -108,7 +108,7 @@ public class ConfigKit {
 		return getLong(key, 0);
 	}
 	public static long getLong(String key,long defaultVal) {
-		String val = getStr(key);
+		String val = getStr(key).trim();
 		if ("".equals(val)) {
 			return defaultVal;
 		}
@@ -116,7 +116,7 @@ public class ConfigKit {
 	}
 
 	public static int getInt(String key,int defaultVal) {
-		String val = getStr(key);
+		String val = getStr(key).trim();
 		if ("".equals(val)) {
 			return defaultVal;
 		}
