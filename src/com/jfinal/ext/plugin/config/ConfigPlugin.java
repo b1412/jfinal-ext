@@ -7,8 +7,10 @@ import com.jfinal.log.Logger;
 import com.jfinal.plugin.IPlugin;
 
 public class ConfigPlugin implements IPlugin {
+	private static String suffix = "txt";
 	
 	protected  Logger logger = Logger.getLogger(getClass());
+	
 	private final  List<String> includeResources = new ArrayList<String>();
 	
 	private final List<String> excludeResources = new ArrayList<String>();
@@ -22,12 +24,20 @@ public class ConfigPlugin implements IPlugin {
 		this.includeResources.add(includeResource);
 		this.excludeResources.add(excludeResource);
 	}
+	
 	public boolean excludeResource(String resource){
 		return excludeResources.add(resource);
 	}
 	
 	public boolean addResource(String resource) {
 		return includeResources.add(resource);
+	}
+	public static void setSuffix(String suffix){
+		ConfigPlugin.suffix=suffix;
+	}
+	
+	public static String getSuffix(){
+		return ConfigPlugin.suffix;
 	}
 	@Override
 	public boolean start() {

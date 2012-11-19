@@ -47,7 +47,7 @@ public class ConfigKit {
 			for (File file : propertiesFiles) {
 				String fileName = file.getAbsolutePath();
 				logger.debug("fileName:" + fileName);
-				if (fileName.endsWith("-test.properties"))
+				if (fileName.endsWith("-test."+ConfigPlugin.getSuffix()))
 					continue;
 				boolean excluded = false;
 				for (final String exclude : excludeResources) {
@@ -70,7 +70,7 @@ public class ConfigKit {
 				for (Object key : keys) {
 					map.put(key + "", prop.getProperty(key + "", ""));
 				}
-				String testFileName = fileName.substring(0,fileName.indexOf(".properties"))+ "-test.properties";
+				String testFileName = fileName.substring(0,fileName.indexOf("."+ConfigPlugin.getSuffix()))+ "-test."+ConfigPlugin.getSuffix();
 				Properties tprop = new Properties();
 				try {
 					InputStream tis = new FileInputStream(testFileName);

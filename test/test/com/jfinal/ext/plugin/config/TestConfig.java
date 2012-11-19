@@ -7,12 +7,15 @@ import org.junit.Test;
 
 import com.jfinal.ext.plugin.config.ConfigKit;
 import com.jfinal.ext.plugin.config.ConfigPlugin;
+import com.jfinal.log.Logger;
 
 public class TestConfig {
 	@BeforeClass
 	public static void init() {
+		Logger.init();
 		ConfigPlugin configPlugin = new ConfigPlugin();
-		configPlugin.addResource(".*.properties");
+		configPlugin.addResource(".*.txt");
+		ConfigPlugin.setSuffix("txt");
 		configPlugin.start();
 	}
 
