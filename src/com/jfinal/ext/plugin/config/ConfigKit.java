@@ -89,30 +89,40 @@ public class ConfigKit {
 		logger.debug("init success!");
 	}
 
+	 public static String getStr(String key,String defaultVal) {
+		 if (testMap == null || map == null) {
+			 throw new RuntimeException(" the ConfigPlugin dident start");
+		 }
+		 Object val = testMap.get(key);
+		 if ("".equals(val)) {
+			 val = map.get(key);
+		 }
+		 return val == null ? defaultVal: val + "";
+		 
+	}
 	public static String getStr(String key) {
-		if (testMap == null || map == null) {
-			throw new RuntimeException(" the ConfigPlugin dident start");
-		}
-		Object val = testMap.get(key);
-		if ("".equals(val)) {
-			val = map.get(key);
-		}
-		return val == null ? "" : val + "";
+		return getStr(key, "");
 	}
 
 	public static long getLong(String key) {
+		return getLong(key, 0);
+	}
+	public static long getLong(String key,long defaultVal) {
 		String val = getStr(key);
 		if ("".equals(val)) {
-			val = "0";
+			return defaultVal;
 		}
 		return Long.parseLong(val);
 	}
 
-	public static int getInt(String key) {
+	public static int getInt(String key,int defaultVal) {
 		String val = getStr(key);
 		if ("".equals(val)) {
-			val = "0";
+			return defaultVal;
 		}
 		return Integer.parseInt(val);
+	}
+	public static int getInt(String key) {
+		return getInt(key, 0);
 	}
 }

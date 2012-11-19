@@ -14,8 +14,13 @@ public class ConfigPlugin implements IPlugin {
 	private final List<String> excludeResources = new ArrayList<String>();
 	
 	public ConfigPlugin() {}
-	public ConfigPlugin(String resource) {
-		this.includeResources.add(resource);
+	
+	public ConfigPlugin(String includeResource) {
+		this.includeResources.add(includeResource);
+	}
+	public ConfigPlugin(String includeResource,String excludeResource) {
+		this.includeResources.add(includeResource);
+		this.excludeResources.add(excludeResource);
 	}
 	public boolean excludeResource(String resource){
 		return excludeResources.add(resource);
