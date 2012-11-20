@@ -78,7 +78,6 @@ public class MockServletContext implements ServletContext {
 		return null;
 	}
 
-	
 	@Override
 	public URL getResource(String arg0) throws MalformedURLException {
 		// TODO Auto-generated method stub
