@@ -14,6 +14,7 @@ public class DwzConfig extends JFinalConfig {
 	public void configConstant(Constants me) {
 		me.setEncoding("utf-8");
 		me.setDevMode(true);
+		loadPropertyFile("classes/config.txt");
 	}
    
 	@Override

@@ -1,8 +1,5 @@
 package com.jfinal.ext.test;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -15,14 +12,13 @@ import com.jfinal.core.JFinal;
 import com.jfinal.handler.Handler;
 
 public class ControllerTestCase {
-	protected static ServletContext servletContext = mock(ServletContext.class);
+	protected static ServletContext servletContext = new MockServletContext();
 	protected static HttpServletRequest request = new MockHttpRequest();
 	protected static HttpServletResponse response = new MockHttpResponse();
 	protected static Handler handler ;
 	public static void start(JFinalConfig config) throws Exception {
 		Class<JFinal> clazz = JFinal.class;
 		JFinal me = JFinal.me();
-		when(servletContext.getRealPath("/")).thenReturn("/test");
 		initConfig(clazz, me, servletContext,config);
 		Field field = me.getClass().getDeclaredField("handler");
 		field.setAccessible(true);
