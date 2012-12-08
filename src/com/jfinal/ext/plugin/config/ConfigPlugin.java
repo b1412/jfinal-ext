@@ -7,13 +7,16 @@ import com.jfinal.log.Logger;
 import com.jfinal.plugin.IPlugin;
 
 public class ConfigPlugin implements IPlugin {
-	private static String suffix = "txt";
 	
 	protected  Logger logger = Logger.getLogger(getClass());
+	
+	private static String suffix = "txt";
 	
 	private final  List<String> includeResources = new ArrayList<String>();
 	
 	private final List<String> excludeResources = new ArrayList<String>();
+	
+	private boolean reload = true;
 	
 	public ConfigPlugin() {}
 	
@@ -39,9 +42,12 @@ public class ConfigPlugin implements IPlugin {
 	public static String getSuffix(){
 		return ConfigPlugin.suffix;
 	}
+	public void setReload(boolean reload) {
+		this.reload = reload;
+	}
 	@Override
 	public boolean start() {
-		ConfigKit.init(includeResources,excludeResources);
+		ConfigKit.init(includeResources,excludeResources,reload);
 		return true;
 	}
 

@@ -18,21 +18,31 @@ import com.jfinal.log.Logger;
 
 public class ConfigKit {
 	protected static Logger logger = Logger.getLogger(AutoControllerRegist.class);
+	
+	private static List<String> includeResources;
+	
+	private static boolean reload = true;
 
+	private static List<String> excludeResources;
+	
 	private static Map<String, String> map;
 
 	private static Map<String, String> testMap;
 
-	private static String classpath ;
+	private static String classpath;
 	
+	private static Map<String,Long> lastmodifies = new HashMap<String,Long>();
 	/**
 	 * 
 	 * @param includeResources
 	 * @param excludeResources
+	 * @param reload 
 	 */
-	 static void init(List<String> includeResources,List<String> excludeResources) {
+	 static void init(List<String> includeResources,List<String> excludeResources, boolean reload) {
+		ConfigKit.includeResources = includeResources;
+		ConfigKit.excludeResources =excludeResources;
+		ConfigKit.reload=reload;
 		classpath = ConfigKit.class.getClassLoader().getResource("").getFile();
-		logger.debug("classpath: "+classpath);
 		map = new HashMap<String, String>();
 		testMap = new HashMap<String, String>();
 		for (final String resource : includeResources) {
@@ -63,8 +73,11 @@ public class ConfigKit {
 				try {
 					is = new FileInputStream(fileName);
 					prop.load(is);
+					lastmodifies.put(fileName, new File(fileName).lastModified());
 				} catch (FileNotFoundException e) {
+					logger.error(e.getMessage(), e);
 				} catch (IOException e) {
+					logger.error(e.getMessage(),e);
 				}
 				Set<Object> keys = prop.keySet();
 				for (Object key : keys) {
@@ -76,7 +89,9 @@ public class ConfigKit {
 					InputStream tis = new FileInputStream(testFileName);
 					tprop.load(tis);
 				} catch (FileNotFoundException e) {
+					logger.error(e.getMessage(),e);
 				} catch (IOException e) {
+					logger.error(e.getMessage(),e);
 				}
 				Set<Object> tkeys = prop.keySet();
 				for (Object tkey : tkeys) {
@@ -91,7 +106,11 @@ public class ConfigKit {
 
 	 public static String getStr(String key,String defaultVal) {
 		 if (testMap == null || map == null) {
-			 throw new RuntimeException(" the ConfigPlugin dident start");
+			 throw new RuntimeException(" please start ConfigPlugin first~");
+		 }
+		 if(reload){
+			 System.out.println("reload");
+			 checkFileModify();
 		 }
 		 Object val = testMap.get(key).trim();
 		 if ("".equals(val)) {
@@ -100,6 +119,19 @@ public class ConfigKit {
 		 return val == null ? defaultVal: val + "";
 		 
 	}
+	private static void checkFileModify() {
+		Set<String> filenames = lastmodifies.keySet();
+		for (String filename : filenames) {
+			long lastmodify = lastmodifies.get(	filename);
+			File file = new File(filename);
+			if(lastmodify!=file.lastModified()){
+				System.out.println(filename+" changed, reload.");
+				logger.info(filename+" changed, reload.");
+				init(includeResources, excludeResources,reload);
+			}
+		}
+	}
+
 	public static String getStr(String key) {
 		return getStr(key, "");
 	}

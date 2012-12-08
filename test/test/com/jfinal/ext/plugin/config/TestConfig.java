@@ -1,5 +1,7 @@
 package test.com.jfinal.ext.plugin.config;
 
+import java.util.concurrent.TimeUnit;
+
 import junit.framework.Assert;
 
 import org.junit.BeforeClass;
@@ -15,13 +17,15 @@ public class TestConfig {
 		Logger.init();
 		ConfigPlugin configPlugin = new ConfigPlugin();
 		configPlugin.addResource(".*.txt");
-		ConfigPlugin.setSuffix("txt");
+		configPlugin.setReload(false);
 		configPlugin.start();
 	}
 
 	@Test
 	public void testGetStr() throws InterruptedException {
 		Assert.assertEquals("test",ConfigKit.getStr("name"));
+		Assert.assertEquals(1,ConfigKit.getInt("age"));
+		TimeUnit.SECONDS.sleep(30);
 		Assert.assertEquals(1,ConfigKit.getInt("age"));
 	}
 
