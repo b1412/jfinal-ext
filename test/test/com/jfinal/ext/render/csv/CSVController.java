@@ -5,8 +5,6 @@ import java.util.List;
 
 import com.jfinal.core.Controller;
 import com.jfinal.ext.render.csv.CsvRender;
-import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.Record;
 
 public class CSVController extends Controller{
 	public void index(){
@@ -25,7 +23,7 @@ public class CSVController extends Controller{
 		columns.add("id");
 		columns.add("title");
 //		List<Blog> blogs=Blog.dao.find("select * from blog");
-		List<Record> records=Db.find("select * from blog");
-		render(CsvRender.csv(header,records, "csvTest.csv",columns));
+//		List<Record> records=Db.find("select * from blog");
+		render(CsvRender.csv(header,data, "csvTest.csv",columns));
 	}
 }
