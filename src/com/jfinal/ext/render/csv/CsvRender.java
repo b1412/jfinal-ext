@@ -38,23 +38,23 @@ public class CsvRender extends Render {
 	}
 
 	// 未包含隐藏列
-	public static CsvRender instaceRender(List headers, List data) {
+	public static CsvRender csv(List headers, List data) {
 		return new CsvRender(headers, data, DEFAULT_FILE_NAME,
 				DEFAULT_ENCODE_TYPE);
 	}
 
-	public static CsvRender instaceRender(List headers, List data,
+	public static CsvRender csv(List headers, List data,
 			String fileName) {
 		return new CsvRender(headers, data, fileName, DEFAULT_ENCODE_TYPE);
 	}
 
-	public static CsvRender instaceRender(List headers, List data,
+	public static CsvRender csv(List headers, List data,
 			String fileName, String encodeType) {
 		return new CsvRender(headers, data, fileName, encodeType);
 	}
 
 	// 包含隐藏列
-	public static CsvRender instaceRender(List headers, List data, List clomuns) {
+	public static CsvRender csv(List headers, List data, List clomuns) {
 		return new CsvRender(headers, data, DEFAULT_FILE_NAME,
 				DEFAULT_ENCODE_TYPE, clomuns);
 	}
@@ -65,7 +65,7 @@ public class CsvRender extends Render {
 				clomuns);
 	}
 
-	public static CsvRender instaceRender(List headers, List data,
+	public static CsvRender csv(List headers, List data,
 			String fileName, String encodeType, List clomuns) {
 		return new CsvRender(headers, data, fileName, encodeType, clomuns);
 	}

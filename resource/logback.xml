@@ -92,6 +92,13 @@
        </triggeringPolicy>
     </appender>
 
+    <logger name="com.jfinal">
+        <level value="DEBUG" />
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+        <appender-ref ref="FILE-INFO" />
+        <appender-ref ref="FILE-ERROR" />
+    </logger>
     <logger name="test.com.jfinal">
         <level value="DEBUG" />
         <appender-ref ref="STDOUT" />

@@ -36,7 +36,8 @@ public class LogbackLogger extends Logger {
 	}
 	
 	public void debug(String message) {
-		log.log(null, callerFQCN, LocationAwareLogger.DEBUG_INT, message, new Object[]{}, null);
+		log.debug(message);
+//		log.log(null, callerFQCN, LocationAwareLogger.DEBUG_INT, message, new Object[]{}, null);
 	}
 	
 	public void debug(String message, Throwable t) {

@@ -1,6 +1,6 @@
 package com.jfinal.ext.plugin.tablebind;
 
-import com.jfinal.util.StringKit;
+import com.jfinal.kit.StringKit;
 
 /**
  * 1.2之后使用NameStyles代替

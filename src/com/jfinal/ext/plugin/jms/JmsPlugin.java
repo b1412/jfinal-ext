@@ -7,8 +7,8 @@ import java.util.List;
 import javax.jms.MessageListener;
 
 import com.jfinal.ext.plugin.config.ConfigPlugin;
+import com.jfinal.kit.StringKit;
 import com.jfinal.plugin.IPlugin;
-import com.jfinal.util.StringKit;
 
 public class JmsPlugin implements IPlugin {
 	private String resoruceLocation = "jms.properties";

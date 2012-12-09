@@ -1,6 +1,6 @@
 package com.jfinal.ext.plugin.tablebind;
 
-import com.jfinal.util.StringKit;
+import com.jfinal.kit.StringKit;
 
 public class SimpleNameStyles {
 	public static final INameStyle DEFAULT = new INameStyle() {
