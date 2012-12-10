@@ -7,6 +7,7 @@ import com.jfinal.config.JFinalConfig;
 import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
 import com.jfinal.core.JFinal;
+import com.jfinal.log.Log4jLoggerFactory;
 
 public class ChartConfig extends JFinalConfig {
 
@@ -14,7 +15,8 @@ public class ChartConfig extends JFinalConfig {
 	public void configConstant(Constants me) {
 		me.setEncoding("utf-8");
 		me.setDevMode(true);
-//		me.setViewType(ViewType.JSP);
+		me.setLoggerFactory(new Log4jLoggerFactory());
+//		me.setLoggerFactory(new LogbackLoggerFactory());
 	}
    
 	@Override
@@ -39,7 +41,7 @@ public class ChartConfig extends JFinalConfig {
 	}
 	
 	public static void main(String[] args) {
-		JFinal.start("WebRoot", 8080, "/", 5);
+		JFinal.start("WebRoot", 8080, "/chart", 5);
 	}
 
 }

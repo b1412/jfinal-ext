@@ -8,7 +8,7 @@
     	<filter-class>com.jfinal.core.JFinalFilter</filter-class>
     	<init-param>
       		<param-name>configClass</param-name>
-      		<param-value>test.com.jfinal.render.excel.ExcelConfig</param-value>
+      		<param-value>test.com.jfinal.ext.render.chart.ChartConfig</param-value>
     	</init-param>
   	</filter>
   	<filter-mapping>

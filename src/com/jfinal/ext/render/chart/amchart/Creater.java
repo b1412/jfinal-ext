@@ -2,9 +2,9 @@ package com.jfinal.ext.render.chart.amchart;
 
 import java.util.List;
 
-import com.jfinal.ext.util.KeyLabel;
+import com.jfinal.ext.kit.KeyLabel;
+import com.jfinal.kit.StringKit;
 import com.jfinal.log.Logger;
-import com.jfinal.util.StringKit;
 
 
 public class Creater {

@@ -18,77 +18,85 @@ import com.jfinal.log.Logger;
 
 public class ConfigKit {
 	protected static Logger logger = Logger.getLogger(AutoControllerRegist.class);
+	
+	private static List<String> includeResources;
+	
+	private static boolean reload = true;
 
+	private static List<String> excludeResources;
+	
 	private static Map<String, String> map;
 
 	private static Map<String, String> testMap;
 
-	private static String classpath ;
+	private static String classpath;
 	
-	
+	private static Map<String,Long> lastmodifies = new HashMap<String,Long>();
 	/**
-	 * the floders in classpath
 	 * 
-	 * @param resources
+	 * @param includeResources
+	 * @param excludeResources
+	 * @param reload 
 	 */
-	static void init(List<String> resources) {
+	 static void init(List<String> includeResources,List<String> excludeResources, boolean reload) {
+		ConfigKit.includeResources = includeResources;
+		ConfigKit.excludeResources =excludeResources;
+		ConfigKit.reload=reload;
 		classpath = ConfigKit.class.getClassLoader().getResource("").getFile();
-		logger.debug("classpath: "+classpath);
 		map = new HashMap<String, String>();
 		testMap = new HashMap<String, String>();
-		for (final String resource : resources) {
-			logger.debug("floder :" + resource);
+		for (final String resource : includeResources) {
+			logger.debug("include :" + resource);
 			File[] propertiesFiles = null;
-			propertiesFiles = new File(classpath)
-					.listFiles(new FileFilter() {
-
-						@Override
-						public boolean accept(File pathname) {
-							logger.debug("fileName: "+pathname.getName());
-							return Pattern.compile(resource).matcher(pathname.getName()).matches();
-						}
-					});
-			logger.debug("propertiesFiles size :"
-					+ propertiesFiles.length);
+			propertiesFiles = new File(classpath).listFiles(new FileFilter() {
+				@Override
+				public boolean accept(File pathname) {
+					return Pattern.compile(resource).matcher(pathname.getName()).matches();
+				}
+			});
 			for (File file : propertiesFiles) {
 				String fileName = file.getAbsolutePath();
 				logger.debug("fileName:" + fileName);
-				if (fileName.endsWith("-test.properties"))
+				if (fileName.endsWith("-test."+ConfigPlugin.getSuffix()))
 					continue;
+				boolean excluded = false;
+				for (final String exclude : excludeResources) {
+					 if (Pattern.compile(exclude).matcher(file.getName()).matches()) {
+						 excluded = true;
+					 }
+				}
+				if (excluded) {
+					continue;
+				}
 				Properties prop = new Properties();
 				InputStream is;
 				try {
 					is = new FileInputStream(fileName);
 					prop.load(is);
+					lastmodifies.put(fileName, new File(fileName).lastModified());
 				} catch (FileNotFoundException e) {
+					logger.error(e.getMessage(), e);
 				} catch (IOException e) {
+					logger.error(e.getMessage(),e);
 				}
 				Set<Object> keys = prop.keySet();
 				for (Object key : keys) {
-					logger.debug("[" + key + "="
-							+ prop.getProperty(key + "", "") + "]");
 					map.put(key + "", prop.getProperty(key + "", ""));
 				}
-
-				String testFileName = fileName.substring(0,
-						fileName.indexOf(".properties"))
-						+ "-test.properties";
-				logger.debug("testFileName : " + testFileName);
-
+				String testFileName = fileName.substring(0,fileName.indexOf("."+ConfigPlugin.getSuffix()))+ "-test."+ConfigPlugin.getSuffix();
 				Properties tprop = new Properties();
 				try {
 					InputStream tis = new FileInputStream(testFileName);
 					tprop.load(tis);
 				} catch (FileNotFoundException e) {
+					logger.error(e.getMessage(),e);
 				} catch (IOException e) {
+					logger.error(e.getMessage(),e);
 				}
 				Set<Object> tkeys = prop.keySet();
 				for (Object tkey : tkeys) {
-					logger.debug("[" + tkey + "="
-							+ tprop.getProperty(tkey + "", "") + "]");
 					testMap.put(tkey + "", tprop.getProperty(tkey + "", ""));
 				}
-
 			}
 		}
 		logger.debug("map" + map);
@@ -96,30 +104,57 @@ public class ConfigKit {
 		logger.debug("init success!");
 	}
 
+	 public static String getStr(String key,String defaultVal) {
+		 if (testMap == null || map == null) {
+			 throw new RuntimeException(" please start ConfigPlugin first~");
+		 }
+		 if(reload){
+			 System.out.println("reload");
+			 checkFileModify();
+		 }
+		 Object val = testMap.get(key).trim();
+		 if ("".equals(val)) {
+			 val = map.get(key);
+		 }
+		 return val == null ? defaultVal: val + "";
+		 
+	}
+	private static void checkFileModify() {
+		Set<String> filenames = lastmodifies.keySet();
+		for (String filename : filenames) {
+			long lastmodify = lastmodifies.get(	filename);
+			File file = new File(filename);
+			if(lastmodify!=file.lastModified()){
+				System.out.println(filename+" changed, reload.");
+				logger.info(filename+" changed, reload.");
+				init(includeResources, excludeResources,reload);
+			}
+		}
+	}
+
 	public static String getStr(String key) {
-		if (testMap == null || map == null) {
-			throw new RuntimeException(" the ConfigPlugin dident start");
-		}
-		Object val = testMap.get(key);
-		if ("".equals(val)) {
-			val = map.get(key);
-		}
-		return val == null ? "" : val + "";
+		return getStr(key, "");
 	}
 
 	public static long getLong(String key) {
-		String val = getStr(key);
+		return getLong(key, 0);
+	}
+	public static long getLong(String key,long defaultVal) {
+		String val = getStr(key).trim();
 		if ("".equals(val)) {
-			val = "0";
+			return defaultVal;
 		}
 		return Long.parseLong(val);
 	}
 
-	public static int getInt(String key) {
-		String val = getStr(key);
+	public static int getInt(String key,int defaultVal) {
+		String val = getStr(key).trim();
 		if ("".equals(val)) {
-			val = "0";
+			return defaultVal;
 		}
 		return Integer.parseInt(val);
+	}
+	public static int getInt(String key) {
+		return getInt(key, 0);
 	}
 }

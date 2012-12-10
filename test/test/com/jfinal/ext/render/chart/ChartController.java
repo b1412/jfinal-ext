@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jfinal.core.Controller;
+import com.jfinal.ext.kit.KeyLabel;
 import com.jfinal.ext.render.chart.amchart.AmChartsRender;
-import com.jfinal.ext.util.KeyLabel;
+import com.jfinal.ext.render.chart.funshion.FunshionChartsRender;
+import com.jfinal.log.Logger;
 
 public class ChartController extends Controller {
+	
+	protected final Logger logger = Logger.getLogger(getClass());
+	
 	public void pie(){
 		List<KeyLabel> pies = new ArrayList<KeyLabel>();
 		KeyLabel e= new KeyLabel("java","111");
@@ -55,5 +60,20 @@ public class ChartController extends Controller {
 		series.add("4月");
 		series.add("5月");
 		render(AmChartsRender.graph(data, series, "amline.swf", "line_settings.xml"));
+	}
+	
+	public void fpie(){
+		List<KeyLabel> pies = new ArrayList<KeyLabel>();
+		KeyLabel e= new KeyLabel("1111","java");
+		pies.add(e);
+		KeyLabel e2= new KeyLabel("222","c");
+		pies.add(e2);
+		FunshionChartsRender fr = new FunshionChartsRender();
+		fr.setPies(pies);
+		fr.setHeight("500");
+		fr.setWidth("500");
+		fr.setCaption("pie");
+		fr.setFlashFile("Pie3D.swf");
+		render(fr);
 	}
 }

@@ -1,4 +1,4 @@
-package com.jfinal.ext.util;
+package com.jfinal.ext.kit;
 
 import java.io.Serializable;
 import java.util.ArrayList;

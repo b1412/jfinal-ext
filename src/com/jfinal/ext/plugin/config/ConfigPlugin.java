@@ -9,22 +9,45 @@ import com.jfinal.plugin.IPlugin;
 public class ConfigPlugin implements IPlugin {
 	
 	protected  Logger logger = Logger.getLogger(getClass());
-	private final  List<String> resources = new ArrayList<String>();
 	
-	public ConfigPlugin() {
+	private static String suffix = "txt";
+	
+	private final  List<String> includeResources = new ArrayList<String>();
+	
+	private final List<String> excludeResources = new ArrayList<String>();
+	
+	private boolean reload = true;
+	
+	public ConfigPlugin() {}
+	
+	public ConfigPlugin(String includeResource) {
+		this.includeResources.add(includeResource);
 	}
-	public ConfigPlugin(String resource) {
-		this.resources.add(resource);
+	public ConfigPlugin(String includeResource,String excludeResource) {
+		this.includeResources.add(includeResource);
+		this.excludeResources.add(excludeResource);
 	}
-	public void addResource(String resource) {
-		this.resources.add(resource);
+	
+	public boolean excludeResource(String resource){
+		return excludeResources.add(resource);
 	}
-	public void addResources(String resources){
-		this.resources.add(resources);
+	
+	public boolean addResource(String resource) {
+		return includeResources.add(resource);
+	}
+	public static void setSuffix(String suffix){
+		ConfigPlugin.suffix=suffix;
+	}
+	
+	public static String getSuffix(){
+		return ConfigPlugin.suffix;
+	}
+	public void setReload(boolean reload) {
+		this.reload = reload;
 	}
 	@Override
 	public boolean start() {
-		ConfigKit.init(resources);
+		ConfigKit.init(includeResources,excludeResources,reload);
 		return true;
 	}
 

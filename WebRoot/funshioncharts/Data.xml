@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<chart caption="Sales Summary" subCaption="For the year 2010" numberPrefix="$" sformatNumberScale="1" sNumberPrefix="$" syncAxisLimits="1" rotateValues="1" showSum="0">
+<!-- Data for single series chart -->
+	<set label="Quarter 1" value="232400"/>
+	<set label="Quarter 2" value="339800"/>
+	<set label="Quarter 3" value="411900"/>
+	<set label="Quarter 4" value="398400"/>
+<!-- Data for multi-series stacked and combination chart -->
+	<categories>
+		<category label="Quarter 1"/>
+		<category label="Quarter 2"/>
+		<category label="Quarter 3"/>
+		<category label="Quarter 4"/>
+	</categories>
+	<dataset seriesName="Products">
+		<set value="232400"/>
+		<set value="232400"/>
+		<set value="339800"/>
+		<set value="411900"/>
+		<set value="398400"/>
+<!-- Data for multi-series stacked chart - nested dataset-->
+		<dataset seriesName="Product A">
+			<set value="232400"/>
+			<set value="232400"/>
+			<set value="339800"/>
+			<set value="411900"/>
+			<set value="398400"/>
+		</dataset>
+		<dataset seriesName="Product B">
+			<set value="232400"/>
+			<set value="232400"/>
+			<set value="339800"/>
+			<set value="411900"/>
+			<set value="398400"/>
+		</dataset>
+	</dataset>
+	<dataset seriesName="Services" renderAs="line" parentYAxis="S" showValues="1" valuePosition="BELOW">
+		<set value="147400"/>
+		<set value="189100"/>
+		<set value="219800"/>
+		<set value="289100"/>
+		<set value="209800"/>
+<!-- Data for multi-series stacked chart - nested dataset-->
+		<dataset seriesName="All Services" renderAs="line" parentYAxis="S">
+			<set value="214400"/>
+			<set value="214100"/>
+			<set value="284800"/>
+			<set value="323100"/>
+			<set value="324800"/>
+		</dataset>
+	</dataset>
+<!-- Data for multi-series stacked chart line chart - line dataset -->
+	<lineset seriesName="Target Profitability" valuePosition="BELOW">
+		<set value="104400"/>
+		<set value="104100"/>
+		<set value="144800"/>
+		<set value="213100"/>
+		<set value="214800"/>
+	</lineset>
+</chart>

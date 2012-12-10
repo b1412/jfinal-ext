@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-import com.jfinal.ext.util.KeyLabel;
+import com.jfinal.ext.kit.KeyLabel;
 import com.jfinal.log.Logger;
 import com.jfinal.render.Render;
 import com.jfinal.render.RenderException;
@@ -18,7 +18,7 @@ public class AmChartsRender extends Render implements AmChartsConstans {
 	
 	public  static int GLOBAL_HEIGHT = 600;
 	
-	public static int GLOBAL_WIDTH = 400;
+	public  static int GLOBAL_WIDTH = 400;
 	
 	/** 数据源*/
 	private List<?> data;
@@ -85,13 +85,13 @@ public class AmChartsRender extends Render implements AmChartsConstans {
 
 	@Override
 	public void render() {
-		  genChartXml();
-		    StringBuffer chart = new StringBuffer();
-		    chart.append("<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'><title>amCharts Example</title></head><body style='background-color:#EEEEEE'>")
-		    .append("<script type='text/javascript' src='").append(path).append("/flash/swfobject.js'></script><div id='chartdiv'></div><script type='text/javascript'>")
-		    .append("var params = {bgcolor:'#FFFFFF'}; var flashVars = {path: '").append(path).append("/flash/',settings_file:  encodeURIComponent('").append(SETTINGS_FILE_BASE).append(settingsFile).append("'),")
+		genChartXml();
+		StringBuffer chart = new StringBuffer();
+		chart.append("<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'><title>amCharts Example</title></head><body style='background-color:#EEEEEE'>")
+		    .append("<script type='text/javascript' src='").append(request.getContextPath()+path).append("/flash/swfobject.js'></script><div id='chartdiv'></div><script type='text/javascript'>")
+		    .append("var params = {bgcolor:'#FFFFFF'}; var flashVars = {path: '").append(request.getContextPath()+path).append("/flash/',settings_file:  encodeURIComponent('").append(request.getContextPath()+SETTINGS_FILE_BASE).append(settingsFile).append("'),")
 		    .append("chart_data: \"").append(chartXml).append("\"};")
-		    .append("swfobject.embedSWF('").append(path).append("/flash/").append(flashFile).append("', 'chartdiv', '").append(width).append("', '").append(height).append("', '8.0.0', '").append(path).append("/flash/expressInstall.swf', flashVars, params);</script></body></html>");
+		    .append("swfobject.embedSWF('").append(request.getContextPath()+path).append("/flash/").append(flashFile).append("', 'chartdiv', '").append(width).append("', '").append(height).append("', '8.0.0', '").append(request.getContextPath()+path).append("/flash/expressInstall.swf', flashVars, params);</script></body></html>");
 			PrintWriter writer = null;
 			try {
 				response.setHeader("Pragma", "no-cache");
