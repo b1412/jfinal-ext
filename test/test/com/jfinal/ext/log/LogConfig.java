@@ -6,7 +6,7 @@ import com.jfinal.config.Interceptors;
 import com.jfinal.config.JFinalConfig;
 import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
-import com.jfinal.ext.log.LogbackLoggerFactory;
+import com.jfinal.log.Log4jLoggerFactory;
 import com.jfinal.plugin.activerecord.tx.TxByRegex;
 
 public class LogConfig extends JFinalConfig {
@@ -15,8 +15,7 @@ public class LogConfig extends JFinalConfig {
 	public void configConstant(Constants me) {
 		me.setEncoding("utf-8");
 		me.setDevMode(true);
-		me.setLoggerFactory(new LogbackLoggerFactory());
-//		me.setLoggerFactory(new Log4jLoggerFactory());
+		me.setLoggerFactory(new Log4jLoggerFactory());
 	}
    
 	@Override
