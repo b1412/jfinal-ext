@@ -1,5 +1,7 @@
 package com.jfinal.ext.kit;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -29,5 +31,15 @@ public class ModelKit {
 			}
 			model.set((String)attr, attrsAndValues[i+1]);
 		}
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+    public static Map<String, Object> toMap(Model model){
+	    Map<String, Object> map = new HashMap<String, Object>();
+	    Set<Entry<String, Object>>  attrs = model.getAttrsEntrySet();
+        for (Entry<String, Object> entry : attrs) {
+            map.put(entry.getKey(), entry.getValue());
+        }
+        return map;
 	}
 }
