@@ -17,6 +17,7 @@ import com.jfinal.ext.route.AutoControllerRegist;
 import com.jfinal.log.Logger;
 
 public class ConfigKit {
+    
 	protected static Logger logger = Logger.getLogger(AutoControllerRegist.class);
 	
 	private static List<String> includeResources;
@@ -75,7 +76,7 @@ public class ConfigKit {
 					prop.load(is);
 					lastmodifies.put(fileName, new File(fileName).lastModified());
 				} catch (FileNotFoundException e) {
-					logger.error(e.getMessage(), e);
+				    logger.debug("the file"+fileName+"has no test file.");
 				} catch (IOException e) {
 					logger.error(e.getMessage(),e);
 				}
@@ -101,7 +102,7 @@ public class ConfigKit {
 		}
 		logger.debug("map" + map);
 		logger.debug("testMap" + testMap);
-		logger.debug("init success!");
+		logger.info("config init success!");
 	}
 
 	 public static String getStr(String key,String defaultVal) {
@@ -109,11 +110,10 @@ public class ConfigKit {
 			 throw new RuntimeException(" please start ConfigPlugin first~");
 		 }
 		 if(reload){
-			 System.out.println("reload");
 			 checkFileModify();
 		 }
-		 Object val = testMap.get(key).trim();
-		 if ("".equals(val)) {
+		 String val = testMap.get(key);
+		 if (val==null||"".equals(val.trim())) {
 			 val = map.get(key);
 		 }
 		 return val == null ? defaultVal: val + "";
@@ -125,7 +125,6 @@ public class ConfigKit {
 			long lastmodify = lastmodifies.get(	filename);
 			File file = new File(filename);
 			if(lastmodify!=file.lastModified()){
-				System.out.println(filename+" changed, reload.");
 				logger.info(filename+" changed, reload.");
 				init(includeResources, excludeResources,reload);
 			}
