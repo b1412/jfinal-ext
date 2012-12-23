@@ -90,7 +90,7 @@ public class ConfigKit {
 					InputStream tis = new FileInputStream(testFileName);
 					tprop.load(tis);
 				} catch (FileNotFoundException e) {
-					logger.error(e.getMessage(),e);
+				    logger.debug("the file"+fileName+"has no test config");
 				} catch (IOException e) {
 					logger.error(e.getMessage(),e);
 				}
