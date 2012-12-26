@@ -28,5 +28,11 @@ public class TestConfig {
 		TimeUnit.SECONDS.sleep(30);
 		Assert.assertEquals(1,ConfigKit.getInt("age"));
 	}
-
+	
+	@Test
+	public void testZw() throws InterruptedException {
+	    Assert.assertEquals("中文内容",ConfigKit.getStr("zw"));
+	    Assert.assertEquals("xxx",ConfigKit.getStr("中"));
+	}
+	
 }

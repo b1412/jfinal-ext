@@ -1,2 +1,1 @@
-name=aa
-age=1
+zw=中文内容
