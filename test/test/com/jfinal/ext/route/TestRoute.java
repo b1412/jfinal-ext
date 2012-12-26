@@ -5,24 +5,33 @@ import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.jfinal.ext.kit.BeanKit;
 import com.jfinal.ext.test.ControllerTestCase;
+
 public class TestRoute extends ControllerTestCase {
-	@BeforeClass
-	public static void init() throws Exception{
-		start(new Config());
-	}
-	@Test
-	public void testAController() throws Exception {
-		invoke("/aa");
-		assertEquals("zhoulei", findAttrAfterInvoke("name"));
-		assertEquals(24, findAttrAfterInvoke("age"));
-	}
-	@Test
-	public void testBController() throws Exception {
-		invoke("/bb");
-		assertEquals("zhoulei", findAttrAfterInvoke("name"));
-		assertEquals(24, findAttrAfterInvoke("age"));
-	}
 
+    @BeforeClass
+    public static void init() throws Exception {
+        start(new Config());
+    }
 
+    @Test
+    public void testAController() throws Exception {
+        invoke("/aa");
+        assertEquals("zhoulei", findAttrAfterInvoke("name"));
+        assertEquals(24, findAttrAfterInvoke("age"));
+    }
+
+    @Test
+    public void testBController() throws Exception {
+        invoke("/bb");
+        assertEquals("zhoulei", findAttrAfterInvoke("name"));
+        assertEquals(24, findAttrAfterInvoke("age"));
+    }
+
+    public static void main(String[] args) throws InstantiationException, IllegalAccessException {
+        Class c = AController.class;
+        Class my = BController.class;
+        System.out.println(BeanKit.isSuperclass(my, c));
+    }
 }

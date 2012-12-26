@@ -11,6 +11,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import com.jfinal.core.Controller;
+import com.jfinal.ext.kit.BeanKit;
 import com.jfinal.log.Logger;
 
 public class ClassSearcher {
@@ -123,8 +124,8 @@ public class ClassSearcher {
 		List<Class> classList = new ArrayList<Class>();
 		for (String classFile : classFileList) {
 			try {
-				Class<?> classInFile = Class.forName(classFile);
-				if (classInFile.getSuperclass() == clazz) {
+				Class classInFile = Class.forName(classFile);
+				if (BeanKit.isSuperclass(classInFile,clazz)) {
 					classList.add(classInFile);
 				}
 			} catch (ClassNotFoundException e) {
