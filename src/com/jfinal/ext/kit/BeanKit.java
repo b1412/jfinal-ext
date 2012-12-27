@@ -66,15 +66,4 @@ public class BeanKit {
         }
         return field;
     }
-
-    public static boolean isSuperclass(Class clazz, Class superclass) {
-        while (superclass != null && clazz != null) {
-            boolean flag = clazz.getSuperclass() == superclass;
-            if (flag) {
-                return flag;
-            }
-            clazz = clazz.getSuperclass();
-        }
-        return false;
-    }
 }

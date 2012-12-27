@@ -1,4 +1,4 @@
-package com.jfinal.ext.plugin.tablebind;
+package com.jfinal.ext.kit;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -11,7 +11,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import com.jfinal.core.Controller;
-import com.jfinal.ext.kit.BeanKit;
 import com.jfinal.log.Logger;
 
 public class ClassSearcher {
@@ -125,7 +124,8 @@ public class ClassSearcher {
 		for (String classFile : classFileList) {
 			try {
 				Class classInFile = Class.forName(classFile);
-				if (BeanKit.isSuperclass(classInFile,clazz)) {
+				if (clazz.isAssignableFrom(classInFile)) {
+//				if (BeanKit.isSuperclass(classInFile,clazz)) {
 					classList.add(classInFile);
 				}
 			} catch (ClassNotFoundException e) {

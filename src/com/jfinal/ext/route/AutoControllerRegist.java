@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.jfinal.config.Routes;
 import com.jfinal.core.Controller;
-import com.jfinal.ext.plugin.tablebind.ClassSearcher;
+import com.jfinal.ext.kit.ClassSearcher;
 import com.jfinal.kit.StringKit;
 import com.jfinal.log.Logger;
 
