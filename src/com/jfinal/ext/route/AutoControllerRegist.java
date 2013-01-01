@@ -4,10 +4,14 @@ import java.util.List;
 
 import com.jfinal.config.Routes;
 import com.jfinal.core.Controller;
-import com.jfinal.ext.plugin.tablebind.ClassSearcher;
+import com.jfinal.ext.kit.ClassSearcher;
 import com.jfinal.kit.StringKit;
 import com.jfinal.log.Logger;
-
+@Deprecated
+/**
+ * 从1.3开始用 AutoBindRoutes 代替
+ *
+ */
 public class AutoControllerRegist {
 	
 	protected final static Logger logger = Logger.getLogger(AutoControllerRegist.class);

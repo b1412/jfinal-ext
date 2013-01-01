@@ -6,7 +6,8 @@ import com.jfinal.config.Interceptors;
 import com.jfinal.config.JFinalConfig;
 import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
-import com.jfinal.ext.route.AutoControllerRegist;
+import com.jfinal.core.JFinal;
+import com.jfinal.ext.route.AutoBindRoutes;
 import com.jfinal.plugin.activerecord.tx.TxByRegex;
 import com.jfinal.render.ViewType;
 
@@ -21,10 +22,9 @@ public class Config extends JFinalConfig {
    
 	@Override
 	public void configRoute(Routes me) {
-		AutoControllerRegist.regist(me);
-//		me.add("/t", AController.class,"WEB-INF");
-
-//		me.add("/t",AController.class);
+		AutoBindRoutes routes = new AutoBindRoutes();
+		routes.addExcludeClass(BaseController.class);
+		me.add(routes);
 	}
 
 	@Override
@@ -43,5 +43,10 @@ public class Config extends JFinalConfig {
 		// TODO Auto-generated method stub
 		
 	}
+	
+    public static void main(String[] args) {
+        JFinal.start("WebRoot", 8080, "/", 5);
+    }
+
 
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import com.jfinal.ext.kit.ClassSearcher;
 import com.jfinal.kit.StringKit;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
@@ -22,8 +23,31 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
 	
 	private  List<String> includeJars = new ArrayList<String>();
 	
-	boolean includeAllJarsInLib ;
+	private boolean includeAllJarsInLib = false;
 	
+	private boolean autoScan = true;
+	
+	@SuppressWarnings("rawtypes")
+	private List<Class<? extends Model>> excludeClasses = new ArrayList<Class<? extends Model>>();
+
+	
+	@SuppressWarnings("rawtypes")
+	public void addExcludeClass(Class<? extends Model> clazz){
+		if(clazz == null){
+			return;
+		}
+		excludeClasses.add(clazz);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public void addExcludeClasses(Class<? extends Model> [] clazzes){
+		excludeClasses.addAll(Arrays.asList(clazzes));
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public void addExcludeClasses(List<Class<? extends Model>> clazzes){
+		excludeClasses.addAll(clazzes);
+	}
 	public boolean setIncludeAllJarsInLib() {
 		return includeAllJarsInLib;
 	}
@@ -51,13 +75,16 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
 	}
 	
 	public AutoTableBindPlugin(DataSource dataSource) {
-		this(dataSource, TableNameStyle.DEFAULT);
+		this(dataSource, SimpleNameStyles.DEFAULT);
 	}
 	
 	public AutoTableBindPlugin(IDataSourceProvider dataSourceProvider) {
-		this(dataSourceProvider, TableNameStyle.DEFAULT);
+		this(dataSourceProvider, SimpleNameStyles.DEFAULT);
 	}
 	
+	/**
+	 * 由  AutoTableBindPlugin(DataSource dataSource,INameStyle nameStyle) 代替
+	 */
 	@Deprecated
 	public AutoTableBindPlugin(DataSource dataSource,TableNameStyle tableNameStyle) {
 		super(dataSource);
@@ -68,7 +95,9 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
 		super(dataSource);
 		this.nameStyle = nameStyle;
 	}
-   
+	/**
+	 * 由  AutoTableBindPlugin(IDataSourceProvider dataSourceProvider,INameStyle nameStyle)  代替
+	 */
 	@Deprecated
 	public AutoTableBindPlugin(IDataSourceProvider dataSourceProvider,TableNameStyle tableNameStyle) {
 		super(dataSourceProvider);
@@ -84,12 +113,16 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
 	@Override
 	public boolean start() {
 		try {
-			List<Class> modelClasses = ClassSearcher.findInClasspathAndInJars(Model.class,includeJars);
+			List<Class> modelClasses = ClassSearcher.findInClasspathAndJars(Model.class,includeJars);
 			TableBind tb = null;
 			for (Class modelClass : modelClasses) {
+				if(excludeClasses.contains(modelClass)){
+					continue;
+				}
 				tb = (TableBind) modelClass.getAnnotation(TableBind.class);
 				String tableName;
 				if (tb == null) {
+					if(autoScan == false)	continue;
 					if(tableNameStyle!=null){
 						tableName = tableNameStyle.tableName(modelClass.getSimpleName());
 					}else{
@@ -118,4 +151,22 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
 	public boolean stop() {
 		return super.stop();
 	}
+
+	public boolean isAutoScan() {
+		return autoScan;
+	}
+
+	public void setAutoScan(boolean autoScan) {
+		this.autoScan = autoScan;
+	}
+
+	public void setIncludeAllJarsInLib(boolean includeAllJarsInLib) {
+		this.includeAllJarsInLib = includeAllJarsInLib;
+	}
+
+	public void setExcludeClasses(List<Class<? extends Model>> excludeClasses) {
+		this.excludeClasses = excludeClasses;
+	}
+	
+	
 }
