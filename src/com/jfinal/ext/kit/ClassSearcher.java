@@ -112,7 +112,7 @@ public class ClassSearcher {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static List<Class> findInClasspathAndInJars(Class clazz, List<String> includeJars) {
+	public static List<Class> findInClasspathAndJars(Class clazz, List<String> includeJars) {
 		List<String> classFileList = findFiles(classPathUrl.getFile(),"*.class");
 		classFileList.addAll(findjarFiles(lib,includeJars));
 		return extraction(clazz,classFileList);
