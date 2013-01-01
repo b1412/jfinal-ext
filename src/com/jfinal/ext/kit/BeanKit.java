@@ -33,6 +33,25 @@ public class BeanKit {
         }
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static <T> T get(Class clazz, Object obj, String fieldName) {
+        Object result = null;
+        try {
+            Field field = BeanKit.getDeclaredField(clazz, fieldName);
+            field.setAccessible(true);
+            result = field.get(obj);
+            field.setAccessible(false);
+        } catch (Exception e) {
+            logger.error("set error", e);
+        }
+        return (T) result;
+    }
+
+    public static <T> T get(Object obj, String fieldName) {
+        return get(obj.getClass(), obj, fieldName);
+    }
+
+    @SuppressWarnings("unchecked")
     public static Method getDeclaredMethod(Class clazz, String methodName, Class... parameterTypes) {
         Method method = null;
         while (clazz.getSuperclass() != null) {

@@ -14,12 +14,11 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import com.jfinal.ext.route.AutoControllerRegist;
 import com.jfinal.log.Logger;
 
 public class ConfigKit {
 
-    protected static Logger            logger       = Logger.getLogger(AutoControllerRegist.class);
+    protected static Logger            logger       = Logger.getLogger(ConfigKit.class);
 
     private static List<String>        includeResources;
 
@@ -60,8 +59,7 @@ public class ConfigKit {
             for (File file : propertiesFiles) {
                 String fileName = file.getAbsolutePath();
                 logger.debug("fileName:" + fileName);
-                // if (fileName.endsWith("-test."+ConfigPlugin.getSuffix()))
-                // continue;
+                if (fileName.endsWith("-test." + ConfigPlugin.getSuffix())) continue;
                 boolean excluded = false;
                 for (final String exclude : excludeResources) {
                     if (Pattern.compile(exclude).matcher(file.getName()).matches()) {
@@ -165,6 +163,10 @@ public class ConfigKit {
 
     public static int getInt(String key) {
         return getInt(key, 0);
+    }
+
+    public static void set(String key, String val) {
+
     }
 
     private static String encoding(String val) {
