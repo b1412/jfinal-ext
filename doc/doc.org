@@ -1,7 +1,7 @@
 #+TITLE:     Jfinal-ext文档
 #+AUTHOR:    Kid Zhou
 #+EMAIL:     zhouleib1412@gmail.com.cn
-#+DATE:      2012-10-30
+#+DATE:      2013-01-04
 #+DESCRIPTION: 
 #+KEYWORDS: 
 #+LANGUAGE:  zh_CN
@@ -21,7 +21,7 @@
   | findAttrAfterInvoke | action调用之后getAttr的值 |
  
 *** 示例代码 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC java
   public class TestRoute extends ControllerTestCase {
 	@BeforeClass
 	public static void init() throws Exception{
@@ -44,7 +44,7 @@
 }
 
 #+END_SRC
-
+    
 
 * Plugin扩展
 ** 自定绑定表 AutoTableBindPlugin 
@@ -53,22 +53,24 @@
 *** AutoTableBindPlugin使用示例
 ****  基本使用
    AutoTableBindPlugin 继承自ActivitiRecordPlugin，所以如果你使用
-   AutoTableBindPlugin则不用再使用ActivitiRecordPlugin。
-   #+BEGIN_SRC elisp
+   AutoTableBindPlugin则不用再使用ActivitiRecordPlugin,其他需要在
+   ActiviRecordPlugin中的设置都在此plugin中设置，比如方言，大小写不敏
+   感等..
+   #+BEGIN_SRC java
 	DruidPlugin druid = new DruidPlugin("jdbc:mysql://127.0.0.1/jfinal_demo", "root", "root");
 	AutoTableBindPlugin atbp = new AutoTableBindPlugin(druid);
    #+END_SRC
    记住一定要在启动atbp之前启动连接池的plugin
 ****  jar包扫描
    如果你需要载入jar包中的model，需要调用以下的api将jar包加入扫描
-   #+BEGIN_SRC elisp
+   #+BEGIN_SRC java
 		atbp.addJar("modelInJar.jar");
 		atbp.addJars("jar1,jar2");
    #+END_SRC
-**** 表名风格TableNameStyle 配置
+****  表名风格TableNameStyle 配置
    一个model自动绑定的表明默认是该类的simpleClassname，如果需要用其他
    的命名风格，需要在构造函数中指定，如
-   #+BEGIN_SRC 
+   #+BEGIN_SRC java
      AutoTableBindPlugin atbp = new AutoTableBindPlugin(cp,TableNameStyle.LOWER);
    #+END_SRC
    
@@ -82,6 +84,19 @@
    | tableName | 表名   |
    | pkName    | 外键名 |
    
+****  关闭自动扫描
+   如果你只想用注解而不想让没有注解的model被自动注册，则如下使用
+ #+BEGIN_SRC java
+ 	atbp.setAutoScan(false);
+ #+END_SRC
+
+****  忽略不想自动扫描的Model
+   如果你打开了自动扫描，但是又有不想要被扫描进去的,如通用的BaseModel
+ #+BEGIN_SRC java
+   atbp.addExcludeClass(Class<? extends Model> clazz)
+ #+END_SRC
+  	
+
 ** SqlInXmlPlugin 
 *** 简介
     类似ibatis的在xml中管理sql.主要用于复杂的sql管理或者有dba的开发团
@@ -233,7 +248,7 @@ name=test
 
 * Render扩展
 ** DwzRender
-#+BEGIN_SRC elisp
+#+BEGIN_SRC java
        public void save() {
 		Blog model = getModel(Blog.class);
 		if (model.getInt("id") == null) {
@@ -262,13 +277,13 @@ name=test
 #+END_SRC
 
 ** ExcelRender
-
 通过list数据生成excel,支持的数据类型为map ,record , model。
-
+** CsvRender
+通过list数据生成excel,支持的数据类型为map ,record , model。
 ** AmChartsRender
 新增AmChartsRener,对AmCharts报表工具进行了简单的封装
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC java
        public void pie(){
 		List<KeyLabel> pies = new ArrayList<KeyLabel>();
 		KeyLabel e= new KeyLabel("java","111");
@@ -371,26 +386,26 @@ name=test
 
 
 
-* 其他扩展
+* Routes扩展
  
-** AutoControllerRegist自动注册Route
+** 自动注册Route AutoBindRoutes
 
 *** 简介
-   扫描clsspath和lib中继承了Route的类按照约定的规则自动注册，也可以在
-   每一个Route上用注解配置
+    扫描clsspath和lib中继承了Route的类按照约定的规则自动注册，也可以在
+    每一个Route上用注解配置
 *** 示例代码
-#+BEGIN_SRC elisp
+#+BEGIN_SRC java
     public void configRoute(Routes me) {
-        AutoControllerRegist.regist(me);
+        me.add(new AutoBindRoutes());
     }
 #+END_SRC
     如果我们有一个AController，以上代码则相当于
-#+BEGIN_SRC elisp
+#+BEGIN_SRC java
    public void configRoute(Routes me) {
         me.add("/a",AController.class);
     }
 #+END_SRC
-默认的注册规则是截取类名Controller前的部分并首字母小写.
+    默认的注册规则是截取类名Controller前的部分并首字母小写.
 
 *** ControllerBind配置
     如果需要单独配置Route，需要在Controller上加上ControllerBind注解

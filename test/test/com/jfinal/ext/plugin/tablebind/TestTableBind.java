@@ -27,6 +27,7 @@ public class TestTableBind {
 	@Test
 	public void testInJar(){
 		atbp = new AutoTableBindPlugin(druidPlugin);
+		atbp.setAutoScan(false);
 		atbp.addJar("modelInJar.jar");
 		atbp.start();
 	}
