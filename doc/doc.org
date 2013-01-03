@@ -1,4 +1,4 @@
-#+TITLE:     Jfinal-ext文档
+#+TITLE:     JFinal-Ext文档(v1.2)
 #+AUTHOR:    Kid Zhou
 #+EMAIL:     zhouleib1412@gmail.com.cn
 #+DATE:      2013-01-04
@@ -52,46 +52,53 @@
    扫描clsspath和lib中继承了model的类自动注册，可选择不同的命名规则自定映射表名，也可以在每一个model上用注解指定表名
 *** AutoTableBindPlugin使用示例
 ****  基本使用
-   AutoTableBindPlugin 继承自ActivitiRecordPlugin，所以如果你使用
-   AutoTableBindPlugin则不用再使用ActivitiRecordPlugin,其他需要在
-   ActiviRecordPlugin中的设置都在此plugin中设置，比如方言，大小写不敏
-   感等..
+      AutoTableBindPlugin 继承自ActivitiRecordPlugin，所以如果你使用
+      AutoTableBindPlugin则不用再使用ActivitiRecordPlugin,其他需要在
+      ActiviRecordPlugin中的设置都在此plugin中设置，比如方言，大小写不敏
+      感等..
    #+BEGIN_SRC java
 	DruidPlugin druid = new DruidPlugin("jdbc:mysql://127.0.0.1/jfinal_demo", "root", "root");
-	AutoTableBindPlugin atbp = new AutoTableBindPlugin(druid);
+	AutoTableBindPlugin atbp = new AutoTableBindPlugin(druid);   
    #+END_SRC
-   记住一定要在启动atbp之前启动连接池的plugin
+   
+  *记住一定要在启动atbp之前启动连接池的plugin
 ****  jar包扫描
-   如果你需要载入jar包中的model，需要调用以下的api将jar包加入扫描
+      如果你需要载入jar包中的model，需要调用以下的api将jar包加入扫描
    #+BEGIN_SRC java
 		atbp.addJar("modelInJar.jar");
 		atbp.addJars("jar1,jar2");
    #+END_SRC
-****  表名风格TableNameStyle 配置
+
+****  表名风格INameStyle 配置
    一个model自动绑定的表明默认是该类的simpleClassname，如果需要用其他
    的命名风格，需要在构造函数中指定，如
    #+BEGIN_SRC java
-     AutoTableBindPlugin atbp = new AutoTableBindPlugin(cp,TableNameStyle.LOWER);
+     AutoTableBindPlugin atbp = new AutoTableBindPlugin(cp,SimpleNameStyles.LOWER);
    #+END_SRC
    
-   TableNameStyle中已有的命名风格以及映射的表明如下表：
+   SimpleNameStyles 中已有的命名风格以及映射的表明如下表：
 
-   |              | DEFAULT | FIRST_LOWER | UP      | LOWER   | UP_UNDERLINE | LOWER_UNDERLINE |
-   | DevInfo.java | DevInfo | devInfo     | DEVINFO | devinfo | DEV_INFO     | dev_info        |
+   |              | DEFAULT | =FIRST_LOWER= | UP      | LOWER   | =UP_UNDERLINE= | =LOWER_UNDERLINE= |
+   | DevInfo.java | DevInfo | devInfo       | DEVINFO | devinfo | =DEV_INFO=     | =dev_info=        |
+  
+   ParamNameStyles 含有构造参数的命名风格：
+   |              | module(test)   | lowerModule(test) | upModule(test) | upUnderlineModule(test) | lowerUnderlineModule(test) |
+   | DevInfo.java | =test_DevInfo= | =test_devinfo=    | =test_DEVINFO= | =test_DEV_INFO=         | =test_dev_info=            |
+ 
 ****  TableName 配置
-   如果有Model到表的映射命名不符合规范需要单独配置，则在Model上加上
-   TableName注解，属性说明如下：
-   | tableName | 表名   |
-   | pkName    | 外键名 |
+      如果有Model到表的映射命名不符合规范需要单独配置，则在Model上加上
+      TableName注解，属性说明如下：
+      | tableName | 表名   |
+      | pkName    | 外键名 |
    
 ****  关闭自动扫描
-   如果你只想用注解而不想让没有注解的model被自动注册，则如下使用
+      如果你只想用注解而不想让没有注解的model被自动注册，则如下使用
  #+BEGIN_SRC java
  	atbp.setAutoScan(false);
  #+END_SRC
 
 ****  忽略不想自动扫描的Model
-   如果你打开了自动扫描，但是又有不想要被扫描进去的,如通用的BaseModel
+      如果你打开了自动扫描，但是又有不想要被扫描进去的,如通用的BaseModel
  #+BEGIN_SRC java
    atbp.addExcludeClass(Class<? extends Model> clazz)
  #+END_SRC
@@ -104,7 +111,7 @@
 *** 使用示例
  插件会扫描classpath根目录下以sql结尾的xml文件，如user-sql.xml，内容如
  下
-#+BEGIN_SRC elisp
+#+BEGIN_SRC java
  <sqlGroup name="blog" >
        <sql id="findBlog">select * from blog</sql>
        <sql id="findUser">select * from user</sql>
@@ -116,7 +123,7 @@ SqlKit.sql("blog.findBlog")
 ** jms消息处理 JmsPlugin
 *** 消息接收
 如果你需要处理某个消息号对应的消息，需要实现com.jfinal.plugin.jms.ReceiveResolver
-#+BEGIN_SRC elisp
+#+BEGIN_SRC java
 public class AReceiveResolver implements ReceiveResolver {
 
 	@Override
@@ -138,7 +145,7 @@ public class AReceiveResolver implements ReceiveResolver {
     | 发送队列的名字 | 发送的消息对象 | 发送的消息名字 |
 
 *** 配置文件说明
-#+BEGIN_SRC elisp
+#+BEGIN_SRC java
 
 ################################
 #          server info         #
@@ -191,7 +198,7 @@ topic.t3.d.resolver=test.com.jfinal.plugin.jms.DReceiveResolver
   如果需要加载指定的配置文件，需要在构造方法中传入参数
 *** 配置文件说明
 job.properties配置示例
-#+BEGIN_SRC elisp
+#+BEGIN_SRC java
 #JobA
 a.job=test.com.jfinal.plugin.quzrtz.JobA
 a.cron=*/5 * * * * ?
@@ -213,29 +220,30 @@ a和b为任务的名字，仅作为标识，无其他用处。
    分优先级加载配置文件
    在团队开发中如果自己有测试配置需要长期存在但是又不需要提交中心库的时候 
 可以采用分级配置加载的策略。 如中心库中有config.properties这个配置，你可以创建 config-test.properties文件，配置相同的key，ConfigKit中的方法会优先加载 xx-test.properties文件。
-** 如何加载配置
 
-#+BEGIN_SRC elisp
+***  如何加载配置
+
+#+BEGIN_SRC java
 	ConfigPlugin configPlugin = new ConfigPlugin();
 		configPlugin.addResource(".*.properties");
 #+END_SRC
 addResource支持正则表达式
 当我们加载config.properties时候会找config-test.properties一起加载.
-** 配置说明
+***  配置说明
  如果我们加载了以下两个配置,下面的测试用列能通过,也就是说当*-test中同
  名的key优先读取.
 config.properties
-#+BEGIN_SRC elisp
+#+BEGIN_SRC java
 name=aa
 age=1
 #+END_SRC
 
 config-test.properties
-#+BEGIN_SRC elisp
+#+BEGIN_SRC java
 name=test
 #+END_SRC
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC java
 	@Test
 	public void testGetStr() throws InterruptedException {
 		Assert.assertEquals("test",ConfigKit.getStr("name"));
@@ -277,9 +285,17 @@ name=test
 #+END_SRC
 
 ** ExcelRender
+<<<<<<< HEAD
 通过list数据生成excel,支持的数据类型为map ,record , model。
 ** CsvRender
 通过list数据生成excel,支持的数据类型为map ,record , model。
+=======
+
+   通过list数据生成excel,支持的数据类型为map ,record , model。
+
+** CsvRender
+   通过list数据生成csv,支持的数据类型为map ,record , model。
+>>>>>>> master
 ** AmChartsRender
 新增AmChartsRener,对AmCharts报表工具进行了简单的封装
 
@@ -409,3 +425,41 @@ name=test
 
 *** ControllerBind配置
     如果需要单独配置Route，需要在Controller上加上ControllerBind注解
+
+    ControllerBind 注解，属性说明如下：
+    | controllerKey | 访问某个 Controller 所需要的一个字符串 |
+    | viewPath      | Controller 返回的视图的相对路径        |
+  
+
+* eclipse代码片段
+ 将jfinal-templates.xml导入eclipse的Preferences-java-Editor-Templates
+
+** jfl
+   在任何类中使用，生成logger
+  
+   #+BEGIN_SRC java
+     protected final Logger logger = Logger.getLogger(getClass());
+     protected final static Logger logger = Logger.getLogger(Object.class);
+   #+END_SRC
+** jfd
+   在Model中使用，生成dao
+
+   #+BEGIN_SRC java
+     public final static Model dao = new Model();
+   #+END_SRC
+** jfld
+
+   在需要打印日志的变量下面使用
+   #+BEGIN_SRC java
+     logger.debug("var :" + var);
+   #+END_SRC
+** jfli
+   在需要打印日志的变量下面使用
+   #+BEGIN_SRC java
+     logger.info("var :" + var);
+   #+END_SRC
+** jfle
+   在需要打印日志的变量下面使用
+   #+BEGIN_SRC java
+     logger.error("var :" + var);
+   #+END_SRC
