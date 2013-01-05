@@ -36,7 +36,7 @@ public class SimpleNameStyles {
 			String tableName="";
 			for (int i = 0; i < className.length(); i++) {
 				char ch = className.charAt(i);
-				if(Character.isUpperCase(ch)){
+				if(i!=0 && Character.isUpperCase(ch)){
 					tableName+=("_"+ch);
 				}else{
 					tableName+=Character.toUpperCase(ch);
@@ -51,7 +51,9 @@ public class SimpleNameStyles {
 			String tableName="";
 			for (int i = 0; i < className.length(); i++) {
 				char ch = className.charAt(i);
-				if(Character.isUpperCase(ch)){
+				if(i==0){
+				    tableName+=Character.toLowerCase(ch);
+				}else if(Character.isUpperCase(ch)){
 					tableName+=("_"+Character.toLowerCase(ch));
 				}else{
 					tableName+=ch;
