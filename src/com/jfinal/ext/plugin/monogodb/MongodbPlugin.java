@@ -5,7 +5,7 @@ import java.net.UnknownHostException;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.IPlugin;
 import com.mongodb.DB;
-import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
 
 public class MongodbPlugin implements IPlugin {
 
@@ -13,8 +13,7 @@ public class MongodbPlugin implements IPlugin {
 
     private static String  DEFAULT_HOST = "loaclhost";
     private static int     DEFAUL_PORT  = 27017;
-
-    private Mongo          mongo;
+    private MongoClient           client;
     private DB             db;
     private String         host;
     private int            port;
@@ -36,20 +35,20 @@ public class MongodbPlugin implements IPlugin {
     public boolean start() {
 
         try {
-            mongo = new Mongo(host, port);
-            db = mongo.getDB(database);
+            client = new MongoClient(host, port);
+            db = client.getDB(database);
         } catch (UnknownHostException e) {
             throw new RuntimeException("can't connect mongodb, please check the host and port:" + host + ", " + port, e);
         }
 
-        MongodbKit.init(mongo, db);
+        MongodbKit.init(client, db);
         return true;
     }
 
     @Override
     public boolean stop() {
-        if (mongo != null) {
-            mongo.close();
+        if (client != null) {
+            client.close();
             db = null;
         }
         return true;
