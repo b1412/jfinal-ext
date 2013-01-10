@@ -87,6 +87,7 @@ public class MongodbKit {
         }
 
         DBCursor dbCursor = logs.find(conditons);
+        int totalRow =  dbCursor.count();
         dbCursor = dbCursor.skip((pageNumber - 1) * pageSize).limit(pageSize);
         if (sort != null) {
             DBObject dbo = new BasicDBObject();
@@ -102,7 +103,14 @@ public class MongodbKit {
         while (dbCursor.hasNext()) {
             records.add(toRecord(dbCursor.next()));
         }
-        Page<Record> page = new Page<Record>(records, pageNumber, pageSize, records.size() / pageSize, records.size());
+        if (totalRow <= 0) {
+            return new Page<Record>(new ArrayList<Record>(0), pageNumber, pageSize, 0, 0);
+        }
+        int totalPage = totalRow / pageSize;
+        if (totalRow % pageSize != 0) {
+            totalPage++;
+        }
+        Page<Record> page = new Page<Record>(records, pageNumber, pageSize, totalPage, totalRow);
         return page;
     }
 
