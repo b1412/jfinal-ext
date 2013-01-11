@@ -54,34 +54,34 @@ public class MongodbKit {
         return paginate(collection, pageNumber, pageSize, null, null, null);
     }
 
-    public static Page<Record> paginate(String collection, int pageNumber, int pageSize, Map<String, String> filter) {
+    public static Page<Record> paginate(String collection, int pageNumber, int pageSize, Map<String, Object> filter) {
         return paginate(collection, pageNumber, pageSize, filter, null, null);
     }
 
-    public static Page<Record> paginate(String collection, int pageNumber, int pageSize, Map<String, String> filter,
-                                        Map<String, String> like) {
+    public static Page<Record> paginate(String collection, int pageNumber, int pageSize, Map<String, Object> filter,
+                                        Map<String, Object> like) {
         return paginate(collection, pageNumber, pageSize, filter, like, null);
     }
 
     public static Page<Record> paginate(String collection, final int pageNumber, final int pageSize,
-                                        Map<String, String> filter, Map<String, String> like,
-                                        final Map<String, String> sort) {
+                                        Map<String, Object> filter, Map<String, Object> like,
+                                        final Map<String, Object> sort) {
         DBCollection logs = MongodbKit.getDBCollection(collection);
         BasicDBObject conditons = new BasicDBObject();
         if (filter != null) {
-            Set<Entry<String, String>> entrySet = filter.entrySet();
-            for (Entry<String, String> entry : entrySet) {
+            Set<Entry<String, Object>> entrySet = filter.entrySet();
+            for (Entry<String, Object> entry : entrySet) {
                 String key = entry.getKey();
-                String val = entry.getValue();
+                Object val = entry.getValue();
                 conditons.put(key, val);
             }
 
         }
         if (like != null) {
-            Set<Entry<String, String>> entrySet = like.entrySet();
-            for (Entry<String, String> entry : entrySet) {
+            Set<Entry<String, Object>> entrySet = like.entrySet();
+            for (Entry<String, Object> entry : entrySet) {
                 String key = entry.getKey();
-                String val = entry.getValue();
+                Object val = entry.getValue();
                 conditons.put(key, MongodbKit.getLikeStr(val));
             }
         }
@@ -91,11 +91,11 @@ public class MongodbKit {
         dbCursor = dbCursor.skip((pageNumber - 1) * pageSize).limit(pageSize);
         if (sort != null) {
             DBObject dbo = new BasicDBObject();
-            Set<Entry<String, String>> entrySet = sort.entrySet();
-            for (Entry<String, String> entry : entrySet) {
+            Set<Entry<String, Object>> entrySet = sort.entrySet();
+            for (Entry<String, Object> entry : entrySet) {
                 String key = entry.getKey();
-                String val = entry.getValue();
-                dbo.put(key, val.equalsIgnoreCase("asc") ? 1 : -1);
+                Object val = entry.getValue();
+                dbo.put(key, "asc".equalsIgnoreCase(val+"") ? 1 : -1);
             }
             dbCursor = dbCursor.sort(dbo);
         }
@@ -121,7 +121,7 @@ public class MongodbKit {
         return record;
     }
 
-    public static BasicDBObject getLikeStr(String findStr) {
+    public static BasicDBObject getLikeStr(Object findStr) {
         Pattern pattern = Pattern.compile("^.*" + findStr + ".*$", Pattern.CASE_INSENSITIVE);
         return new BasicDBObject("$regex", pattern);
     }

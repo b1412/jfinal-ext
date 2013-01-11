@@ -13,9 +13,9 @@ public class TestPage {
     public static void main(String[] args) throws Exception {
         MongodbPlugin mongodbPlugin = new MongodbPlugin("172.16.0.11", 27017, "log");
         mongodbPlugin.start();
-        Map<String, String> filter = null;
-        Map<String, String> like = null;
-        Map<String, String> sort = new HashMap<>();
+        Map<String, Object> filter = null;
+        Map<String, Object> like = null;
+        Map<String, Object> sort = new HashMap<>();
         sort.put("age", "desc");
         Page<Record> page = MongodbKit.paginate("sns", 1, 10,null,like);
         System.out.println(page.getPageNumber());
