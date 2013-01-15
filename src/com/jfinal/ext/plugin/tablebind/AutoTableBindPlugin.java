@@ -17,8 +17,6 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
 
     protected final Logger               logger              = Logger.getLogger(getClass());
 
-    private TableNameStyle               tableNameStyle;
-
     private INameStyle                   nameStyle;
 
     private List<String>                 includeJars         = new ArrayList<String>();
@@ -82,27 +80,9 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
         this(dataSourceProvider, SimpleNameStyles.DEFAULT);
     }
 
-    /**
-     * 由 AutoTableBindPlugin(DataSource dataSource,INameStyle nameStyle) 代替
-     */
-    @Deprecated
-    public AutoTableBindPlugin(DataSource dataSource, TableNameStyle tableNameStyle){
-        super(dataSource);
-        this.tableNameStyle = tableNameStyle;
-    }
-
     public AutoTableBindPlugin(DataSource dataSource, INameStyle nameStyle){
         super(dataSource);
         this.nameStyle = nameStyle;
-    }
-
-    /**
-     * 由 AutoTableBindPlugin(IDataSourceProvider dataSourceProvider,INameStyle nameStyle) 代替
-     */
-    @Deprecated
-    public AutoTableBindPlugin(IDataSourceProvider dataSourceProvider, TableNameStyle tableNameStyle){
-        super(dataSourceProvider);
-        this.tableNameStyle = tableNameStyle;
     }
 
     public AutoTableBindPlugin(IDataSourceProvider dataSourceProvider, INameStyle nameStyle){
@@ -124,11 +104,7 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
                 String tableName;
                 if (tb == null) {
                     if (autoScan == false) continue;
-                    if (tableNameStyle != null) {
-                        tableName = tableNameStyle.tableName(modelClass.getSimpleName());
-                    } else {
-                        tableName = nameStyle.name(modelClass.getSimpleName());
-                    }
+                    tableName = nameStyle.name(modelClass.getSimpleName());
                     this.addMapping(tableName, modelClass);
                     logger.debug("addMapping(" + tableName + ", " + modelClass.getName() + ")");
                 } else {
