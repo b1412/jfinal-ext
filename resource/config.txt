@@ -1,1 +1,2 @@
 zw=中文内容
+url=jdbc:mysql://127.0.0.1/jfinal_demo

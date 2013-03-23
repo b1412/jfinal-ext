@@ -38,7 +38,7 @@ public class QuartzPlugin implements IPlugin {
 		try {
 			sched = sf.getScheduler();
 		} catch (SchedulerException e) {
-			new RuntimeException(e); 
+			throw new RuntimeException(e); 
 		}
 		loadProperties();
 		Enumeration enums = properties.keys();
@@ -58,7 +58,7 @@ public class QuartzPlugin implements IPlugin {
 			try {
 				clazz = Class.forName(jobClassName);
 			} catch (ClassNotFoundException e) {
-				throw new RuntimeException(e);
+				 throw new RuntimeException(e);
 			}
 	        JobDetail job = new JobDetail(jobClassName, jobClassName, clazz);
 //			JobDetail job = newJob(clazz).withIdentity(jobClassName, jobClassName).build();
@@ -66,7 +66,7 @@ public class QuartzPlugin implements IPlugin {
 			try {
 				trigger = new CronTrigger(jobClassName,jobClassName, jobCronExp);
 			} catch (ParseException e) {
-				new RuntimeException(e); 
+				throw new RuntimeException(e); 
 			}
 			
 //			CronTrigger trigger = newTrigger().withIdentity(jobClassName, jobClassName)
@@ -76,7 +76,7 @@ public class QuartzPlugin implements IPlugin {
 				ft = sched.scheduleJob(job, trigger);
 				sched.start();
 			} catch (SchedulerException e) {
-				new RuntimeException(e);
+				throw new RuntimeException(e);
 			}
 			logger.debug(job.getKey() + " has been scheduled to run at: " + ft + " and repeat based on expression: "
 					+ trigger.getCronExpression());

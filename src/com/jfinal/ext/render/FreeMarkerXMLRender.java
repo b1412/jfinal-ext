@@ -45,7 +45,7 @@ public class FreeMarkerXMLRender extends FreeMarkerRender {
 			throw new RenderException(e);
 		}
 		finally {
-			try {writer.close();} catch (IOException e) {e.printStackTrace();}
+			try {if (writer!=null) writer.close();} catch (IOException e) {e.printStackTrace();}
 		}
 	}
 }

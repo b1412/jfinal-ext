@@ -105,7 +105,9 @@ public class AmChartsRender extends Render implements AmChartsConstans {
 			} catch (IOException e) {
 				throw new RenderException(e);
 			} finally {
-				writer.close();
+				if(writer!=null){
+					writer.close();
+				}
 			}
 	}
 

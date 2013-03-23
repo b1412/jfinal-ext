@@ -22,7 +22,7 @@ import javax.servlet.http.HttpSession;
 public class MockHttpRequest implements  HttpServletRequest {
 	private Map<String,Object> attr = new HashMap<String,Object>();
 	
-	private Map<String,Object> para = new HashMap<String,Object>();
+	private Map<String,String> para = new HashMap<String,String>();
 
 	@Override
 	public Object getAttribute(String key) {
@@ -88,9 +88,12 @@ public class MockHttpRequest implements  HttpServletRequest {
 	}
 
 	@Override
-	public String getParameter(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getParameter(String key) {
+		return para.get(key);
+	}
+	
+	public void setParameter(String key,String val){
+		para.put(key, val);
 	}
 
 	@Override
@@ -105,9 +108,8 @@ public class MockHttpRequest implements  HttpServletRequest {
 	}
 
 	@Override
-	public String[] getParameterValues(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	public String[] getParameterValues(String key) {
+		return new String[]{para.get(key)};
 	}
 
 	@Override

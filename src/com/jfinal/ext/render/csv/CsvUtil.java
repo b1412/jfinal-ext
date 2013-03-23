@@ -51,9 +51,9 @@ public class CsvUtil {
 
 		Iterator itr = data.iterator();
 		while (itr.hasNext()) {
-			Object obj = itr.next(); // 讲数据添加到csv字符串
+			Object obj = itr.next(); // 将数据添加到csv字符串
 			Class cls = obj.getClass();
-			if (cls.isArray()) {
+			if (cls!=null&&cls.isArray()) {
 				Object[] objs = (Object[]) obj;
 				if (objs != null) {
 					for (short i = 0; i < objs.length; i++) {

@@ -12,10 +12,10 @@ public class TestDwzRender extends ControllerTestCase {
 	
 	@Test
 	public void testDeleteError() throws Exception {
-		invoke("/dwz/delete/1");
+		invoke("/dwz");
 	}
 	@Test
 	public void testDeleteSuccess() throws Exception {
-		invoke("/dwz/delete/2");
+		invoke("/dwz/delete/2?age=1");
 	}
 }

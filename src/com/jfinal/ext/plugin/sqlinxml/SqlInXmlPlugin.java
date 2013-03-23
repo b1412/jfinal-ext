@@ -11,7 +11,7 @@ public class SqlInXmlPlugin implements IPlugin {
 		try {
 			SqlKit.init();
 		} catch (Exception e) {
-			new RuntimeException(e);
+			throw new RuntimeException(e);
 		}
 		return true;
 	}

@@ -29,36 +29,41 @@ public class Cron4jPlugin implements IPlugin {
 	public boolean start() {
 		scheduler = new Scheduler();
 		loadProperties();
-		Enumeration enums = properties.keys();
+		Enumeration<Object> enums = properties.keys();
 		while (enums.hasMoreElements()) {
 			String key = enums.nextElement() + "";
 			if (!key.endsWith("job")) {
 				continue;
 			}
-			String cronKey = key.substring(0, key.lastIndexOf("job")) + "cron";
-			String enable = key.substring(0, key.lastIndexOf("job")) + "enable";
-			if (!isEnableJob(enable)) {
+			if (!isEnableJob(enable(key))) {
 				continue;
 			}
 			String jobClassName = properties.get(key) + "";
-			String jobCronExp = properties.getProperty(cronKey) + "";
-			Class clazz;
+			String jobCronExp = properties.getProperty(cronKey(key)) + "";
+			Class<Runnable> clazz;
 			try {
-				clazz = Class.forName(jobClassName);
+				clazz = (Class<Runnable>) Class.forName(jobClassName);
 			} catch (ClassNotFoundException e) {
 				throw new RuntimeException(e);
 			}
-			String result = null;
 			try {
-				result = scheduler.schedule(jobCronExp,
-							(Runnable) clazz.newInstance());
+				scheduler.schedule(jobCronExp,clazz.newInstance());
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(),e);
+				continue;
 			}
-			scheduler.start();
 			logger.debug(jobClassName + " has been scheduled to run and repeat based on expression: "+jobCronExp);
 		}
+		scheduler.start();
 		return true;
+	}
+
+	private String enable(String key) {
+		return key.substring(0, key.lastIndexOf("job")) + "enable";
+	}
+
+	private String cronKey(String key) {
+		return key.substring(0, key.lastIndexOf("job")) + "cron";
 	}
 
 	private boolean isEnableJob(String enableKey) {

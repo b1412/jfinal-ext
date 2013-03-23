@@ -30,7 +30,7 @@ public class DwzConfig extends JFinalConfig {
 
     @Override
 	public void configPlugin(Plugins me) {
-	    DruidPlugin db =  new DruidPlugin("jdbc:mysql://127.0.0.1/jfinal_demo", "root", "root");
+	    DruidPlugin db =  new DruidPlugin(getProperty("url"), "root", "root");
 		ActiveRecordPlugin arp = new ActiveRecordPlugin(db);
 		arp.addMapping("user", User.class);
 		me.add(db);

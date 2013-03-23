@@ -48,7 +48,8 @@ public class SqlKit {
 				Unmarshaller unmarshaller = context.createUnmarshaller();
 				group = (SqlGroup) unmarshaller.unmarshal(xmlfile);
 			} catch (JAXBException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
+				continue;
 			}
 			String name = group.name;
 			if (name == null || name.trim().equals("")) {

@@ -13,8 +13,8 @@ import com.jfinal.handler.Handler;
 
 public class ControllerTestCase {
 	protected static ServletContext servletContext = new MockServletContext();
-	protected static HttpServletRequest request = new MockHttpRequest();
-	protected static HttpServletResponse response = new MockHttpResponse();
+	protected static MockHttpRequest request = new MockHttpRequest();
+	protected static MockHttpResponse response = new MockHttpResponse();
 	protected static Handler handler;
 
 	public static void start(JFinalConfig config) throws Exception {
@@ -26,14 +26,32 @@ public class ControllerTestCase {
 		handler = (Handler) field.get(me);
 	}
 
-	public static String invoke(String path) throws Exception {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static String invoke(String url) throws Exception {
 		Class handlerClazz = handler.getClass();
 		Method handle = handlerClazz.getDeclaredMethod("handle", String.class,
 				HttpServletRequest.class, HttpServletResponse.class,
 				new boolean[] {}.getClass());
 		handle.setAccessible(true);
-		handle.invoke(handler, path, request, response, new boolean[] { true });
+		
+		handle.invoke(handler, getTarget(url,request), request, response, new boolean[] { true });
 		return "";
+	}
+	private static String getTarget(String url,MockHttpRequest request) {
+		String target = url;
+		if(url.contains("?")){
+			target = url.substring(0,url.indexOf("?"));
+			String queryString = url.substring(url.indexOf("?")+1);
+			String[] keyVals = queryString.split("&");
+			for (String keyVal : keyVals) {
+				int i = keyVal.indexOf('=');
+				String key = keyVal.substring(0,i);
+				String val = keyVal.substring(i+1);
+				request.setParameter(key, val);
+			}
+		}
+		return target;
+		
 	}
 
 	public static Object findAttrAfterInvoke(String key) {

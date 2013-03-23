@@ -112,7 +112,9 @@ public class FunshionChartsRender  extends Render implements FunshionChartsConst
 			} catch (IOException e) {
 				throw new RenderException(e);
 			} finally {
-				out.close();
+				if(out != null){
+					out.close();
+				}
 			}
 					
 	}
