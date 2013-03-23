@@ -11,10 +11,9 @@ public class MongodbPlugin implements IPlugin {
 
     protected final Logger logger       = Logger.getLogger(getClass());
 
-    private static String  DEFAULT_HOST = "loaclhost";
+    private static String  DEFAULT_HOST = "127.0.0.1";
     private static int     DEFAUL_PORT  = 27017;
     private MongoClient           client;
-    private DB             db;
     private String         host;
     private int            port;
     private String         database;
@@ -36,12 +35,11 @@ public class MongodbPlugin implements IPlugin {
 
         try {
             client = new MongoClient(host, port);
-            db = client.getDB(database);
         } catch (UnknownHostException e) {
             throw new RuntimeException("can't connect mongodb, please check the host and port:" + host + ", " + port, e);
         }
 
-        MongodbKit.init(client, db);
+        MongoKit.init(client, database);
         return true;
     }
 
@@ -49,7 +47,6 @@ public class MongodbPlugin implements IPlugin {
     public boolean stop() {
         if (client != null) {
             client.close();
-            db = null;
         }
         return true;
     }
