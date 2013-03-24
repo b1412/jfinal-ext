@@ -254,6 +254,54 @@ name=test
 
 
 
+** MongodbPlugin
+*** 简介
+   MongodbPlugin 是Jfinal-ext扩展的nosql插件，在MongoKit中封装mongodb
+   的常用操作。
+*** 使用方法
+**** 创建
+默认ip和端口
+#+BEGIN_SRC java
+ MongodbPlugin mongodbPlugin = new MongodbPlugin("log")
+ MongodbPlugin mongodbPlugin = new MongodbPlugin("127.0.0.1", 8888, "other");
+
+#+END_SRC
+
+
+**** 分页查询
+#+BEGIN_SRC java
+Map<String, Object> filter = new HashMap<String, Object>();
+filter.put("age", "20") ;  //精确过滤
+Map<String, Object> like = new HashMap<String, Object>();
+like.put("name","zhang");  //模糊匹配，相当于sql 的 like %zhang%
+Map<String, Object> sort = new HashMap<String, Object>();
+sort.put("age","desc");     //排序
+Page<Record> page = MongoKit.paginate("sns", 1, 10, filter, like,sort);
+#+END_SRC
+**** 新增
+#+BEGIN_SRC java
+MongoKit.save("sns", record) //保存一个record
+MongoKit.save("sns", records)//批量保存record
+#+END_SRC
+
+**** 删除
+#+BEGIN_SRC java
+MongoKit.removeAll("sns")  //删除所有sns
+
+Map<String, Object> filter  = new HashMap<String,Object>();
+filter.put("name", "bb");
+filter.put("age", "1");
+MongoKit.remove("sns", filter);  //删除符合条件的sns
+
+#+END_SRC
+**** 修改
+#+BEGIN_SRC java 
+Map<String, Object> src = new HashMap<String, Object>();
+src.put("age", "1");  //查询条件
+Map<String, Object> desc = new HashMap<String, Object>();
+desc.put("addr", "test"); //将符合查询条件的文档修改为此文档
+MongoKit.updateFirst("sns", src, desc); //只能修改符合条件的第一条数据..
+#+END_SRC 
 * Render扩展
 ** DwzRender
 #+BEGIN_SRC java
