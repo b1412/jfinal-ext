@@ -13,19 +13,19 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import com.jfinal.log.Logger;
 
 public class TopicListener implements MessageListener {
-	
-	protected final Logger logger = Logger.getLogger(getClass());
-	
+
+    protected final Logger logger = Logger.getLogger(getClass());
+
     protected String serverUrl;
     protected String username;
     protected String password;
     protected String topicName;
 
-    private Connection connection = null;
-    private Session session = null;
-    private Destination destination = null;
-    private MessageConsumer consumer = null;
-    private IMessageHandler messageHandler = null;
+    private Connection connection;
+    private Session session;
+    private Destination destination;
+    private MessageConsumer consumer;
+    private IMessageHandler messageHandler;
 
     public TopicListener(String serverUrl, String username, String password, String topicName, IMessageHandler messageHandler) {
         this.serverUrl = serverUrl;
@@ -46,14 +46,14 @@ public class TopicListener implements MessageListener {
             consumer = session.createConsumer(destination);
             consumer.setMessageListener(this);
         } catch (JMSException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
     @Override
-	public void onMessage(Message message) {
+    public void onMessage(Message message) {
         if (messageHandler != null) {
-        	logger.error("MessageHandler is null!please set a messageHandler");
+            logger.error("MessageHandler is null!please set a messageHandler");
             messageHandler.handleMessage(message);
         } else {
             new DefaultMessageHandler().handleMessage(message);
@@ -65,21 +65,21 @@ public class TopicListener implements MessageListener {
             try {
                 consumer.close();
             } catch (JMSException e) {
-            	e.printStackTrace();
+                e.printStackTrace();
             }
         }
         if (session != null) {
             try {
                 session.close();
             } catch (JMSException e) {
-            	e.printStackTrace();
+                e.printStackTrace();
             }
         }
         if (connection != null) {
             try {
                 connection.close();
             } catch (JMSException e) {
-            	e.printStackTrace();
+                e.printStackTrace();
             }
         }
     }

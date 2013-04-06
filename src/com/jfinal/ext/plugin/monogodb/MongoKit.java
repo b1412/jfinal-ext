@@ -19,45 +19,42 @@ import com.mongodb.MongoClient;
 
 public class MongoKit {
 
-    protected static Logger    logger = Logger.getLogger(MongoKit.class);
+    protected static Logger logger = Logger.getLogger(MongoKit.class);
 
-    private static MongoClient client = null;
-    private static DB          defaultDb     = null;
+    private static MongoClient client;
+    private static DB defaultDb;
 
     public static void init(MongoClient client, String database) {
         MongoKit.client = client;
         MongoKit.defaultDb = client.getDB(database);
 
     }
-    
-    public static void updateFirst(String collectionName,Map<String,Object> q,Map<String,Object> o){
-    	MongoKit.getCollection(collectionName).findAndModify(toDBObject(q), toDBObject(o));
+
+    public static void updateFirst(String collectionName, Map<String, Object> q, Map<String, Object> o) {
+        MongoKit.getCollection(collectionName).findAndModify(toDBObject(q), toDBObject(o));
     }
 
-    
-    public static int removeAll(String collectionName){
-    	return MongoKit.getCollection(collectionName).remove(new BasicDBObject()).getN();
-    }
-    public static int remove( String collectionName ,Map<String, Object> filter){
-    	return MongoKit.getCollection(collectionName).remove(toDBObject(filter)).getN();
-    }
-    
-    
-    public static int save(String collectionName,List<Record> records){
-    	List<DBObject> objs = new ArrayList<DBObject>();
-    	for (Record record : records) {
-    		objs.add(toDbObject(record));
-		}
-    	return MongoKit.getCollection(collectionName).insert(objs).getN();  
-    	
-    }
-    
-    public static int save(String collectionName,Record record){
-    	return MongoKit.getCollection(collectionName).save(toDbObject(record)).getN();  
+    public static int removeAll(String collectionName) {
+        return MongoKit.getCollection(collectionName).remove(new BasicDBObject()).getN();
     }
 
-	
-    
+    public static int remove(String collectionName, Map<String, Object> filter) {
+        return MongoKit.getCollection(collectionName).remove(toDBObject(filter)).getN();
+    }
+
+    public static int save(String collectionName, List<Record> records) {
+        List<DBObject> objs = new ArrayList<DBObject>();
+        for (Record record : records) {
+            objs.add(toDbObject(record));
+        }
+        return MongoKit.getCollection(collectionName).insert(objs).getN();
+
+    }
+
+    public static int save(String collectionName, Record record) {
+        return MongoKit.getCollection(collectionName).save(toDbObject(record)).getN();
+    }
+
     public static Record findFirst(String collectionName) {
         return toRecord(MongoKit.getCollection(collectionName).findOne());
     }
@@ -71,13 +68,12 @@ public class MongoKit {
     }
 
     public static Page<Record> paginate(String collection, int pageNumber, int pageSize, Map<String, Object> filter,
-                                        Map<String, Object> like) {
+            Map<String, Object> like) {
         return paginate(collection, pageNumber, pageSize, filter, like, null);
     }
 
-    public static Page<Record> paginate(String collection, final int pageNumber, final int pageSize,
-                                        Map<String, Object> filter, Map<String, Object> like,
-                                        Map<String, Object> sort) {
+    public static Page<Record> paginate(String collection, final int pageNumber, final int pageSize, Map<String, Object> filter,
+            Map<String, Object> like, Map<String, Object> sort) {
         DBCollection logs = MongoKit.getCollection(collection);
         BasicDBObject conditons = new BasicDBObject();
         if (filter != null) {
@@ -99,7 +95,7 @@ public class MongoKit {
         }
 
         DBCursor dbCursor = logs.find(conditons);
-        int totalRow =  dbCursor.count();
+        int totalRow = dbCursor.count();
         dbCursor = dbCursor.skip((pageNumber - 1) * pageSize).limit(pageSize);
         if (sort != null) {
             DBObject dbo = new BasicDBObject();
@@ -107,7 +103,7 @@ public class MongoKit {
             for (Entry<String, Object> entry : entrySet) {
                 String key = entry.getKey();
                 Object val = entry.getValue();
-                dbo.put(key, "asc".equalsIgnoreCase(val+"") ? 1 : -1);
+                dbo.put(key, "asc".equalsIgnoreCase(val + "") ? 1 : -1);
             }
             dbCursor = dbCursor.sort(dbo);
         }
@@ -153,6 +149,7 @@ public class MongoKit {
     public static DBCollection getDBCollection(String dbName, String collectionName) {
         return getDB(dbName).getCollection(collectionName);
     }
+
     public static MongoClient getClient() {
         return client;
     }
@@ -161,22 +158,22 @@ public class MongoKit {
         MongoKit.client = client;
     }
 
-	private static BasicDBObject toDBObject(Map<String, Object> map) {
-		BasicDBObject dbObject = new BasicDBObject();
-    	Set<Entry<String, Object>> entrySet = map.entrySet();
-    	for (Entry<String, Object> entry : entrySet) {
-    		String key = entry.getKey();
-    		Object val = entry.getValue();
-    		dbObject.append(key, val);
-    	}
-		return dbObject;
-	}
-	
-	private static BasicDBObject toDbObject(Record record) {
-		BasicDBObject object =  new BasicDBObject(); 
-    	for (Entry<String, Object> e: record.getColumns().entrySet()) {
-    		object.append(e.getKey(),e.getValue());
-		}
-		return object;
-	}
+    private static BasicDBObject toDBObject(Map<String, Object> map) {
+        BasicDBObject dbObject = new BasicDBObject();
+        Set<Entry<String, Object>> entrySet = map.entrySet();
+        for (Entry<String, Object> entry : entrySet) {
+            String key = entry.getKey();
+            Object val = entry.getValue();
+            dbObject.append(key, val);
+        }
+        return dbObject;
+    }
+
+    private static BasicDBObject toDbObject(Record record) {
+        BasicDBObject object = new BasicDBObject();
+        for (Entry<String, Object> e : record.getColumns().entrySet()) {
+            object.append(e.getKey(), e.getValue());
+        }
+        return object;
+    }
 }

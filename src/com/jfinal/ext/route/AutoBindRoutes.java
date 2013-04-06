@@ -12,22 +12,22 @@ import com.jfinal.log.Logger;
 
 public class AutoBindRoutes extends Routes {
 
-    protected final Logger                    logger              = Logger.getLogger(getClass());
+    protected final Logger logger = Logger.getLogger(getClass());
 
-    private List<Class<? extends Controller>> excludeClasses      = new ArrayList<Class<? extends Controller>>();
+    private List<Class<? extends Controller>> excludeClasses = new ArrayList<Class<? extends Controller>>();
 
-    private List<String>                      includeJars         = new ArrayList<String>();
+    private List<String> includeJars = new ArrayList<String>();
 
-    private boolean                           includeAllJarsInLib = false;
+    private boolean includeAllJarsInLib;
 
-    private boolean                           autoScan            = true;
+    private boolean autoScan = true;
 
-    private String                            suffix              = "Controller";
+    private String suffix = "Controller";
 
-    public AutoBindRoutes(){
+    public AutoBindRoutes() {
     }
 
-    public AutoBindRoutes(boolean autoScan){
+    public AutoBindRoutes(boolean autoScan) {
         this.autoScan = autoScan;
     }
 
@@ -83,7 +83,9 @@ public class AutoBindRoutes extends Routes {
             }
             controllerBind = (ControllerBind) controller.getAnnotation(ControllerBind.class);
             if (controllerBind == null) {
-                if (autoScan == false) continue;
+                if (!autoScan) {
+                    continue;
+                }
                 this.add(controllerKey(controller), controller);
                 logger.debug("routes.add(" + controllerKey(controller) + ", " + controller.getName() + ")");
             } else if (StringKit.isBlank(controllerBind.viewPath())) {
@@ -91,17 +93,14 @@ public class AutoBindRoutes extends Routes {
                 logger.debug("routes.add(" + controllerBind.controllerKey() + ", " + controller.getName() + ")");
             } else {
                 this.add(controllerBind.controllerKey(), controller, controllerBind.viewPath());
-                logger.debug("routes.add(" + controllerBind.controllerKey() + ", " + controller + ","
-                             + controllerBind.viewPath() + ")");
+                logger.debug("routes.add(" + controllerBind.controllerKey() + ", " + controller + "," + controllerBind.viewPath() + ")");
             }
         }
     }
 
-    private String controllerKey(Class clazz) {
+    private String controllerKey(Class<Controller> clazz) {
         if (!clazz.getSimpleName().endsWith(suffix)) {
-            throw new RuntimeException(clazz
-                                       + " does not has a ControllerBind annotation and it,s name is not end with "
-                                       + suffix);
+            throw new RuntimeException(clazz + " does not has a ControllerBind annotation and it,s name is not end with " + suffix);
         }
         String controllerKey = "/" + StringKit.firstCharToLowerCase(clazz.getSimpleName());
         controllerKey = controllerKey.substring(0, controllerKey.indexOf("Controller"));

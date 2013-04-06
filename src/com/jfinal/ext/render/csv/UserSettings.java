@@ -1,31 +1,31 @@
 package com.jfinal.ext.render.csv;
 
 public class UserSettings {
-	public static final int ESCAPE_MODE_DOUBLED = 1;
-	
-	public static final int ESCAPE_MODE_BACKSLASH = 2;
-	
-	public char TextQualifier;
+    public static final int ESCAPE_MODE_DOUBLED = 1;
 
-	public boolean UseTextQualifier;
+    public static final int ESCAPE_MODE_BACKSLASH = 2;
 
-	public char Delimiter;
+    public char textQualifier;
 
-	public char RecordDelimiter;
+    public boolean useTextQualifier;
 
-	public char Comment;
+    public char delimiter;
 
-	public int EscapeMode;
+    public char recordDelimiter;
 
-	public boolean ForceQualifier;
+    public char comment;
 
-	public UserSettings() {
-		TextQualifier = Letters.QUOTE;
-		UseTextQualifier = true;
-		Delimiter = Letters.COMMA;
-		RecordDelimiter = Letters.NULL;
-		Comment = Letters.POUND;
-		EscapeMode = ESCAPE_MODE_DOUBLED;
-		ForceQualifier = false;
-	}
+    public int escapeMode;
+
+    public boolean forceQualifier;
+
+    public UserSettings() {
+        textQualifier = Letters.QUOTE;
+        useTextQualifier = true;
+        delimiter = Letters.COMMA;
+        recordDelimiter = Letters.NULL;
+        comment = Letters.POUND;
+        escapeMode = ESCAPE_MODE_DOUBLED;
+        forceQualifier = false;
+    }
 }

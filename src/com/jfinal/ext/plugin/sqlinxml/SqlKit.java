@@ -12,53 +12,53 @@ import javax.xml.bind.Unmarshaller;
 import com.jfinal.log.Logger;
 
 public class SqlKit {
-	
-	protected final static Logger logger = Logger.getLogger(SqlKit.class);
-	
-	private static Map<String, String> sqlMap;
 
-	public static String sql(String groupNameAndsqlId) {
-		if(sqlMap ==null){
-			throw new NullPointerException("SqlInXmlPlugin not start");
-		}
-		return sqlMap.get(groupNameAndsqlId);
-	}
+    protected static final  Logger LOG = Logger.getLogger(SqlKit.class);
 
-	static void clearSqlMap() {
-		sqlMap.clear();
-	}
+    private static Map<String, String> sqlMap;
 
-	static void init() {
-		sqlMap =  new HashMap<String, String>();
-		File file = new File(SqlKit.class.getClassLoader().getResource("").getFile());
-		File[] files = file.listFiles(new FileFilter() {
+    public static String sql(String groupNameAndsqlId) {
+        if (sqlMap == null) {
+            throw new NullPointerException("SqlInXmlPlugin not start");
+        }
+        return sqlMap.get(groupNameAndsqlId);
+    }
 
-			@Override
-			public boolean accept(File pathname) {
-				if (pathname.getName().endsWith("sql.xml")) {
-					return true;
-				}
-				return false;
-			}
-		});
-		for (File xmlfile : files) {
-			SqlGroup group = null;
-			try {
-				JAXBContext context = JAXBContext.newInstance(SqlGroup.class);
-				Unmarshaller unmarshaller = context.createUnmarshaller();
-				group = (SqlGroup) unmarshaller.unmarshal(xmlfile);
-			} catch (JAXBException e) {
-				logger.error(e.getMessage(), e);
-				continue;
-			}
-			String name = group.name;
-			if (name == null || name.trim().equals("")) {
-				name = xmlfile.getName();
-			}
-			for (SqlItem sqlItem : group.sqlItems) {
-				sqlMap.put(name + "." + sqlItem.id, sqlItem.value);
-			}
-		}
-		logger.debug("sqlMap"+sqlMap);
-	}
+    static void clearSqlMap() {
+        sqlMap.clear();
+    }
+
+    static void init() {
+        sqlMap = new HashMap<String, String>();
+        File file = new File(SqlKit.class.getClassLoader().getResource("").getFile());
+        File[] files = file.listFiles(new FileFilter() {
+
+            @Override
+            public boolean accept(File pathname) {
+                if (pathname.getName().endsWith("sql.xml")) {
+                    return true;
+                }
+                return false;
+            }
+        });
+        for (File xmlfile : files) {
+            SqlGroup group = null;
+            try {
+                JAXBContext context = JAXBContext.newInstance(SqlGroup.class);
+                Unmarshaller unmarshaller = context.createUnmarshaller();
+                group = (SqlGroup) unmarshaller.unmarshal(xmlfile);
+            } catch (JAXBException e) {
+                LOG.error(e.getMessage(), e);
+                continue;
+            }
+            String name = group.name;
+            if (name == null || name.trim().equals("")) {
+                name = xmlfile.getName();
+            }
+            for (SqlItem sqlItem : group.sqlItems) {
+                sqlMap.put(name + "." + sqlItem.id, sqlItem.value);
+            }
+        }
+        LOG.debug("sqlMap" + sqlMap);
+    }
 }

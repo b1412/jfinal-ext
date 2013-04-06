@@ -5,12 +5,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlValue;
 
 @XmlRootElement
- class SqlItem {
-	@XmlAttribute 
-	 String id;
+class SqlItem {
+    @XmlAttribute
+    String id;
 
-	@XmlValue
-	 String value;
-
+    @XmlValue
+    String value;
 
 }

@@ -18,21 +18,21 @@ import com.jfinal.log.Logger;
 
 public class ConfigKit {
 
-    protected static Logger            logger       = Logger.getLogger(ConfigKit.class);
+    protected static Logger logger = Logger.getLogger(ConfigKit.class);
 
-    private static List<String>        includeResources;
+    private static List<String> includeResources;
 
-    private static boolean             reload       = true;
+    private static boolean reload = true;
 
-    private static List<String>        excludeResources;
+    private static List<String> excludeResources;
 
     private static Map<String, String> map;
 
     private static Map<String, String> testMap;
 
-    private static String              classpath;
+    private static String classpath;
 
-    private static Map<String, Long>   lastmodifies = new HashMap<String, Long>();
+    private static Map<String, Long> lastmodifies = new HashMap<String, Long>();
 
     /**
      * @param includeResources
@@ -59,7 +59,9 @@ public class ConfigKit {
             for (File file : propertiesFiles) {
                 String fileName = file.getAbsolutePath();
                 logger.debug("fileName:" + fileName);
-                if (fileName.endsWith("-test." + ConfigPlugin.getSuffix())) continue;
+                if (fileName.endsWith("-test." + ConfigPlugin.getSuffix())) {
+                    continue;
+                }
                 boolean excluded = false;
                 for (final String exclude : excludeResources) {
                     if (Pattern.compile(exclude).matcher(file.getName()).matches()) {
@@ -86,8 +88,8 @@ public class ConfigKit {
                 for (Object key : keys) {
                     map.put(encoding(key + "") + "", encoding(prop.getProperty(key + "", "")));
                 }
-                String testFileName = fileName.substring(0, fileName.indexOf("." + ConfigPlugin.getSuffix()))
-                                      + "-test." + ConfigPlugin.getSuffix();
+                String testFileName = fileName.substring(0, fileName.indexOf("." + ConfigPlugin.getSuffix())) + "-test."
+                        + ConfigPlugin.getSuffix();
                 Properties tprop = new Properties();
                 try {
                     InputStream tis = new FileInputStream(testFileName);

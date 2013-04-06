@@ -12,17 +12,17 @@ import com.jfinal.plugin.IPlugin;
 
 public class JfinalKit {
 
-    protected final static Logger logger = Logger.getLogger(JfinalKit.class);
+    protected static final  Logger LOG = Logger.getLogger(JfinalKit.class);
 
     static {
         init();
     }
-    private static List<IPlugin>  pluginList;
-    private static Constants      constants;
-    private static Routes         routes;
-    private static Plugins        plugins;
-    private static Interceptors   interceptors;
-    private static Handlers       handlers;
+    private static List<IPlugin> pluginList;
+    private static Constants constants;
+    private static Routes routes;
+    private static Plugins plugins;
+    private static Interceptors interceptors;
+    private static Handlers handlers;
 
     @SuppressWarnings("rawtypes")
     public static void init() {
@@ -31,7 +31,7 @@ public class JfinalKit {
         try {
             clazz = Class.forName("com.jfinal.core.Config");
         } catch (ClassNotFoundException e) {
-            logger.error(e.getMessage(),e);
+            LOG.error(e.getMessage(), e);
         }
         constants = BeanKit.get(clazz, null, "constants");
         routes = BeanKit.get(clazz, null, "routes");

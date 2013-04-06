@@ -1,4 +1,4 @@
-#+TITLE:     JFinal-Ext文档(v1.2)
+#+TITLE:     JFinal-Ext文档(v1.4)
 #+AUTHOR:    Kid Zhou
 #+EMAIL:     zhouleib1412@gmail.com.cn
 #+DATE:      2013-01-04
@@ -16,9 +16,9 @@
 *** 使用说明
 
   所有对Controller的测试必须继承ControllerTestCase,此类中方法说明如下
-  | start               | 初始化测试用的Config      |
-  | invoke              | 调用的url                 |
-  | findAttrAfterInvoke | action调用之后getAttr的值 |
+  | start               | 初始化测试用的Config         |
+  | invoke              | 调用的url                   |
+  | findAttrAfterInvoke | action调用之后getAttr的值    |
  
 *** 示例代码 
 #+BEGIN_SRC java

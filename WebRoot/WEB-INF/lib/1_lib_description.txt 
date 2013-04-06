@@ -1,0 +1,4 @@
+JFinal-Ext是利用Jfinal微内核高扩展的架构整合常用的第三方框架，所以需要添加相应的 jar 文件
+
+1. commons-logging  commons-jexl jxls-core jxls-reader poi poi-ooxml 用来支持JxlsRender
+2. poi poi-ooxml 用来支持JxlsRender

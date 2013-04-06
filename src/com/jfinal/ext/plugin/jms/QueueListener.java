@@ -13,19 +13,19 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import com.jfinal.log.Logger;
 
 public class QueueListener implements MessageListener {
-	
-	protected final Logger logger = Logger.getLogger(getClass());
-	
+
+    protected final Logger logger = Logger.getLogger(getClass());
+
     protected String serverUrl;
     protected String username;
     protected String password;
     protected String queueName;
 
-    private Connection connection = null;
-    private Session session = null;
-    private Destination destination = null;
-    private MessageConsumer consumer = null;
-    private IMessageHandler messageHandler = null;
+    private Connection connection ;
+    private Session session ;
+    private Destination destination ;
+    private MessageConsumer consumer ;
+    private IMessageHandler messageHandler ;
 
     public QueueListener(String serverUrl, String username, String password, String queueName, IMessageHandler messageHandler) {
         this.serverUrl = serverUrl;
@@ -46,16 +46,16 @@ public class QueueListener implements MessageListener {
             consumer = session.createConsumer(destination);
             consumer.setMessageListener(this);
         } catch (JMSException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
     @Override
-	public void onMessage(Message message) {
+    public void onMessage(Message message) {
         if (messageHandler != null) {
             messageHandler.handleMessage(message);
         } else {
-            System.out.println("no message handler!! use default message handler");
+            logger.warn("no message handler!! use default message handler");
             new DefaultMessageHandler().handleMessage(message);
         }
     }
@@ -65,24 +65,21 @@ public class QueueListener implements MessageListener {
             try {
                 consumer.close();
             } catch (JMSException e) {
-            	System.err.println("close consumer error");
-            	e.printStackTrace();
+                logger.error("close consumer error",e);
             }
         }
         if (session != null) {
             try {
                 session.close();
             } catch (JMSException e) {
-                System.out.println("close session error");
-                e.printStackTrace();
+                logger.error("close session error",e);
             }
         }
         if (connection != null) {
             try {
                 connection.close();
             } catch (JMSException e) {
-                System.out.println("close connection error");
-                e.printStackTrace();
+                logger.error("close connection error",e);
             }
         }
     }

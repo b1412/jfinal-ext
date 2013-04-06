@@ -11,7 +11,7 @@ public class TestRoute extends ControllerTestCase {
 
     @BeforeClass
     public static void init() throws Exception {
-        start(new Config());
+        start(Config.class);
     }
 
     @Test
@@ -27,6 +27,7 @@ public class TestRoute extends ControllerTestCase {
         assertEquals("zhoulei", findAttrAfterInvoke("name"));
         assertEquals(24, findAttrAfterInvoke("age"));
     }
+
     @Test
     public void testCController() throws Exception {
         invoke("/c");

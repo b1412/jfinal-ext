@@ -15,18 +15,36 @@ import com.jfinal.plugin.activerecord.Model;
 
 public class AutoTableBindPlugin extends ActiveRecordPlugin {
 
-    protected final Logger               logger              = Logger.getLogger(getClass());
+    protected final Logger log = Logger.getLogger(getClass());
 
-    private INameStyle                   nameStyle;
+    private INameStyle nameStyle;
 
-    private List<String>                 includeJars         = new ArrayList<String>();
+    private List<String> includeJars = new ArrayList<String>();
 
-    private boolean                      includeAllJarsInLib = false;
+    private boolean includeAllJarsInLib;
 
-    private boolean                      autoScan            = true;
+    private boolean autoScan = true;
 
     @SuppressWarnings("rawtypes")
-    private List<Class<? extends Model>> excludeClasses      = new ArrayList<Class<? extends Model>>();
+    private List<Class<? extends Model>> excludeClasses = new ArrayList<Class<? extends Model>>();
+
+    public AutoTableBindPlugin(DataSource dataSource) {
+        this(dataSource, SimpleNameStyles.DEFAULT);
+    }
+
+    public AutoTableBindPlugin(IDataSourceProvider dataSourceProvider) {
+        this(dataSourceProvider, SimpleNameStyles.DEFAULT);
+    }
+
+    public AutoTableBindPlugin(DataSource dataSource, INameStyle nameStyle) {
+        super(dataSource);
+        this.nameStyle = nameStyle;
+    }
+
+    public AutoTableBindPlugin(IDataSourceProvider dataSourceProvider, INameStyle nameStyle) {
+        super(dataSourceProvider);
+        this.nameStyle = nameStyle;
+    }
 
     @SuppressWarnings("rawtypes")
     public void addExcludeClass(Class<? extends Model> clazz) {
@@ -72,24 +90,6 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
         includeJars.addAll(jarsName);
     }
 
-    public AutoTableBindPlugin(DataSource dataSource){
-        this(dataSource, SimpleNameStyles.DEFAULT);
-    }
-
-    public AutoTableBindPlugin(IDataSourceProvider dataSourceProvider){
-        this(dataSourceProvider, SimpleNameStyles.DEFAULT);
-    }
-
-    public AutoTableBindPlugin(DataSource dataSource, INameStyle nameStyle){
-        super(dataSource);
-        this.nameStyle = nameStyle;
-    }
-
-    public AutoTableBindPlugin(IDataSourceProvider dataSourceProvider, INameStyle nameStyle){
-        super(dataSourceProvider);
-        this.nameStyle = nameStyle;
-    }
-
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public boolean start() {
@@ -103,18 +103,20 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
                 tb = (TableBind) modelClass.getAnnotation(TableBind.class);
                 String tableName;
                 if (tb == null) {
-                    if (autoScan == false) continue;
+                    if (!autoScan) {
+                        continue;
+                    }
                     tableName = nameStyle.name(modelClass.getSimpleName());
                     this.addMapping(tableName, modelClass);
-                    logger.debug("addMapping(" + tableName + ", " + modelClass.getName() + ")");
+                    log.debug("addMapping(" + tableName + ", " + modelClass.getName() + ")");
                 } else {
                     tableName = tb.tableName();
                     if (StringKit.notBlank(tb.pkName())) {
                         this.addMapping(tableName, tb.pkName(), modelClass);
-                        logger.debug("addMapping(" + tableName + ", " + tb.pkName() + "," + modelClass.getName() + ")");
+                        log.debug("addMapping(" + tableName + ", " + tb.pkName() + "," + modelClass.getName() + ")");
                     } else {
                         this.addMapping(tableName, modelClass);
-                        logger.debug("addMapping(" + tableName + ", " + modelClass.getName() + ")");
+                        log.debug("addMapping(" + tableName + ", " + modelClass.getName() + ")");
                     }
                 }
             }
@@ -141,6 +143,7 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
         this.includeAllJarsInLib = includeAllJarsInLib;
     }
 
+    @SuppressWarnings("rawtypes")
     public void setExcludeClasses(List<Class<? extends Model>> excludeClasses) {
         this.excludeClasses = excludeClasses;
     }

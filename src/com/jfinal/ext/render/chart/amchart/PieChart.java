@@ -10,21 +10,22 @@ import com.jfinal.ext.kit.KeyLabel;
 
 public class PieChart {
 
+    private List<KeyLabel> pies;
 
-	/**
-	 * 饼的键值对
-	 */
-	private List<KeyLabel> pies;
+    public PieChart() {
 
-	public List<KeyLabel> getPies() {
-		return pies;
-	}
+    }
 
-	public void setPies(List<KeyLabel> pies) {
-		this.pies = pies;
-	}
-	
-	
-	
+    public PieChart(List<KeyLabel> pies) {
+        this.pies = pies;
+    }
+
+    public List<KeyLabel> getPies() {
+        return pies;
+    }
+
+    public void setPies(List<KeyLabel> pies) {
+        this.pies = pies;
+    }
 
 }
