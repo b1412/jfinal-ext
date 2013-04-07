@@ -29,6 +29,11 @@ public class MockHttpRequest implements HttpServletRequest {
     private Map<String, Object> attr = new HashMap<String, Object>();
 
     private Map<String, String> para = new HashMap<String, String>();
+    private String body;
+
+    public MockHttpRequest(String body) {
+        this.body = body;
+    }
 
     @Override
     public Object getAttribute(String key) {
@@ -59,8 +64,7 @@ public class MockHttpRequest implements HttpServletRequest {
 
     @Override
     public ServletInputStream getInputStream() throws IOException {
-
-        return null;
+        return new MockServletInputStream(body);
     }
 
     @Override
@@ -383,6 +387,7 @@ public class MockHttpRequest implements HttpServletRequest {
 
         return false;
     }
+
     @Override
     public boolean isAsyncSupported() {
 
@@ -394,6 +399,7 @@ public class MockHttpRequest implements HttpServletRequest {
 
         return null;
     }
+
     @Override
     public AsyncContext startAsync(ServletRequest arg0, ServletResponse arg1) {
 
@@ -417,6 +423,7 @@ public class MockHttpRequest implements HttpServletRequest {
 
         return null;
     }
+
     @Override
     public void login(String arg0, String arg1) throws ServletException {
 

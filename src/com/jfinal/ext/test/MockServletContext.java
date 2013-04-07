@@ -79,7 +79,8 @@ public class MockServletContext implements ServletContext {
 
     @Override
     public String getRealPath(String path) {
-        return MockServletContext.class.getResource(path).getFile().substring(0, path.length() - "/WEB-INF/classes/".length());
+        path = MockServletContext.class.getResource(path).getFile();
+        return path.substring(0, path.length() - "/WEB-INF/classes/".length());
     }
 
     @Override
