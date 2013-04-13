@@ -38,7 +38,8 @@ public class TopicPublisher {
         initConnection();
     }
 
-    public TopicPublisher(String serverUrl, String username, String password, String topicName, int reConnectTimes, int reConnectInterval) {
+    public TopicPublisher(String serverUrl, String username, String password, String topicName, int reConnectTimes,
+            int reConnectInterval) {
         this(serverUrl, username, password, topicName);
         this.reConnectTimes = reConnectTimes;
         this.reConnectInterval = reConnectInterval;
@@ -54,8 +55,7 @@ public class TopicPublisher {
             producer = session.createProducer(destination);
             producer.setTimeToLive(10L);
         } catch (JMSException e) {
-            logger.debug("init publisher error");
-            e.printStackTrace();
+            logger.error("init publisher error", e);
         }
     }
 
@@ -72,8 +72,7 @@ public class TopicPublisher {
             om.setIntProperty(JMSConstants.JMS_MESSAGE_TYPE, msgType);
             producer.send(om);
         } catch (JMSException e) {
-            logger.debug("publish message error");
-            e.printStackTrace();
+            logger.error("publish message error", e);
             return false;
         }
         return true;
@@ -90,7 +89,7 @@ public class TopicPublisher {
             try {
                 TimeUnit.MINUTES.sleep(reConnectInterval);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
         return false;
@@ -101,21 +100,21 @@ public class TopicPublisher {
             try {
                 producer.close();
             } catch (JMSException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
         if (session != null) {
             try {
                 session.close();
             } catch (JMSException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
         if (connection != null) {
             try {
                 connection.close();
             } catch (JMSException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
     }

@@ -39,7 +39,8 @@ public class QueueProducer {
         initConnection();
     }
 
-    public QueueProducer(String serverUrl, String username, String password, String queueName, int reConnectTimes, int reConnectInterval) {
+    public QueueProducer(String serverUrl, String username, String password, String queueName, int reConnectTimes,
+            int reConnectInterval) {
         this(serverUrl, username, password, queueName);
         this.reConnectTimes = reConnectTimes;
         this.reConnectInterval = reConnectInterval;
@@ -55,9 +56,8 @@ public class QueueProducer {
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
             connection.start();
         } catch (JMSException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
-
     }
 
     public void closeConnection() {
@@ -65,21 +65,22 @@ public class QueueProducer {
             try {
                 producer.close();
             } catch (JMSException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
+
             }
         }
         if (session != null) {
             try {
                 session.close();
             } catch (JMSException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
         if (connection != null) {
             try {
                 connection.close();
             } catch (JMSException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -96,7 +97,7 @@ public class QueueProducer {
             om.setIntProperty(JMSConstants.JMS_MESSAGE_TYPE, msgType);
             producer.send(destination, om);
         } catch (JMSException e) {
-            e.printStackTrace();
+            logger.error("send error", e);
             return false;
         }
 
@@ -114,7 +115,7 @@ public class QueueProducer {
             try {
                 TimeUnit.MINUTES.sleep(reConnectInterval);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
         return false;

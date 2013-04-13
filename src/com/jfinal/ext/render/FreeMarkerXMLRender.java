@@ -6,6 +6,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.base.Throwables;
 import com.jfinal.render.FreeMarkerRender;
 import com.jfinal.render.RenderException;
 
@@ -49,7 +50,7 @@ public class FreeMarkerXMLRender extends FreeMarkerRender {
                     writer.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Throwables.propagate(e);
             }
         }
     }

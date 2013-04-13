@@ -58,7 +58,8 @@ public class CsvRender extends Render {
         return new CsvRender(headers, data, fileName, DEFAULT_ENCODE_TYPE, clomuns);
     }
 
-    public static CsvRender csv(List<String> headers, List<?> data, String fileName, String encodeType, List<String> clomuns) {
+    public static CsvRender csv(List<String> headers, List<?> data, String fileName, String encodeType,
+            List<String> clomuns) {
         return new CsvRender(headers, data, fileName, encodeType, clomuns);
     }
 
@@ -68,7 +69,8 @@ public class CsvRender extends Render {
         PrintWriter out = null;
         try {
             response.setContentType("application/csv;charset=gbk");
-            response.setHeader("Content-Disposition", "attachment;  filename=" + URLEncoder.encode(fileName, encodeType));
+            response.setHeader("Content-Disposition",
+                    "attachment;  filename=" + URLEncoder.encode(fileName, encodeType));
             out = response.getWriter();
             out.write(CsvUtil.createCSV(headers, data, clomuns));
         } catch (Exception e) {

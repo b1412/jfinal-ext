@@ -1,11 +1,12 @@
 package com.jfinal.ext.kit;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 @SuppressWarnings("serial")
 public class KeyLabel implements Comparable<KeyLabel>, Serializable {
@@ -22,7 +23,7 @@ public class KeyLabel implements Comparable<KeyLabel>, Serializable {
     }
 
     public static Map<String, String> converListToMap(List<KeyLabel> list) {
-        Map<String, String> map = new LinkedHashMap<String, String>();
+        Map<String, String> map = Maps.newLinkedHashMap();
         for (KeyLabel k : list) {
             map.put(k.getKey(), k.getLabel());
         }
@@ -31,7 +32,7 @@ public class KeyLabel implements Comparable<KeyLabel>, Serializable {
     }
 
     public static List<KeyLabel> converMapToList(Map<String,Object> map) {
-        List<KeyLabel> list = new ArrayList<KeyLabel>();
+        List<KeyLabel> list = Lists.newArrayList();
         Set<String> keys = map.keySet();
         for (Object key : keys) {
             KeyLabel keyLabel = new KeyLabel();
@@ -65,12 +66,7 @@ public class KeyLabel implements Comparable<KeyLabel>, Serializable {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("KeyLabel[");
-        sb.append(this.label);
-        sb.append(", ");
-        sb.append(this.key);
-        sb.append("]");
-        return sb.toString();
+        return "KeyLabel["+this.label+", "+this.key+"]";
     }
 
     @Override

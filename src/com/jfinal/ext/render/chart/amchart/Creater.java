@@ -16,10 +16,9 @@ public class Creater {
 
     /**
      * 
-     * Description: <br>
-     * 创建报表,曲线图,区域图 <?xml version="1.0" encoding="UTF-8"?> <chart> <series> <value xid="0">USA</value> <value xid="1">UK</value> </series>
-     * <graphs> <graph gid="1"> <value xid="0">3.5</value> <value xid="1">1.7</value> </graph> <graph gid="0"> <value xid="0">4.2</value>
-     * <value xid="1">3.1</value> </graph> </graphs> </chart>
+     * 创建报表,曲线图,区域图 <?xml version="1.0" encoding="UTF-8"?> <chart> <series> <value xid="0">USA</value> <value
+     * xid="1">UK</value> </series> <graphs> <graph gid="1"> <value xid="0">3.5</value> <value xid="1">1.7</value>
+     * </graph> <graph gid="0"> <value xid="0">4.2</value> <value xid="1">3.1</value> </graph> </graphs> </chart>
      * 
      * @param chart
      *            报表实体
@@ -28,8 +27,8 @@ public class Creater {
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static String createMultipleChart(GraphChart chart) {
-        StringBuffer strXML = new StringBuffer("<?xml version='1.0' encoding='UTF-8'?>").append(newLine()).append("<chart>")
-                .append(newLine());
+        StringBuffer strXML = new StringBuffer("<?xml version='1.0' encoding='UTF-8'?>").append(newLine())
+                .append("<chart>").append(newLine());
         strXML.append(newLine());
         strXML = appendSeries(strXML, chart.getSeriesNames());
         List value = chart.getValues();
@@ -64,8 +63,8 @@ public class Creater {
             if (StringKit.isBlank(label)) {
                 label = "0";
             }
-            strXML.append(space(1)).append("<slice title='").append(pie.getKey()).append("'>").append(pie.getLabel()).append("</slice>")
-                    .append(newLine());
+            strXML.append(space(1)).append("<slice title='").append(pie.getKey()).append("'>").append(pie.getLabel())
+                    .append("</slice>").append(newLine());
         }
         strXML.append("</pie>");
         return strXML.toString();
@@ -84,7 +83,8 @@ public class Creater {
                 if (StringKit.isBlank(val)) {
                     val = "0";
                 }
-                strXML.append(newLine()).append(space(3)).append("<value xid='").append(j).append("'>").append(val).append("</value>");
+                strXML.append(newLine()).append(space(3)).append("<value xid='").append(j).append("'>").append(val)
+                        .append("</value>");
             }
             strXML.append(newLine()).append(space(2)).append("</graph>");
         }
@@ -107,7 +107,8 @@ public class Creater {
         strXML.append(space(1)).append("<series>").append(newLine());
         for (int i = 0, size = seriesNames.size(); i < size; i++) {
             String str = seriesNames.get(i);
-            strXML.append(space(2)).append("<value xid='").append(i).append("'>").append(str).append("</value>").append(newLine());
+            strXML.append(space(2)).append("<value xid='").append(i).append("'>").append(str).append("</value>")
+                    .append(newLine());
         }
         strXML.append(space(1)).append("</series>").append(newLine());
         return strXML;
@@ -131,7 +132,8 @@ public class Creater {
             if (StringKit.isBlank(value)) {
                 value = "0";
             }
-            strXML.append(newLine()).append(space(3)).append("<value xid='").append(i).append("'>").append(value).append("</value>");
+            strXML.append(newLine()).append(space(3)).append("<value xid='").append(i).append("'>").append(value)
+                    .append("</value>");
         }
         strXML.append(newLine()).append(space(2)).append("</graph>");
         strXML.append(newLine()).append(space(1)).append("</graphs>");

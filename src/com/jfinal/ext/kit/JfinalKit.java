@@ -2,6 +2,8 @@ package com.jfinal.ext.kit;
 
 import java.util.List;
 
+import org.joor.Reflect;
+
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
 import com.jfinal.config.Interceptors;
@@ -24,23 +26,14 @@ public class JfinalKit {
     private static Interceptors interceptors;
     private static Handlers handlers;
 
-    @SuppressWarnings("rawtypes")
     public static void init() {
-
-        Class clazz = null;
-        try {
-            clazz = Class.forName("com.jfinal.core.Config");
-        } catch (ClassNotFoundException e) {
-            LOG.error(e.getMessage(), e);
-        }
-        constants = BeanKit.get(clazz, null, "constants");
-        routes = BeanKit.get(clazz, null, "routes");
-        plugins = BeanKit.get(clazz, null, "plugins");
-        interceptors = BeanKit.get(clazz, null, "interceptors");
-        handlers = BeanKit.get(clazz, null, "handlers");
-
+        Reflect reflect = Reflect.on("com.jfinal.core.Config");
+        constants = reflect.get("constants");
+        routes = reflect.get("routes");
+        plugins = reflect.get("plugins");
+        interceptors = reflect.get("interceptors");
+        handlers = reflect.get("handlers");
         pluginList = plugins.getPluginList();
-
     }
 
     public static Constants getConstants() {

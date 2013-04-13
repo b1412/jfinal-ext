@@ -28,7 +28,7 @@ public class JmsReceive implements IMessageHandler {
             }
             resolver.resolve(objMsg.getObject());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
     }
 }

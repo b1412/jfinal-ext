@@ -67,8 +67,8 @@ public class AmChartsRender extends Render implements AmChartsConstans {
     }
 
     public static AmChartsRender pie(List<KeyLabel> pies, String flashFile, String settingsFile, int height, int width) {
-        AmChartsRender render = new AmChartsRender(PIE, height > 0 ? height : globalHeight, width > 0 ? width : globalWidth, flashFile,
-                settingsFile);
+        AmChartsRender render = new AmChartsRender(PIE, height > 0 ? height : globalHeight, width > 0 ? width
+                : globalWidth, flashFile, settingsFile);
         render.setPies(pies);
         return render;
     }
@@ -77,9 +77,10 @@ public class AmChartsRender extends Render implements AmChartsConstans {
         return graph(data, series, flashFile, settingsFile, 0, 0);
     }
 
-    public static AmChartsRender graph(List<?> data, List<String> series, String flashFile, String settingsFile, int height, int width) {
-        AmChartsRender render = new AmChartsRender(GRAPH, height > 0 ? height : globalHeight, width > 0 ? width : globalWidth, flashFile,
-                settingsFile);
+    public static AmChartsRender graph(List<?> data, List<String> series, String flashFile, String settingsFile,
+            int height, int width) {
+        AmChartsRender render = new AmChartsRender(GRAPH, height > 0 ? height : globalHeight, width > 0 ? width
+                : globalWidth, flashFile, settingsFile);
         render.setData(data);
         render.setSeries(series);
         return render;
@@ -94,11 +95,13 @@ public class AmChartsRender extends Render implements AmChartsConstans {
                         + "<title>amCharts Example</title></head><body style='background-color:#EEEEEE'>")
                 .append("<script type='text/javascript' src='").append(request.getContextPath() + path)
                 .append("/flash/swfobject.js'></script><div id='chartdiv'></div><script type='text/javascript'>")
-                .append("var params = {bgcolor:'#FFFFFF'}; var flashVars = {path: '").append(request.getContextPath() + path)
-                .append("/flash/',settings_file:  encodeURIComponent('").append(request.getContextPath() + SETTINGS_FILE_BASE)
-                .append(settingsFile).append("'),").append("chart_data: \"").append(chartXml).append("\"};").append("swfobject.embedSWF('")
-                .append(request.getContextPath() + path).append("/flash/").append(flashFile).append("', 'chartdiv', '").append(width)
-                .append("', '").append(height).append("', '8.0.0', '").append(request.getContextPath() + path)
+                .append("var params = {bgcolor:'#FFFFFF'}; var flashVars = {path: '")
+                .append(request.getContextPath() + path).append("/flash/',settings_file:  encodeURIComponent('")
+                .append(request.getContextPath() + SETTINGS_FILE_BASE).append(settingsFile).append("'),")
+                .append("chart_data: \"").append(chartXml).append("\"};").append("swfobject.embedSWF('")
+                .append(request.getContextPath() + path).append("/flash/").append(flashFile).append("', 'chartdiv', '")
+                .append(width).append("', '").append(height).append("', '8.0.0', '")
+                .append(request.getContextPath() + path)
                 .append("/flash/expressInstall.swf', flashVars, params);</script></body></html>");
         PrintWriter writer = null;
         try {

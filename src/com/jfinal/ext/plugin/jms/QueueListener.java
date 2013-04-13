@@ -21,13 +21,14 @@ public class QueueListener implements MessageListener {
     protected String password;
     protected String queueName;
 
-    private Connection connection ;
-    private Session session ;
-    private Destination destination ;
-    private MessageConsumer consumer ;
-    private IMessageHandler messageHandler ;
+    private Connection connection;
+    private Session session;
+    private Destination destination;
+    private MessageConsumer consumer;
+    private IMessageHandler messageHandler;
 
-    public QueueListener(String serverUrl, String username, String password, String queueName, IMessageHandler messageHandler) {
+    public QueueListener(String serverUrl, String username, String password, String queueName,
+            IMessageHandler messageHandler) {
         this.serverUrl = serverUrl;
         this.username = username;
         this.password = password;
@@ -46,7 +47,7 @@ public class QueueListener implements MessageListener {
             consumer = session.createConsumer(destination);
             consumer.setMessageListener(this);
         } catch (JMSException e) {
-            e.printStackTrace();
+            logger.error("init error",e);
         }
     }
 
@@ -65,21 +66,21 @@ public class QueueListener implements MessageListener {
             try {
                 consumer.close();
             } catch (JMSException e) {
-                logger.error("close consumer error",e);
+                logger.error("close consumer error", e);
             }
         }
         if (session != null) {
             try {
                 session.close();
             } catch (JMSException e) {
-                logger.error("close session error",e);
+                logger.error("close session error", e);
             }
         }
         if (connection != null) {
             try {
                 connection.close();
             } catch (JMSException e) {
-                logger.error("close connection error",e);
+                logger.error("close connection error", e);
             }
         }
     }

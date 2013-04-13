@@ -36,7 +36,7 @@ public class MongodbPlugin implements IPlugin {
         try {
             client = new MongoClient(host, port);
         } catch (UnknownHostException e) {
-            throw new RuntimeException("can't connect mongodb, please check the host and port:" + host + ", " + port, e);
+            throw new RuntimeException("can't connect mongodb, please check the host and port:" + host + "," + port, e);
         }
 
         MongoKit.init(client, database);

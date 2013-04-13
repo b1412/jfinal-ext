@@ -42,8 +42,7 @@ public class ReceiveResolverFactory {
         try {
             loadReceiveResolver();
         } catch (Exception e) {
-            logger.debug("load ReceiveResolver error, it is defined in file" + resoruceLocation);
-            e.printStackTrace();
+            logger.error("load ReceiveResolver error, it is defined in file" + resoruceLocation,e);
         }
         logger.debug("resolvers in  " + typeFilter + " :" + receiveResolverMap);
     }
@@ -51,14 +50,13 @@ public class ReceiveResolverFactory {
     private void loadReceiveResolver() {
         for (String key : JmsConfig.keys()) {
             if (key.startsWith(typeFilter) && !key.endsWith(RESOLVER_SUFFIX)) {
-                Integer messageType = new Integer(JmsConfig.getVal(key));
-                String messageResolver = JmsConfig.getVal(key + RESOLVER_SUFFIX);
+                Integer messageType = new Integer(JmsConfig.getStr(key));
+                String messageResolver = JmsConfig.getStr(key + RESOLVER_SUFFIX);
                 messageTypeMap.put(key, messageType);
                 try {
                     receiveResolverMap.put(messageType, (ReceiveResolver) Class.forName(messageResolver).newInstance());
                 } catch (Exception e) {
-                    logger.debug("cant create " + messageResolver);
-                    e.printStackTrace();
+                    logger.error("cant create " + messageResolver,e);
                 }
             }
         }

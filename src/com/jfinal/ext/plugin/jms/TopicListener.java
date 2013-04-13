@@ -27,7 +27,8 @@ public class TopicListener implements MessageListener {
     private MessageConsumer consumer;
     private IMessageHandler messageHandler;
 
-    public TopicListener(String serverUrl, String username, String password, String topicName, IMessageHandler messageHandler) {
+    public TopicListener(String serverUrl, String username, String password, String topicName,
+            IMessageHandler messageHandler) {
         this.serverUrl = serverUrl;
         this.username = username;
         this.password = password;
@@ -46,7 +47,7 @@ public class TopicListener implements MessageListener {
             consumer = session.createConsumer(destination);
             consumer.setMessageListener(this);
         } catch (JMSException e) {
-            e.printStackTrace();
+            logger.error("init error", e);
         }
     }
 
@@ -65,21 +66,23 @@ public class TopicListener implements MessageListener {
             try {
                 consumer.close();
             } catch (JMSException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
+
             }
         }
         if (session != null) {
             try {
                 session.close();
             } catch (JMSException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
+
             }
         }
         if (connection != null) {
             try {
                 connection.close();
             } catch (JMSException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
     }

@@ -76,7 +76,9 @@ b.enable=false
   
 * Render扩展
 ** DwzRender
-** ExcelRender
+** PoiRender
+通过list数据生成excel,支持的数据类型为map ,record , model。
+** JxlsRender
 通过list数据生成excel,支持的数据类型为map ,record , model。
 ** AmChartsRender
 ** FreeMarkerXMLRender

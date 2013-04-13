@@ -2,37 +2,32 @@ package com.jfinal.ext.plugin.config;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import com.google.common.collect.Maps;
+import com.jfinal.ext.kit.ResourceKit;
+import com.jfinal.kit.PathKit;
 import com.jfinal.log.Logger;
 
 public class ConfigKit {
 
-    protected static Logger logger = Logger.getLogger(ConfigKit.class);
+    protected final static Logger LOG = Logger.getLogger(ConfigKit.class);
 
     private static List<String> includeResources;
 
-    private static boolean reload = true;
-
     private static List<String> excludeResources;
 
-    private static Map<String, String> map;
+    private static Map<String, String> map = Maps.newHashMap();
 
-    private static Map<String, String> testMap;
-
-    private static String classpath;
+    private static Map<String, String> testMap = Maps.newHashMap();
 
     private static Map<String, Long> lastmodifies = new HashMap<String, Long>();
+
+    private static boolean reload = true;
 
     /**
      * @param includeResources
@@ -43,13 +38,10 @@ public class ConfigKit {
         ConfigKit.includeResources = includeResources;
         ConfigKit.excludeResources = excludeResources;
         ConfigKit.reload = reload;
-        classpath = ConfigKit.class.getClassLoader().getResource("").getFile();
-        map = new HashMap<String, String>();
-        testMap = new HashMap<String, String>();
         for (final String resource : includeResources) {
-            logger.debug("include :" + resource);
+            LOG.debug("include :" + resource);
             File[] propertiesFiles = null;
-            propertiesFiles = new File(classpath).listFiles(new FileFilter() {
+            propertiesFiles = new File(PathKit.getRootClassPath()).listFiles(new FileFilter() {
 
                 @Override
                 public boolean accept(File pathname) {
@@ -58,12 +50,12 @@ public class ConfigKit {
             });
             for (File file : propertiesFiles) {
                 String fileName = file.getAbsolutePath();
-                logger.debug("fileName:" + fileName);
+                LOG.debug("fileName:" + fileName);
                 if (fileName.endsWith("-test." + ConfigPlugin.getSuffix())) {
                     continue;
                 }
                 boolean excluded = false;
-                for (final String exclude : excludeResources) {
+                for (String exclude : excludeResources) {
                     if (Pattern.compile(exclude).matcher(file.getName()).matches()) {
                         excluded = true;
                     }
@@ -71,45 +63,19 @@ public class ConfigKit {
                 if (excluded) {
                     continue;
                 }
-                Properties prop = new Properties();
-                InputStream is;
-                try {
-                    is = new FileInputStream(fileName);
-                    prop.load(is);
-                    lastmodifies.put(fileName, new File(fileName).lastModified());
-                } catch (FileNotFoundException e) {
-                    logger.error(e.getMessage(), e);
-                    continue;
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                    continue;
-                }
-                Set<Object> keys = prop.keySet();
-                for (Object key : keys) {
-                    map.put(encoding(key + "") + "", encoding(prop.getProperty(key + "", "")));
-                }
-                String testFileName = fileName.substring(0, fileName.indexOf("." + ConfigPlugin.getSuffix())) + "-test."
-                        + ConfigPlugin.getSuffix();
-                Properties tprop = new Properties();
-                try {
-                    InputStream tis = new FileInputStream(testFileName);
-                    tprop.load(tis);
-                } catch (FileNotFoundException e) {
-                    logger.debug("the file" + fileName + "has no test file.");
-                    continue;
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                    continue;
-                }
-                Set<Object> tkeys = prop.keySet();
-                for (Object tkey : tkeys) {
-                    testMap.put(encoding(tkey + "") + "", encoding(tprop.getProperty(tkey + "", "")));
-                }
+                lastmodifies.put(fileName, new File(fileName).lastModified());
+                map = ResourceKit.readProperties(fileName);
+                testMap = ResourceKit.readProperties(testFileName(fileName));
             }
         }
-        logger.debug("map" + map);
-        logger.debug("testMap" + testMap);
-        logger.info("config init success!");
+        LOG.debug("map" + map);
+        LOG.debug("testMap" + testMap);
+        LOG.info("config init success!");
+    }
+
+    private static String testFileName(String fileName) {
+        return fileName.substring(0, fileName.indexOf("." + ConfigPlugin.getSuffix())) + "-test."
+                + ConfigPlugin.getSuffix();
     }
 
     public static String getStr(String key, String defaultVal) {
@@ -130,10 +96,9 @@ public class ConfigKit {
     private static void checkFileModify() {
         Set<String> filenames = lastmodifies.keySet();
         for (String filename : filenames) {
-            long lastmodify = lastmodifies.get(filename);
             File file = new File(filename);
-            if (lastmodify != file.lastModified()) {
-                logger.info(filename + " changed, reload.");
+            if (lastmodifies.get(filename) != file.lastModified()) {
+                LOG.info(filename + " changed, reload.");
                 init(includeResources, excludeResources, reload);
             }
         }
@@ -168,15 +133,8 @@ public class ConfigKit {
     }
 
     public static void set(String key, String val) {
-
+        // TODO
+        throw new RuntimeException("I do not know how to do it now..");
     }
 
-    private static String encoding(String val) {
-        try {
-            val = new String(val.getBytes("ISO8859-1"), "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            logger.warn(e.getMessage(), e);
-        }
-        return val;
-    }
 }

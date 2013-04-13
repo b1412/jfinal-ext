@@ -1,4 +1,4 @@
-#+TITLE:     JFinal-Ext文档(v1.4)
+#+TITLE:     JFinal-Ext文档(v2.0)
 #+AUTHOR:    Kid Zhou
 #+EMAIL:     zhouleib1412@gmail.com.cn
 #+DATE:      2013-01-04

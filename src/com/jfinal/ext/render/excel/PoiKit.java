@@ -11,14 +11,17 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.Region;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
+import com.jfinal.kit.StringKit;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
 
-@SuppressWarnings("deprecation")
 public class PoiKit {
 
     public static final int HEADER_ROW = 1;
     public static final int DEFAULT_CELL_WIDTH = 8000;
+    private static final String DEFAULT_SHEET_NAME = "new sheet";
     private static final int MAX_ROWS = 65536;
 
     /**
@@ -38,54 +41,51 @@ public class PoiKit {
      * @return
      */
 
-    private static HSSFWorkbook export(String sheetName, int cellWidth, int headerRow, String[] headers, String[] columns, List<?> list,
-            int columnNum, boolean hasHeaders) {
-        if (sheetName == null || sheetName.isEmpty()) {
-            sheetName = "new sheet";
+    public static HSSFWorkbook export(String sheetName, int cellWidth, int headerRow, String[] headers,
+            String[] columns, List<?> list, int columnNum, boolean hasHeaders) {
+        Preconditions.checkNotNull(headers, "headers can not be null");
+        Preconditions.checkNotNull(columns, "columns can not be null");
+        Preconditions.checkArgument(cellWidth <= 0, "cellWidth < 0");
+        if (StringKit.isBlank(sheetName)) {
+            sheetName = DEFAULT_SHEET_NAME;
         }
-        HSSFWorkbook wb = null;
-        try {
-            wb = new HSSFWorkbook();
-            HSSFSheet sheet = wb.createSheet(sheetName);
-            HSSFRow row = null;
-            HSSFCell cell = null;
-            setCellWidth(sheet, cellWidth, columnNum);
-            if (hasHeaders) {
-                row = sheet.createRow(0);
-                if (headerRow <= 0) {
-                    headerRow = HEADER_ROW;
-                }
-                headerRow = Math.min(headerRow, MAX_ROWS);
-                for (int h = 0, lenH = headers.length; h < lenH; h++) {
-                    Region region = new Region(0, (short) h, (short) headerRow - 1, (short) h);// 合并从第rowFrom行columnFrom列
-                    sheet.addMergedRegion(region);// 到rowTo行columnTo的区域
-                    // 得到所有区域
-                    sheet.getNumMergedRegions();
-                    sheet.setColumnWidth(h, cellWidth);
-                    cell = row.createCell(h);
-                    cell.setCellValue(headers[h]);
-                }
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet(sheetName);
+        HSSFRow row = null;
+        HSSFCell cell = null;
+        setCellWidth(sheet, cellWidth, columnNum);
+        if (hasHeaders) {
+            row = sheet.createRow(0);
+            if (headerRow <= 0) {
+                headerRow = HEADER_ROW;
             }
-
-            if (list == null || list.size() == 0) {
-                return wb;
+            headerRow = Math.min(headerRow, MAX_ROWS);
+            for (int h = 0, lenH = headers.length; h < lenH; h++) {
+                Region region = new Region(0, (short) h, (short) headerRow - 1, (short) h);// 合并从第rowFrom行columnFrom列
+                sheet.addMergedRegion(region);// 到rowTo行columnTo的区域
+                // 得到所有区域
+                sheet.getNumMergedRegions();
+                sheet.setColumnWidth(h, cellWidth);
+                cell = row.createCell(h);
+                cell.setCellValue(headers[h]);
             }
-            for (int i = 0, len = list.size(); i < len; i++) {
-                row = sheet.createRow(i + headerRow);
-                Object obj = list.get(i);
-                if (obj == null) {
-                    continue;
-                }
-                if (obj instanceof Map) {
-                    processAsMap(columns, row, obj);
-                } else if (obj instanceof Model) {
-                    processAsModel(columns, row, obj);
-                } else if (obj instanceof Record) {
-                    processAsRecord(columns, row, obj);
-                }
+        }
+        if (list.size() == 0) {
+            return wb;
+        }
+        for (int i = 0, len = list.size(); i < len; i++) {
+            row = sheet.createRow(i + headerRow);
+            Object obj = list.get(i);
+            if (obj == null) {
+                continue;
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            if (obj instanceof Map) {
+                processAsMap(columns, row, obj);
+            } else if (obj instanceof Model) {
+                processAsModel(columns, row, obj);
+            } else if (obj instanceof Record) {
+                processAsRecord(columns, row, obj);
+            }
         }
         return wb;
     }
@@ -111,6 +111,7 @@ public class PoiKit {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static void processAsMap(String[] columns, HSSFRow row, Object obj) {
         HSSFCell cell;
         Map<String, Object> map = (Map<String, Object>) obj;
@@ -132,7 +133,7 @@ public class PoiKit {
 
     private static void processAsModel(String[] columns, HSSFRow row, Object obj) {
         HSSFCell cell;
-        Model model = (Model) obj;
+        Model<?> model = (Model<?>) obj;
         Set<Entry<String, Object>> entries = model.getAttrsEntrySet();
         if (columns.length == 0) {// 未设置显示列，默认全部
             int columnIndex = 0;
@@ -176,19 +177,10 @@ public class PoiKit {
      * @param int cellWidth 设置单元格宽度
      * @return
      */
-    public static HSSFWorkbook export(String sheetName, int headerRow, String[] headers, String[] columns, List<Object> list, int cellWidth) {
-        if (headers == null) {
-            throw new IllegalArgumentException("headers is null");
-        }
-        if (columns == null) {
-            throw new IllegalArgumentException("columns is null");
-        }
-        if (cellWidth <= 0) {
-            throw new IllegalArgumentException("cellWidth < 0");
-        }
+    public static HSSFWorkbook export(String sheetName, int headerRow, String[] headers, String[] columns,
+            List<Object> list, int cellWidth) {
         boolean hasHeaders = false;
-        int columnNum = 0;
-        columnNum = Math.max(columnNum, columns.length);
+        int columnNum = Math.max(0, columns.length);
         if (headers.length > 0) {
             hasHeaders = true;
             columnNum = headers.length;

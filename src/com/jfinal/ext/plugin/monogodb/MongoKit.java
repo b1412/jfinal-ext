@@ -72,31 +72,36 @@ public class MongoKit {
         return paginate(collection, pageNumber, pageSize, filter, like, null);
     }
 
-    public static Page<Record> paginate(String collection, final int pageNumber, final int pageSize, Map<String, Object> filter,
+    public static Page<Record> paginate(String collection, int pageNumber, int pageSize, Map<String, Object> filter,
             Map<String, Object> like, Map<String, Object> sort) {
         DBCollection logs = MongoKit.getCollection(collection);
         BasicDBObject conditons = new BasicDBObject();
-        if (filter != null) {
-            Set<Entry<String, Object>> entrySet = filter.entrySet();
-            for (Entry<String, Object> entry : entrySet) {
-                String key = entry.getKey();
-                Object val = entry.getValue();
-                conditons.put(key, val);
-            }
-
-        }
-        if (like != null) {
-            Set<Entry<String, Object>> entrySet = like.entrySet();
-            for (Entry<String, Object> entry : entrySet) {
-                String key = entry.getKey();
-                Object val = entry.getValue();
-                conditons.put(key, MongoKit.getLikeStr(val));
-            }
-        }
-
+        buildFilter(filter, conditons);
+        buildLike(like, conditons);
         DBCursor dbCursor = logs.find(conditons);
+        page(pageNumber, pageSize, dbCursor);
+        sort(sort, dbCursor);
+        List<Record> records = new ArrayList<Record>();
+        while (dbCursor.hasNext()) {
+            records.add(toRecord(dbCursor.next()));
+        }
         int totalRow = dbCursor.count();
+        if (totalRow <= 0) {
+            return new Page<Record>(new ArrayList<Record>(0), pageNumber, pageSize, 0, 0);
+        }
+        int totalPage = totalRow / pageSize;
+        if (totalRow % pageSize != 0) {
+            totalPage++;
+        }
+        Page<Record> page = new Page<Record>(records, pageNumber, pageSize, totalPage, totalRow);
+        return page;
+    }
+
+    private static void page(int pageNumber, int pageSize, DBCursor dbCursor) {
         dbCursor = dbCursor.skip((pageNumber - 1) * pageSize).limit(pageSize);
+    }
+
+    private static void sort(Map<String, Object> sort, DBCursor dbCursor) {
         if (sort != null) {
             DBObject dbo = new BasicDBObject();
             Set<Entry<String, Object>> entrySet = sort.entrySet();
@@ -107,19 +112,29 @@ public class MongoKit {
             }
             dbCursor = dbCursor.sort(dbo);
         }
-        List<Record> records = new ArrayList<Record>();
-        while (dbCursor.hasNext()) {
-            records.add(toRecord(dbCursor.next()));
+    }
+
+    private static void buildLike(Map<String, Object> like, BasicDBObject conditons) {
+        if (like != null) {
+            Set<Entry<String, Object>> entrySet = like.entrySet();
+            for (Entry<String, Object> entry : entrySet) {
+                String key = entry.getKey();
+                Object val = entry.getValue();
+                conditons.put(key, MongoKit.getLikeStr(val));
+            }
         }
-        if (totalRow <= 0) {
-            return new Page<Record>(new ArrayList<Record>(0), pageNumber, pageSize, 0, 0);
+    }
+
+    private static void buildFilter(Map<String, Object> filter, BasicDBObject conditons) {
+        if (filter != null) {
+            Set<Entry<String, Object>> entrySet = filter.entrySet();
+            for (Entry<String, Object> entry : entrySet) {
+                String key = entry.getKey();
+                Object val = entry.getValue();
+                conditons.put(key, val);
+            }
+
         }
-        int totalPage = totalRow / pageSize;
-        if (totalRow % pageSize != 0) {
-            totalPage++;
-        }
-        Page<Record> page = new Page<Record>(records, pageNumber, pageSize, totalPage, totalRow);
-        return page;
     }
 
     @SuppressWarnings("unchecked")

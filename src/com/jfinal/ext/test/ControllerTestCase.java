@@ -1,17 +1,20 @@
 package com.jfinal.ext.test;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Field;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
+import org.joor.Reflect;
+
+import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
+import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 import com.jfinal.config.JFinalConfig;
 import com.jfinal.core.JFinal;
 import com.jfinal.handler.Handler;
@@ -19,8 +22,8 @@ import com.jfinal.log.Logger;
 
 public class ControllerTestCase {
 
-    protected final static Logger logger = Logger.getLogger(ControllerTestCase.class);
-    protected static ServletContext servletContext = new MockServletContext();
+    protected static final Logger LOG = Logger.getLogger(ControllerTestCase.class);
+    protected static ServletContext servletContext = new MockServletContext();;
     protected static MockHttpRequest request;
     protected static MockHttpResponse response;
     protected static Handler handler;
@@ -29,45 +32,49 @@ public class ControllerTestCase {
         Class<JFinal> clazz = JFinal.class;
         JFinal me = JFinal.me();
         initConfig(clazz, me, servletContext, configClass.newInstance());
-        Field field = me.getClass().getDeclaredField("handler");
-        field.setAccessible(true);
-        handler = (Handler) field.get(me);
+        handler = Reflect.on(me).get("handler");
     }
 
     public static String invoke(String url) throws Exception {
         return invoke(url, "");
     }
 
-    public static String invoke(String url, File file) throws Exception {
-        String body = "";
-        BufferedReader in = null;
-        try {
-            in = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = in.readLine()) != null) {
-                body += line + "\n";
-            }
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        } finally {
-            if (in != null) {
-                in.close();
-            }
-        }
-        return invoke(url, body);
+    public static String invoke(String url, File reqFile) {
+        return invoke(url, reqFile, null);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static String invoke(String url, String body) throws Exception {
-        request = new MockHttpRequest(body);
-        response = new MockHttpResponse();
-        Class handlerClazz = handler.getClass();
-        Method handle = handlerClazz.getDeclaredMethod("handle", String.class, HttpServletRequest.class, HttpServletResponse.class,
-                new boolean[] {}.getClass());
-        handle.setAccessible(true);
+    public static String invoke(String url, File reqFile, File respFile) {
+        List<String> req = Lists.newArrayList();
+        try {
+            req = Files.readLines(reqFile, Charsets.UTF_8);
+        } catch (IOException e) {
+            Throwables.propagate(e);
+        }
+        String resp = invoke(url, Joiner.on("").join(req));
+        if (respFile != null) {
+            try {
+                Files.write(resp, respFile, Charsets.UTF_8);
+            } catch (IOException e) {
+                Throwables.propagate(e);
+            }
+        }
+        return resp;
+    }
 
-        handle.invoke(handler, getTarget(url, request), request, response, new boolean[] { true });
-        return "";
+    public static String invoke(String url, String body) {
+        StringWriter resp = new StringWriter();
+        request = new MockHttpRequest(body);
+        response = new MockHttpResponse(resp);
+        if (handler == null) {
+            System.err.println("请在ControllerTestCase的子类里面添加如下方法，YourConfig为你想测试的Config");
+            System.err.println("    @BeforeClass ");
+            System.err.println("    public static void init() throws Exception {");
+            System.err.println("        start(YourConfig.class)");
+            System.err.println("    }");
+            return "";
+        }
+        Reflect.on(handler).call("handle", getTarget(url, request), request, response, new boolean[] { true });
+        return resp.toString();
     }
 
     private static String getTarget(String url, MockHttpRequest request) {
@@ -91,7 +98,8 @@ public class ControllerTestCase {
         return request.getAttribute(key);
     }
 
-    private static void initConfig(Class<JFinal> clazz, JFinal me, ServletContext servletContext, JFinalConfig config) throws Exception {
+    private static void initConfig(Class<JFinal> clazz, JFinal me, ServletContext servletContext, JFinalConfig config)
+            throws Exception {
         Method method = clazz.getDeclaredMethod("init", JFinalConfig.class, ServletContext.class);
         method.setAccessible(true);
         method.invoke(me, config, servletContext);

@@ -7,6 +7,9 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import org.joor.Reflect;
+
+import com.google.common.base.Throwables;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.IPlugin;
 
@@ -26,7 +29,6 @@ public class Cron4jPlugin implements IPlugin {
     public Cron4jPlugin() {
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public boolean start() {
         scheduler = new Scheduler();
@@ -39,16 +41,11 @@ public class Cron4jPlugin implements IPlugin {
             }
             String jobClassName = properties.get(key) + "";
             String jobCronExp = properties.getProperty(cronKey(key)) + "";
-            Class<Runnable> clazz;
-            try {
-                clazz = (Class<Runnable>) Class.forName(jobClassName);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException("job config error", e);
-            }
+            Class<Runnable> clazz = Reflect.on(jobClassName).get();
             try {
                 scheduler.schedule(jobCronExp, clazz.newInstance());
             } catch (Exception e) {
-                log.error(e.getMessage(), e);
+                Throwables.propagate(e);
                 continue;
             }
             log.debug(jobClassName + " has been scheduled to run and repeat based on expression: " + jobCronExp);
@@ -80,7 +77,7 @@ public class Cron4jPlugin implements IPlugin {
         try {
             properties.load(is);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Throwables.propagate(e);
         }
         log.debug("------------load Propteries---------------");
         log.debug(properties.toString());

@@ -29,8 +29,11 @@ public class JmsConfig {
             throw new RuntimeException("cant load properties in location :" + resoruceLocation, e);
         }
     }
+    public static int getInt(String key) {
+        return Integer.parseInt(getStr(key));
+    }
 
-    public static String getVal(String key) {
+    public static String getStr(String key) {
         if (configPlugin != null) {
             return ConfigKit.getStr(key);
         }

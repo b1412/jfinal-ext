@@ -6,15 +6,16 @@ import java.util.List;
 
 import javax.jms.MessageListener;
 
+import com.google.common.collect.Lists;
 import com.jfinal.ext.plugin.config.ConfigPlugin;
 import com.jfinal.kit.StringKit;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.IPlugin;
 
 public class JmsPlugin implements IPlugin {
-    
+
     protected final Logger logger = Logger.getLogger(getClass());
-    
+
     private String resoruceLocation = "jms.properties";
 
     private ConfigPlugin configPlugin;
@@ -23,7 +24,7 @@ public class JmsPlugin implements IPlugin {
     private String password;
 
     private JmsSender jmsSender;
-    private List<MessageListener> listeners = new ArrayList<MessageListener>();
+    private List<MessageListener> listeners = Lists.newArrayList();
 
     public JmsPlugin() {
     }
@@ -56,26 +57,28 @@ public class JmsPlugin implements IPlugin {
     }
 
     private void initServerConfig() {
-        serverUrl = JmsConfig.getVal("serverUrl");
-        username = JmsConfig.getVal("username");
-        password = JmsConfig.getVal("password");
+        serverUrl = JmsConfig.getStr("serverUrl");
+        username = JmsConfig.getStr("username");
+        password = JmsConfig.getStr("password");
         logger.debug("serverUrl : " + serverUrl + " ,username : " + username + " ,password : " + password);
     }
 
     private void initReceiver() {
-        String receiveQueues = JmsConfig.getVal("receiveQueues");
+        String receiveQueues = JmsConfig.getStr("receiveQueues");
         logger.debug("receiveQueues :" + receiveQueues);
         if (StringKit.notBlank(receiveQueues)) {
             for (String queueName : receiveQueues.split(",")) {
-                JmsReceive queueReceive = new JmsReceive(new ReceiveResolverFactory(resoruceLocation, "queue." + queueName));
+                JmsReceive queueReceive = new JmsReceive(new ReceiveResolverFactory(resoruceLocation, "queue."
+                        + queueName));
                 listeners.add(new QueueListener(serverUrl, username, password, queueName, queueReceive));
             }
         }
-        String receiveTopics = JmsConfig.getVal("receiveTopics");
+        String receiveTopics = JmsConfig.getStr("receiveTopics");
         logger.debug("receiveTopic :" + receiveTopics);
         if (StringKit.notBlank(receiveTopics)) {
             for (String topicName : receiveTopics.split(",")) {
-                JmsReceive queueReceive = new JmsReceive(new ReceiveResolverFactory(resoruceLocation, "topic." + topicName));
+                JmsReceive queueReceive = new JmsReceive(new ReceiveResolverFactory(resoruceLocation, "topic."
+                        + topicName));
                 listeners.add(new TopicListener(serverUrl, username, password, topicName, queueReceive));
             }
         }
@@ -85,14 +88,14 @@ public class JmsPlugin implements IPlugin {
     private void initSender() {
         jmsSender = new JmsSender();
         jmsSender.queueProducers = new HashMap<String, QueueProducer>();
-        String sendQueues = JmsConfig.getVal("sendQueues");
+        String sendQueues = JmsConfig.getStr("sendQueues");
         logger.debug("sendQueues :" + sendQueues);
         if (StringKit.notBlank(sendQueues)) {
             for (String queueName : sendQueues.split(",")) {
                 jmsSender.queueProducers.put(queueName, new QueueProducer(serverUrl, username, password, queueName));
             }
         }
-        String sendTopics = JmsConfig.getVal("sendTopics");
+        String sendTopics = JmsConfig.getStr("sendTopics");
 
         logger.debug("sendTopics :" + sendTopics);
         if (StringKit.notBlank(sendTopics)) {

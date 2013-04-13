@@ -6,7 +6,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
@@ -25,10 +24,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
-public class MockHttpRequest implements HttpServletRequest {
-    private Map<String, Object> attr = new HashMap<String, Object>();
+import com.google.common.collect.Maps;
 
-    private Map<String, String> para = new HashMap<String, String>();
+public class MockHttpRequest implements HttpServletRequest {
+    private Map<String, Object> attr = Maps.newHashMap();
+
+    private Map<String, String> para = Maps.newHashMap();
+
     private String body;
 
     public MockHttpRequest(String body) {

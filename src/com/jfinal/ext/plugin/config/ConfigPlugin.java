@@ -1,8 +1,8 @@
 package com.jfinal.ext.plugin.config;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.IPlugin;
 
@@ -12,9 +12,9 @@ public class ConfigPlugin implements IPlugin {
 
     protected final Logger logger = Logger.getLogger(getClass());
 
-    private final List<String> includeResources = new ArrayList<String>();
+    private final List<String> includeResources = Lists.newArrayList();
 
-    private final List<String> excludeResources = new ArrayList<String>();
+    private final List<String> excludeResources = Lists.newArrayList();
 
     private boolean reload = true;
 

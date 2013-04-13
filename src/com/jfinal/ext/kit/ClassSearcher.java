@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.joor.Reflect;
+
+import com.google.common.collect.Lists;
 import com.jfinal.log.Logger;
 
 public class ClassSearcher {
@@ -30,7 +33,7 @@ public class ClassSearcher {
         /**
          * 算法简述： 从某个给定的需查找的文件夹出发，搜索该文件夹的所有子文件夹及文件， 若为文件，则进行匹配，匹配成功则加入结果集，若为子文件夹，则进队列。 队列不空，重复上述操作，队列为空，程序结束，返回结果。
          */
-        List<String> classFiles = new ArrayList<String>();
+        List<String> classFiles = Lists.newArrayList();
         String tempName = null;
         // 判断目录是否存在
         File baseDir = new File(baseDirName);
@@ -40,11 +43,13 @@ public class ClassSearcher {
             String[] filelist = baseDir.list();
             for (int i = 0; i < filelist.length; i++) {
                 File readfile = new File(baseDirName + File.separator + filelist[i]);
-                if (!readfile.isDirectory()) {
+                if (readfile.isDirectory()) {
+                    classFiles.addAll(findFiles(baseDirName + File.separator + filelist[i], targetFileName));
+                } else {
                     tempName = readfile.getName();
                     if (ClassSearcher.wildcardMatch(targetFileName, tempName)) {
                         String classname;
-                        String tem = readfile.getAbsoluteFile().toString().toString().replaceAll("\\\\", "/");
+                        String tem = readfile.getAbsoluteFile().toString().replaceAll("\\\\", "/");
                         classname = tem.substring(tem.indexOf("/classes") + "/classes".length(), tem.indexOf(".class"));
                         if (classname.startsWith("/")) {
                             classname = classname.substring(classname.indexOf("/") + 1);
@@ -52,8 +57,6 @@ public class ClassSearcher {
                         classname = className(classname, "/classes");
                         classFiles.add(classname);
                     }
-                } else if (readfile.isDirectory()) {
-                    classFiles.addAll(findFiles(baseDirName + File.separator + filelist[i], targetFileName));
                 }
             }
         }
@@ -105,24 +108,19 @@ public class ClassSearcher {
 
     }
 
-    @SuppressWarnings("rawtypes")
-    public static List<Class> findInClasspathAndJars(Class clazz, List<String> includeJars) {
+    public static <T> List<Class<? extends T>> findInClasspathAndJars(Class<T> clazz, List<String> includeJars) {
         List<String> classFileList = findFiles(classPathUrl.getFile(), "*.class");
         classFileList.addAll(findjarFiles(lib, includeJars));
         return extraction(clazz, classFileList);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static List<Class> extraction(Class clazz, List<String> classFileList) {
-        List<Class> classList = new ArrayList<Class>();
+    @SuppressWarnings("unchecked")
+    private static <T> List<Class<? extends T>> extraction(Class<T> clazz, List<String> classFileList) {
+        List<Class<? extends T>> classList = Lists.newArrayList();
         for (String classFile : classFileList) {
-            try {
-                Class classInFile = Class.forName(classFile);
-                if (clazz.isAssignableFrom(classInFile)) {
-                    classList.add(classInFile);
-                }
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            Class<?> classInFile = Reflect.on(classFile).get();
+            if (clazz.isAssignableFrom(classInFile) && clazz != classInFile) {
+                classList.add((Class<? extends T>) classInFile);
             }
         }
 
@@ -140,7 +138,8 @@ public class ClassSearcher {
      * @param pattern
      *            通配符模式
      * @param str
-     *            待匹配的字符串 <a href="http://my.oschina.net/u/556800" target="_blank" rel="nofollow">@return</a> 匹配成功则返回true，否则返回false
+     *            待匹配的字符串 <a href="http://my.oschina.net/u/556800" target="_blank" rel="nofollow">@return</a>
+     *            匹配成功则返回true，否则返回false
      */
     private static boolean wildcardMatch(String pattern, String str) {
         int patternLength = pattern.length();
@@ -174,8 +173,7 @@ public class ClassSearcher {
         return strIndex == strLength;
     }
 
-    @SuppressWarnings("rawtypes")
-    public static List<Class> findInClasspath(Class clazz) {
+    public static <T> List<Class<? extends T>> findInClasspath(Class<T> clazz) {
         List<String> classFileList = findFiles(classPathUrl.getFile(), "*.class");
         return extraction(clazz, classFileList);
     }

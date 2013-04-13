@@ -1,15 +1,20 @@
 package com.jfinal.ext.render.excel;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
+import com.jfinal.log.Logger;
 import com.jfinal.render.Render;
 import com.jfinal.render.RenderException;
 
+@SuppressWarnings("serial")
 public class PoiRender extends Render {
-    private static final long serialVersionUID = -8614412806980668671L;
+
+    protected final Logger logger = Logger.getLogger(getClass());
+    private final static String CONTENT_TYPE = "application/msexcel;charset=utf-8";
     private static final String DEFAULT_FILE_NAME = "file1.xls";
     private static final String DEFAULT_SHEET_NAME = "sheet1";
 
@@ -55,7 +60,8 @@ public class PoiRender extends Render {
         return render;
     }
 
-    public static PoiRender excel(List<Object> data, String fileName, String sheetName, String[] headers, String[] columns) {
+    public static PoiRender excel(List<Object> data, String fileName, String sheetName, String[] headers,
+            String[] columns) {
         PoiRender render = new PoiRender(fileName, sheetName, headers, data);
         render.setSheetName(sheetName);
         render.setColumns(columns);
@@ -64,17 +70,24 @@ public class PoiRender extends Render {
 
     @Override
     public void render() {
-        response.reset();// 清空输出流
-        response.setHeader("Content-disposition", "attachment; filename=" + fileName);// 设定输出文件头
-        response.setContentType("application/msexcel;charset=utf-8");// 定义输出类型
+        response.reset();
+        response.setHeader("Content-disposition", "attachment; filename=" + fileName);
+        response.setContentType(CONTENT_TYPE);
+        OutputStream os = null;
         try {
-            OutputStream os = response.getOutputStream();// 取得输出流
+            os = response.getOutputStream();
             HSSFWorkbook wb = PoiKit.export(sheetName, 0, headers, columns, data, 0);
             wb.write(os);
-            os.flush();
-            os.close();
         } catch (Exception e) {
             throw new RenderException(e);
+        } finally {
+            try {
+                os.flush();
+                os.close();
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }
+
         }
     }
 

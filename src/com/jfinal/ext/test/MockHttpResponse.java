@@ -2,6 +2,7 @@ package com.jfinal.ext.test;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -10,6 +11,12 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 public class MockHttpResponse implements HttpServletResponse {
+
+    private StringWriter resp;
+
+    public MockHttpResponse(StringWriter resp) {
+        this.resp = resp;
+    }
 
     @Override
     public void flushBuffer() throws IOException {
@@ -49,7 +56,8 @@ public class MockHttpResponse implements HttpServletResponse {
 
     @Override
     public PrintWriter getWriter() throws IOException {
-        PrintWriter writer = new PrintWriter(System.out);
+        PrintWriter writer = new PrintWriter(resp);
+//        PrintWriter writer = new PrintWriter(System.out);
         return writer;
     }
 

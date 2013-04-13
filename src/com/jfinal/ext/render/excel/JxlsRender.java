@@ -1,31 +1,23 @@
-/**
- * Date:2013-4-3下午9:57:24
- * Copyright (c) 2010-2013, www.trafree.com  All Rights Reserved.
- */
-
 package com.jfinal.ext.render.excel;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
+import java.util.Enumeration;
 import java.util.Map;
 
 import net.sf.jxls.transformer.XLSTransformer;
 
 import org.apache.poi.ss.usermodel.Workbook;
 
+import com.google.common.collect.Maps;
 import com.jfinal.render.Render;
+import com.jfinal.render.RenderException;
 
-/**
- * JxlsRender. <br/>
- * Date: 2013-4-3 下午9:57:24 <br/>
- * 
- * @author kid
- */
+@SuppressWarnings("serial")
 public class JxlsRender extends Render {
-    private static final long serialVersionUID = -8167145464557988406L;
+    private static final String CONTENT_TYPE = "application/vnd.ms-excel;charset=" + getEncoding();
     private static final String DEFAULT_FILE_NAME = "file1.xls";
     private String filename;
     private String templetFile;
@@ -37,10 +29,21 @@ public class JxlsRender extends Render {
         this.beans = beans;
     }
 
+    public static JxlsRender me(String templetFile) {
+        JxlsRender render = new JxlsRender(DEFAULT_FILE_NAME, templetFile, Maps.<String, Object> newHashMap());
+        return render;
+    }
+
     public static JxlsRender me(String templetFile, Map<String, Object> beans) {
         JxlsRender render = new JxlsRender(DEFAULT_FILE_NAME, templetFile, beans);
         return render;
     }
+
+    public static JxlsRender me(String filename, String templetFile) {
+        JxlsRender render = new JxlsRender(filename, templetFile, Maps.<String, Object> newHashMap());
+        return render;
+    }
+
     public static JxlsRender me(String filename, String templetFile, Map<String, Object> beans) {
         JxlsRender render = new JxlsRender(filename, templetFile, beans);
         return render;
@@ -48,7 +51,10 @@ public class JxlsRender extends Render {
 
     @Override
     public void render() {
-        response.setContentType("application/vnd.ms-excel");
+        if (beans.isEmpty()) {
+            buildBean();
+        }
+        response.setContentType(CONTENT_TYPE);
         response.setHeader("Content-Disposition", "attachment;Filename=" + filename);
         try {
             OutputStream out = response.getOutputStream();
@@ -57,7 +63,17 @@ public class JxlsRender extends Render {
             Workbook workBook = transformer.transformXLS(is, beans);
             workBook.write(out);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RenderException(e);
+        }
+
+    }
+
+    private void buildBean() {
+        Enumeration<String> attrs = request.getAttributeNames();
+        while (attrs.hasMoreElements()) {
+            String key = attrs.nextElement();
+            Object value = request.getAttribute(key);
+            beans.put(key, value);
         }
 
     }

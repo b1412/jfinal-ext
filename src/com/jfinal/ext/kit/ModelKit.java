@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.google.common.base.Preconditions;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
 
@@ -22,14 +23,10 @@ public class ModelKit {
     @SuppressWarnings("rawtypes")
     public static void set(Model model, Object... attrsAndValues) {
         int length = attrsAndValues.length;
-        if (length % 2 != 0) {
-            throw new IllegalArgumentException("attrsAndValues length must be even number");
-        }
+        Preconditions.checkArgument(length % 2 != 0, "attrsAndValues length must be even number", length);
         for (int i = 0; i < length; i = i + 2) {
             Object attr = attrsAndValues[i];
-            if (!(attr instanceof String)) {
-                throw new IllegalArgumentException("the odd number of attrsAndValues  must be String");
-            }
+            Preconditions.checkArgument(!(attr instanceof String), "the odd number of attrsAndValues  must be String");
             model.set((String) attr, attrsAndValues[i + 1]);
         }
     }

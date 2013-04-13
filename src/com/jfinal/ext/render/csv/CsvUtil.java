@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.google.common.base.Throwables;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
 
@@ -180,11 +181,7 @@ public class CsvUtil {
             } else if (obj instanceof Date) {
                 content = new SimpleDateFormat("yyyy-MM-dd HH:mm").format((Date) obj);
             } else {
-                try {
-                    content = write(String.valueOf(obj));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                content = write(String.valueOf(obj));
             }
             strOut.append(content);
             strOut.append("\"");
@@ -193,7 +190,7 @@ public class CsvUtil {
         }
     }
 
-    public static String write(String content) throws IOException {
+    public static String write(String content) {
 
         boolean textQualify = userSettings.forceQualifier;
 
@@ -230,9 +227,11 @@ public class CsvUtil {
 
             if (userSettings.escapeMode == UserSettings.ESCAPE_MODE_BACKSLASH) {
                 content = replace(content, "" + Letters.BACKSLASH, "" + Letters.BACKSLASH + Letters.BACKSLASH);
-                content = replace(content, "" + userSettings.textQualifier, "" + Letters.BACKSLASH + userSettings.textQualifier);
+                content = replace(content, "" + userSettings.textQualifier, "" + Letters.BACKSLASH
+                        + userSettings.textQualifier);
             } else {
-                content = replace(content, "" + userSettings.textQualifier, "" + userSettings.textQualifier + userSettings.textQualifier);
+                content = replace(content, "" + userSettings.textQualifier, "" + userSettings.textQualifier
+                        + userSettings.textQualifier);
             }
         } else if (userSettings.escapeMode == UserSettings.ESCAPE_MODE_BACKSLASH) {
             content = replace(content, "" + Letters.BACKSLASH, "" + Letters.BACKSLASH + Letters.BACKSLASH);

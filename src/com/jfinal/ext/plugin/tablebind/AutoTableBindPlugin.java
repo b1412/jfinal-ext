@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import com.google.common.collect.Lists;
 import com.jfinal.ext.kit.ClassSearcher;
 import com.jfinal.kit.StringKit;
 import com.jfinal.log.Logger;
@@ -26,7 +27,7 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
     private boolean autoScan = true;
 
     @SuppressWarnings("rawtypes")
-    private List<Class<? extends Model>> excludeClasses = new ArrayList<Class<? extends Model>>();
+    private List<Class<? extends Model>> excludeClasses = Lists.newArrayList();
 
     public AutoTableBindPlugin(DataSource dataSource) {
         this(dataSource, SimpleNameStyles.DEFAULT);
@@ -47,81 +48,77 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
     }
 
     @SuppressWarnings("rawtypes")
-    public void addExcludeClass(Class<? extends Model> clazz) {
-        if (clazz == null) {
-            return;
+    public AutoTableBindPlugin addExcludeClass(Class<? extends Model> clazz) {
+        if (clazz != null) {
+            excludeClasses.add(clazz);
         }
-        excludeClasses.add(clazz);
+        return this;
     }
 
     @SuppressWarnings("rawtypes")
-    public void addExcludeClasses(Class<? extends Model>[] clazzes) {
+    public AutoTableBindPlugin addExcludeClasses(Class<? extends Model>[] clazzes) {
         excludeClasses.addAll(Arrays.asList(clazzes));
+        return this;
     }
 
     @SuppressWarnings("rawtypes")
-    public void addExcludeClasses(List<Class<? extends Model>> clazzes) {
+    public AutoTableBindPlugin addExcludeClasses(List<Class<? extends Model>> clazzes) {
         excludeClasses.addAll(clazzes);
+        return this;
     }
 
-    public boolean setIncludeAllJarsInLib() {
-        return includeAllJarsInLib;
-    }
-
-    public void addJar(String jarName) {
-        if (StringKit.isBlank(jarName)) {
-            return;
+    public AutoTableBindPlugin addJar(String jarName) {
+        if (StringKit.notBlank(jarName)) {
+            includeJars.add(jarName);
         }
-        includeJars.add(jarName);
+        return this;
     }
 
-    public void addJars(String jarNames) {
-        if (StringKit.isBlank(jarNames)) {
-            return;
+    public AutoTableBindPlugin addJars(String jarNames) {
+        if (StringKit.notBlank(jarNames)) {
+            addJars(jarNames.split(","));
         }
-        addJars(jarNames.split(","));
+        return this;
     }
 
-    public void addJars(String[] jarsName) {
+    public AutoTableBindPlugin addJars(String[] jarsName) {
         includeJars.addAll(Arrays.asList(jarsName));
+        return this;
     }
 
-    public void addJars(List<String> jarsName) {
+    public AutoTableBindPlugin addJars(List<String> jarsName) {
         includeJars.addAll(jarsName);
+        return this;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public boolean start() {
-        try {
-            List<Class> modelClasses = ClassSearcher.findInClasspathAndJars(Model.class, includeJars);
-            TableBind tb = null;
-            for (Class modelClass : modelClasses) {
-                if (excludeClasses.contains(modelClass)) {
+        List<Class<? extends Model>> modelClasses = ClassSearcher.findInClasspathAndJars(Model.class, includeJars);
+        TableBind tb = null;
+        for (Class modelClass : modelClasses) {
+            if (excludeClasses.contains(modelClass)) {
+                continue;
+            }
+            tb = (TableBind) modelClass.getAnnotation(TableBind.class);
+            String tableName;
+            if (tb == null) {
+                if (!autoScan) {
                     continue;
                 }
-                tb = (TableBind) modelClass.getAnnotation(TableBind.class);
-                String tableName;
-                if (tb == null) {
-                    if (!autoScan) {
-                        continue;
-                    }
-                    tableName = nameStyle.name(modelClass.getSimpleName());
+                tableName = nameStyle.name(modelClass.getSimpleName());
+                this.addMapping(tableName, modelClass);
+                log.debug("addMapping(" + tableName + ", " + modelClass.getName() + ")");
+            } else {
+                tableName = tb.tableName();
+                if (StringKit.notBlank(tb.pkName())) {
+                    this.addMapping(tableName, tb.pkName(), modelClass);
+                    log.debug("addMapping(" + tableName + ", " + tb.pkName() + "," + modelClass.getName() + ")");
+                } else {
                     this.addMapping(tableName, modelClass);
                     log.debug("addMapping(" + tableName + ", " + modelClass.getName() + ")");
-                } else {
-                    tableName = tb.tableName();
-                    if (StringKit.notBlank(tb.pkName())) {
-                        this.addMapping(tableName, tb.pkName(), modelClass);
-                        log.debug("addMapping(" + tableName + ", " + tb.pkName() + "," + modelClass.getName() + ")");
-                    } else {
-                        this.addMapping(tableName, modelClass);
-                        log.debug("addMapping(" + tableName + ", " + modelClass.getName() + ")");
-                    }
                 }
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
         return super.start();
     }
@@ -135,17 +132,24 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
         return autoScan;
     }
 
-    public void setAutoScan(boolean autoScan) {
+    public AutoTableBindPlugin setAutoScan(boolean autoScan) {
         this.autoScan = autoScan;
+        return this;
     }
 
-    public void setIncludeAllJarsInLib(boolean includeAllJarsInLib) {
+    public AutoTableBindPlugin setIncludeAllJarsInLib(boolean includeAllJarsInLib) {
         this.includeAllJarsInLib = includeAllJarsInLib;
+        return this;
+    }
+
+    public boolean getIncludeAllJarsInLib() {
+        return includeAllJarsInLib;
     }
 
     @SuppressWarnings("rawtypes")
-    public void setExcludeClasses(List<Class<? extends Model>> excludeClasses) {
+    public AutoTableBindPlugin setExcludeClasses(List<Class<? extends Model>> excludeClasses) {
         this.excludeClasses = excludeClasses;
+        return this;
     }
 
 }

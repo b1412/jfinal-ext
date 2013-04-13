@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import org.joor.Reflect;
 import org.quartz.CronTrigger;
 import org.quartz.Job;
 import org.quartz.JobDetail;
@@ -15,6 +16,7 @@ import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.impl.StdSchedulerFactory;
 
+import com.google.common.base.Throwables;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.IPlugin;
 
@@ -35,14 +37,13 @@ public class QuartzPlugin implements IPlugin {
     public QuartzPlugin() {
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public boolean start() {
         sf = new StdSchedulerFactory();
         try {
             sched = sf.getScheduler();
         } catch (SchedulerException e) {
-            throw new RuntimeException(e);
+            Throwables.propagate(e);
         }
         loadProperties();
         Enumeration<Object> enums = properties.keys();
@@ -53,25 +54,20 @@ public class QuartzPlugin implements IPlugin {
             }
             String jobClassName = properties.get(key) + "";
             String jobCronExp = properties.getProperty(cronKey(key)) + "";
-            Class<Job> clazz;
-            try {
-                clazz = (Class<Job>) Class.forName(jobClassName);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            Class<Job> clazz = Reflect.on(jobClassName).get();
             JobDetail job = new JobDetail(jobClassName, jobClassName, clazz);
             CronTrigger trigger = null;
             try {
                 trigger = new CronTrigger(jobClassName, jobClassName, jobCronExp);
             } catch (ParseException e) {
-                throw new RuntimeException("CronExp Error", e);
+                Throwables.propagate(e);
             }
             Date ft = null;
             try {
                 ft = sched.scheduleJob(job, trigger);
                 sched.start();
             } catch (SchedulerException e) {
-                throw new RuntimeException("scheduler start error", e);
+                Throwables.propagate(e);
             }
             logger.debug(job.getKey() + " has been scheduled to run at: " + ft + " and repeat based on expression: "
                     + trigger.getCronExpression());
@@ -101,7 +97,7 @@ public class QuartzPlugin implements IPlugin {
         try {
             properties.load(is);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Throwables.propagate(e);
         }
         logger.debug("------------load Propteries---------------");
         logger.debug(properties.toString());
@@ -113,8 +109,7 @@ public class QuartzPlugin implements IPlugin {
         try {
             sched.shutdown();
         } catch (SchedulerException e) {
-            e.printStackTrace();
-            return false;
+            Throwables.propagate(e);
         }
         return true;
     }

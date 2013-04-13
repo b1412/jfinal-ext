@@ -9,11 +9,7 @@ public class SqlInXmlPlugin implements IPlugin {
 
     @Override
     public boolean start() {
-        try {
-            SqlKit.init();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        SqlKit.init();
         return true;
     }
 

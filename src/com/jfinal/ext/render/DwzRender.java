@@ -69,11 +69,14 @@ public class DwzRender extends Render {
     @Override
     public void render() {
         PrintWriter writer = null;
-        String dwz = "\"statusCode\":\"{0}\",\"message\":\"{1}\",\"navTabId\":\"{2}\",\"rel\":\"{3}\",\"callbackType\":\"{4}\","
-                + "\"forwardUrl\":\"{5}\",\"confirmMsg\":\"{6}\"";
-        dwz = "{\n" + MessageFormat.format(dwz, statusCode, message, navTabId, rel, callbackType, forwardUrl, confirmMsg) + "\n}";
+        String dwz = "\"statusCode\":\"{0}\",\"message\":\"{1}\",\"navTabId\":\"{2}\",\"rel\":\"{3}\","
+                + "\"callbackType\":\"{4}\",\"forwardUrl\":\"{5}\",\"confirmMsg\":\"{6}\"";
+        dwz = "{\n"
+                + MessageFormat.format(dwz, statusCode, message, navTabId, rel, callbackType, forwardUrl, confirmMsg)
+                + "\n}";
         try {
-            response.setHeader("Pragma", "no-cache"); // HTTP/1.0 caches might not implement Cache-Control and might only implement Pragma:
+            response.setHeader("Pragma", "no-cache"); // HTTP/1.0 caches might not implement Cache-Control and might
+                                                      // only implement Pragma:
                                                       // no-cache
             response.setHeader("Cache-Control", "no-cache");
             response.setDateHeader("Expires", 0);

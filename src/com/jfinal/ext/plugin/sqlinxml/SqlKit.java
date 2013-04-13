@@ -5,15 +5,12 @@ import java.io.FileFilter;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
+import com.jfinal.ext.kit.JaxbKit;
 import com.jfinal.log.Logger;
 
 public class SqlKit {
 
-    protected static final  Logger LOG = Logger.getLogger(SqlKit.class);
+    protected static final Logger LOG = Logger.getLogger(SqlKit.class);
 
     private static Map<String, String> sqlMap;
 
@@ -42,15 +39,7 @@ public class SqlKit {
             }
         });
         for (File xmlfile : files) {
-            SqlGroup group = null;
-            try {
-                JAXBContext context = JAXBContext.newInstance(SqlGroup.class);
-                Unmarshaller unmarshaller = context.createUnmarshaller();
-                group = (SqlGroup) unmarshaller.unmarshal(xmlfile);
-            } catch (JAXBException e) {
-                LOG.error(e.getMessage(), e);
-                continue;
-            }
+            SqlGroup group = JaxbKit.unmarshal(xmlfile, SqlGroup.class);
             String name = group.name;
             if (name == null || name.trim().equals("")) {
                 name = xmlfile.getName();
