@@ -1,3 +1,4 @@
+
 #+TITLE:     JFinal-Ext
 #+AUTHOR:    Kid Zhou
 #+EMAIL:     zhouleib1412@gmail.com
@@ -10,7 +11,8 @@
 #+LATEX_CLASS: cn-article
 
 
-Jfinal-ext是对java极速web框架jfinal (https://github.com/jfinal/jfinal) 的一个补充。
+Jfinal-ext是对java极速web框架jfinal (https://github.com/jfinal/jfinal)
+的功能扩展
 使用手册 https://github.com/b1412/jfinal-ext/blob/master/doc/doc.org
 *  Plugin扩展
 ** 自定绑定表 AutoTableBindPlugin 
@@ -74,12 +76,12 @@ b.enable=false
 
 ** MongodbPlugin
   
-* Render扩展
+*  Render扩展
 ** DwzRender
-** PoiRender
-通过list数据生成excel,支持的数据类型为map ,record , model。
-** JxlsRender
-通过list数据生成excel,支持的数据类型为map ,record , model。
+** excel支持
+   通过list数据生成excel,支持的数据类型为map ,record , model。
+*** PoiRender
+*** JxlsRender
 ** AmChartsRender
 ** FreeMarkerXMLRender
 利用freemaker生成xml

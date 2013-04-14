@@ -332,18 +332,12 @@ MongoKit.updateFirst("sns", src, desc); //只能修改符合条件的第一条�
 	}
 #+END_SRC
 
-** ExcelRender
-<<<<<<< HEAD
-通过list数据生成excel,支持的数据类型为map ,record , model。
-** CsvRender
-通过list数据生成excel,支持的数据类型为map ,record , model。
-=======
-
+** JxlsRender
    通过list数据生成excel,支持的数据类型为map ,record , model。
-
+** PoiRender
+   通过list数据生成excel,支持的数据类型为map ,record , model。
 ** CsvRender
    通过list数据生成csv,支持的数据类型为map ,record , model。
->>>>>>> master
 ** AmChartsRender
 新增AmChartsRener,对AmCharts报表工具进行了简单的封装
 
@@ -449,7 +443,6 @@ MongoKit.updateFirst("sns", src, desc); //只能修改符合条件的第一条�
 
 
 
-
 * Routes扩展
  
 ** 自动注册Route AutoBindRoutes
@@ -478,7 +471,6 @@ MongoKit.updateFirst("sns", src, desc); //只能修改符合条件的第一条�
     | controllerKey | 访问某个 Controller 所需要的一个字符串 |
     | viewPath      | Controller 返回的视图的相对路径        |
   
-
 * eclipse代码片段
  将jfinal-templates.xml导入eclipse的Preferences-java-Editor-Templates
 
