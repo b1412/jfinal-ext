@@ -1,4 +1,4 @@
-package com.jfinal.ext.render.dwz;
+package com.jfinal.ext.interceptor;
 
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
@@ -7,11 +7,8 @@ import com.jfinal.config.JFinalConfig;
 import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
 import com.jfinal.core.JFinal;
-import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
-import com.jfinal.plugin.activerecord.tx.TxByRegex;
-import com.jfinal.plugin.druid.DruidPlugin;
 
-public class DwzConfig extends JFinalConfig {
+public class Config extends JFinalConfig {
 
     @Override
     public void configConstant(Constants me) {
@@ -22,7 +19,7 @@ public class DwzConfig extends JFinalConfig {
 
     @Override
     public void configRoute(Routes me) {
-        me.add("/dwz", DwzController.class, "WEB-INF/");
+        me.add("/", TestController.class);
     }
 
     @Override
@@ -31,7 +28,14 @@ public class DwzConfig extends JFinalConfig {
 
     @Override
     public void configInterceptor(Interceptors me) {
-        me.add(new TxByRegex(".*.save"));
+        ExceptionInterceptor interceptor = new ExceptionInterceptor();
+        interceptor.addMapping(IllegalArgumentException.class, "/exceptions/a.html");
+        interceptor.addMapping(IllegalStateException.class, "/exceptions/b.html");
+        interceptor.setDefault(new ErrorRender("测试系统"));
+        I18nInterceptor i18nInterceptor = new I18nInterceptor();
+        i18nInterceptor.setDefaultCountry("");
+        me.add(i18nInterceptor);
+        me.add(interceptor);
     }
 
     @Override
@@ -41,6 +45,9 @@ public class DwzConfig extends JFinalConfig {
 
     public static void main(String[] args) {
         JFinal.start("WebRoot", 9090, "/", 5);
+        // System.out.println(new Locale("cn"));
+        // System.out.println(new Locale("tw"));
+        // System.out.println(new Locale("en"));
     }
 
 }

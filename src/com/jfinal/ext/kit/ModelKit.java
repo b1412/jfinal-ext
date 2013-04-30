@@ -21,14 +21,15 @@ public class ModelKit {
     }
 
     @SuppressWarnings("rawtypes")
-    public static void set(Model model, Object... attrsAndValues) {
+    public static Model set(Model model, Object... attrsAndValues) {
         int length = attrsAndValues.length;
-        Preconditions.checkArgument(length % 2 != 0, "attrsAndValues length must be even number", length);
+        Preconditions.checkArgument(length % 2 == 0, "attrsAndValues length must be even number", length);
         for (int i = 0; i < length; i = i + 2) {
             Object attr = attrsAndValues[i];
             Preconditions.checkArgument(!(attr instanceof String), "the odd number of attrsAndValues  must be String");
             model.set((String) attr, attrsAndValues[i + 1]);
         }
+        return model;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

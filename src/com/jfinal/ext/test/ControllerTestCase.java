@@ -3,7 +3,6 @@ package com.jfinal.ext.test;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.lang.reflect.Method;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -41,6 +40,18 @@ public class ControllerTestCase {
 
     public static String invoke(String url, File reqFile) {
         return invoke(url, reqFile, null);
+    }
+
+    public static String invoke(String url, String body, File respFile) {
+        String resp = invoke(url, body);
+        if (respFile != null) {
+            try {
+                Files.write(resp, respFile, Charsets.UTF_8);
+            } catch (IOException e) {
+                Throwables.propagate(e);
+            }
+        }
+        return resp;
     }
 
     public static String invoke(String url, File reqFile, File respFile) {
@@ -98,10 +109,7 @@ public class ControllerTestCase {
         return request.getAttribute(key);
     }
 
-    private static void initConfig(Class<JFinal> clazz, JFinal me, ServletContext servletContext, JFinalConfig config)
-            throws Exception {
-        Method method = clazz.getDeclaredMethod("init", JFinalConfig.class, ServletContext.class);
-        method.setAccessible(true);
-        method.invoke(me, config, servletContext);
+    private static void initConfig(Class<JFinal> clazz, JFinal me, ServletContext servletContext, JFinalConfig config) {
+        Reflect.on(me).call("init", config, servletContext);
     }
 }

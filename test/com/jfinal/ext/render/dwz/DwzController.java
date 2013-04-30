@@ -1,6 +1,8 @@
 package com.jfinal.ext.render.dwz;
 
+import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
+import com.jfinal.ext.interceptor.I18nInterceptor;
 import com.jfinal.ext.kit.JfinalKit;
 import com.jfinal.ext.render.DwzRender;
 
@@ -12,13 +14,15 @@ public class DwzController extends Controller {
         user.save();
     }
 
+    @Before(I18nInterceptor.class)
     public void delete() {
         int id = getParaToInt(0);
-        if (id % 2 == 0) {
-            render(DwzRender.success());
-        } else {
-            render(DwzRender.error("该记录已经删除"));
-        }
+//        if (id % 2 == 0) {
+//            render(DwzRender.success());
+//        } else {
+//            render(DwzRender.error("该记录已经删除"));
+//        }
+        render("list.html");
     }
 
     public void restart() {

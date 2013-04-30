@@ -80,7 +80,8 @@ public class AutoBindRoutes extends Routes {
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void config() {
-        List<Class<? extends Controller>> controllerClasses = ClassSearcher.findInClasspathAndJars(Controller.class, includeJars);
+        List<Class<? extends Controller>> controllerClasses = ClassSearcher.findInClasspathAndJars(Controller.class,
+                includeJars);
         ControllerBind controllerBind = null;
         for (Class controller : controllerClasses) {
             if (excludeClasses.contains(controller)) {
@@ -105,7 +106,7 @@ public class AutoBindRoutes extends Routes {
     }
 
     private String controllerKey(Class<Controller> clazz) {
-        Preconditions.checkArgument(!clazz.getSimpleName().endsWith(suffix),
+        Preconditions.checkArgument(clazz.getSimpleName().endsWith(suffix),
                 " does not has a ControllerBind annotation and it,s name is not end with " + suffix);
         String controllerKey = "/" + StringKit.firstCharToLowerCase(clazz.getSimpleName());
         controllerKey = controllerKey.substring(0, controllerKey.indexOf("Controller"));
@@ -136,7 +137,6 @@ public class AutoBindRoutes extends Routes {
         this.includeAllJarsInLib = includeAllJarsInLib;
     }
 
-
     public void setAutoScan(boolean autoScan) {
         this.autoScan = autoScan;
     }
@@ -148,6 +148,5 @@ public class AutoBindRoutes extends Routes {
     public void setSuffix(String suffix) {
         this.suffix = suffix;
     }
-
 
 }
