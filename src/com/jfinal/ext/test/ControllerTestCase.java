@@ -3,78 +3,83 @@ package com.jfinal.ext.test;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 
 import javax.servlet.ServletContext;
 
 import org.joor.Reflect;
+import org.junit.Before;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.jfinal.config.JFinalConfig;
 import com.jfinal.core.JFinal;
 import com.jfinal.handler.Handler;
 import com.jfinal.log.Logger;
 
-public class ControllerTestCase {
-
+public abstract class ControllerTestCase<T extends JFinalConfig> {
+    private static boolean configStart = false;
     protected static final Logger LOG = Logger.getLogger(ControllerTestCase.class);
     protected static ServletContext servletContext = new MockServletContext();;
     protected static MockHttpRequest request;
     protected static MockHttpResponse response;
     protected static Handler handler;
+    private String actionUrl;
+    private String bodyData;
+    private File bodyFile;
+    private File responseFile;
+    private Class<? extends JFinalConfig> config;
 
-    public static void start(Class<? extends JFinalConfig> configClass) throws Exception {
-        Class<JFinal> clazz = JFinal.class;
-        JFinal me = JFinal.me();
-        initConfig(clazz, me, servletContext, configClass.newInstance());
-        handler = Reflect.on(me).get("handler");
+    @SuppressWarnings("unchecked")
+    public ControllerTestCase() {
+        Type genericSuperclass = getClass().getGenericSuperclass();
+        if (!(genericSuperclass instanceof ParameterizedType)) {
+            throw new RuntimeException("Your ControllerTestCase must have genericType");
+        }
+        config = (Class<? extends JFinalConfig>) ((ParameterizedType) genericSuperclass).getActualTypeArguments()[0];
     }
 
-    public static String invoke(String url) throws Exception {
-        return invoke(url, "");
+    @Before
+    public void init() throws Exception {
+        start(config);
     }
 
-    public static String invoke(String url, File reqFile) {
-        return invoke(url, reqFile, null);
+    public ControllerTestCase<T> use(String actionUrl) {
+        this.actionUrl = actionUrl;
+        return this;
     }
 
-    public static String invoke(String url, String body, File respFile) {
-        String resp = invoke(url, body);
-        if (respFile != null) {
+    public ControllerTestCase<T> post(String bodyData) {
+        this.bodyData = bodyData;
+        return this;
+    }
+
+    public ControllerTestCase<T> post(File bodyFile) {
+        this.bodyFile = bodyFile;
+        return this;
+    }
+
+    public ControllerTestCase<T> writeTo(File responseFile) {
+        this.responseFile = responseFile;
+        return this;
+    }
+
+    public String invoke() {
+        if (bodyFile != null) {
+            List<String> req = null;
             try {
-                Files.write(resp, respFile, Charsets.UTF_8);
+                req = Files.readLines(bodyFile, Charsets.UTF_8);
             } catch (IOException e) {
                 Throwables.propagate(e);
             }
+            bodyData = Joiner.on("").join(req);
         }
-        return resp;
-    }
-
-    public static String invoke(String url, File reqFile, File respFile) {
-        List<String> req = Lists.newArrayList();
-        try {
-            req = Files.readLines(reqFile, Charsets.UTF_8);
-        } catch (IOException e) {
-            Throwables.propagate(e);
-        }
-        String resp = invoke(url, Joiner.on("").join(req));
-        if (respFile != null) {
-            try {
-                Files.write(resp, respFile, Charsets.UTF_8);
-            } catch (IOException e) {
-                Throwables.propagate(e);
-            }
-        }
-        return resp;
-    }
-
-    public static String invoke(String url, String body) {
         StringWriter resp = new StringWriter();
-        request = new MockHttpRequest(body);
+        request = new MockHttpRequest(bodyData);
         response = new MockHttpResponse(resp);
         if (handler == null) {
             System.err.println("请在ControllerTestCase的子类里面添加如下方法，YourConfig为你想测试的Config");
@@ -84,11 +89,30 @@ public class ControllerTestCase {
             System.err.println("    }");
             return "";
         }
-        Reflect.on(handler).call("handle", getTarget(url, request), request, response, new boolean[] { true });
-        return resp.toString();
+        Reflect.on(handler).call("handle", getTarget(actionUrl, request), request, response, new boolean[] { true });
+        String response = resp.toString();
+        if (responseFile != null) {
+            try {
+                Files.write(response, responseFile, Charsets.UTF_8);
+            } catch (IOException e) {
+                Throwables.propagate(e);
+            }
+        }
+        return response;
     }
 
-    private static String getTarget(String url, MockHttpRequest request) {
+    public static void start(Class<? extends JFinalConfig> configClass) throws Exception {
+        if (configStart == true) {
+            return;
+        }
+        Class<JFinal> clazz = JFinal.class;
+        JFinal me = JFinal.me();
+        initConfig(clazz, me, servletContext, configClass.newInstance());
+        handler = Reflect.on(me).get("handler");
+        configStart = true;
+    }
+
+    private String getTarget(String url, MockHttpRequest request) {
         String target = url;
         if (url.contains("?")) {
             target = url.substring(0, url.indexOf("?"));
@@ -105,11 +129,12 @@ public class ControllerTestCase {
 
     }
 
-    public static Object findAttrAfterInvoke(String key) {
+    public Object findAttrAfterInvoke(String key) {
         return request.getAttribute(key);
     }
 
     private static void initConfig(Class<JFinal> clazz, JFinal me, ServletContext servletContext, JFinalConfig config) {
         Reflect.on(me).call("init", config, servletContext);
     }
+
 }

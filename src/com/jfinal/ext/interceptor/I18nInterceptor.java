@@ -22,10 +22,6 @@ public class I18nInterceptor implements Interceptor {
     private static String excludeViewRegex;
 
     private Pattern pattern;
-    static {
-        Object actionMapping = Reflect.on(JFinal.me()).field("actionMapping").get();
-        System.out.println(actionMapping.getClass());
-    }
 
     @Override
     public void intercept(ActionInvocation ai) {
