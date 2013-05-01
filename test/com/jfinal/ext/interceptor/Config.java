@@ -20,6 +20,7 @@ public class Config extends JFinalConfig {
     @Override
     public void configRoute(Routes me) {
         me.add("/", TestController.class);
+        me.add("/p", Test2Controller.class);
     }
 
     @Override
@@ -28,14 +29,14 @@ public class Config extends JFinalConfig {
 
     @Override
     public void configInterceptor(Interceptors me) {
-        ExceptionInterceptor interceptor = new ExceptionInterceptor();
-        interceptor.addMapping(IllegalArgumentException.class, "/exceptions/a.html");
-        interceptor.addMapping(IllegalStateException.class, "/exceptions/b.html");
-        interceptor.setDefault(new ErrorRender("测试系统"));
+        ExceptionInterceptor exceptionInterceptor = new ExceptionInterceptor();
+        exceptionInterceptor.addMapping(IllegalArgumentException.class, "/exceptions/a.html");
+        exceptionInterceptor.addMapping(IllegalStateException.class, "exceptions/b.html");
+        exceptionInterceptor.setDefault(new ErrorRender("测试系统"));
         I18nInterceptor i18nInterceptor = new I18nInterceptor();
         i18nInterceptor.setDefaultCountry("");
         me.add(i18nInterceptor);
-        me.add(interceptor);
+        me.add(exceptionInterceptor);
     }
 
     @Override

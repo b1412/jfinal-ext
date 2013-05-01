@@ -8,6 +8,7 @@ import org.joor.Reflect;
 import com.jfinal.aop.Interceptor;
 import com.jfinal.core.ActionInvocation;
 import com.jfinal.core.Controller;
+import com.jfinal.core.JFinal;
 import com.jfinal.kit.StringKit;
 import com.jfinal.render.Render;
 
@@ -21,6 +22,10 @@ public class I18nInterceptor implements Interceptor {
     private static String excludeViewRegex;
 
     private Pattern pattern;
+    static {
+        Object actionMapping = Reflect.on(JFinal.me()).field("actionMapping").get();
+        System.out.println(actionMapping.getClass());
+    }
 
     @Override
     public void intercept(ActionInvocation ai) {
@@ -35,15 +40,18 @@ public class I18nInterceptor implements Interceptor {
         controller.setAttr(localePara, locale);
         ai.invoke();
         Render render = controller.getRender();
-        String view = Reflect.on(render).get("view");
-        if (pattern != null && pattern.matcher(view).matches()) {
+        String view = render.getView();
+        if (StringKit.isBlank(view) || (pattern != null && pattern.matcher(view).matches())) {
             return;
         }
         String prefix = language;
         if (StringKit.notBlank(country)) {
             prefix += "_" + country;
         }
-        Reflect.on(render).set("view", prefix + "/" + view);
+        if (!view.startsWith("/")) {
+            prefix = prefix + "/";
+        }
+        controller.render(prefix + view);
     }
 
     public String getDefaultLanguage() {
@@ -93,5 +101,4 @@ public class I18nInterceptor implements Interceptor {
     public static void setExcludeViewRegex(String excludeViewRegex) {
         I18nInterceptor.excludeViewRegex = excludeViewRegex;
     }
-
 }

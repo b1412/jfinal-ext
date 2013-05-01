@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.jfinal.core.Controller;
 
-public class TestController extends Controller {
+public class Test2Controller extends Controller {
     public void a() {
         throw new IllegalArgumentException();
     }
