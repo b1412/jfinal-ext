@@ -20,7 +20,7 @@ public class Config extends JFinalConfig {
     @Override
     public void configRoute(Routes me) {
         me.add("/", TestController.class);
-        me.add("/p", Test2Controller.class);
+        me.add("/p", Test2Controller.class); 
     }
 
     @Override

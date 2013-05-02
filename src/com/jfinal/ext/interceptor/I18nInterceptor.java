@@ -3,12 +3,9 @@ package com.jfinal.ext.interceptor;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-import org.joor.Reflect;
-
 import com.jfinal.aop.Interceptor;
 import com.jfinal.core.ActionInvocation;
 import com.jfinal.core.Controller;
-import com.jfinal.core.JFinal;
 import com.jfinal.kit.StringKit;
 import com.jfinal.render.Render;
 
@@ -19,7 +16,7 @@ public class I18nInterceptor implements Interceptor {
     private String countryPara = "country";
     private String localePara = "locale";
 
-    private static String excludeViewRegex;
+    private String excludeViewRegex;
 
     private Pattern pattern;
 
@@ -29,13 +26,20 @@ public class I18nInterceptor implements Interceptor {
             pattern = Pattern.compile(excludeViewRegex);
         }
         Controller controller = ai.getController();
-        String language = controller.getPara(languagePara, defaultLanguage);
-        String country = controller.getPara(countryPara, defaultCountry);
+        String language = controller.getAttr(languagePara);
+        if (StringKit.isBlank(language)) {
+            language = controller.getPara(languagePara, defaultLanguage);
+        }
+        String country = controller.getAttr(countryPara);
+        if (StringKit.isBlank(language)) {
+            country = controller.getPara(countryPara, defaultCountry);
+        }
         Locale locale = new Locale(language, country);
         controller.setLocaleToCookie(locale);
         controller.setAttr(localePara, locale);
         ai.invoke();
         Render render = controller.getRender();
+
         String view = render.getView();
         if (StringKit.isBlank(view) || (pattern != null && pattern.matcher(view).matches())) {
             return;
@@ -44,10 +48,10 @@ public class I18nInterceptor implements Interceptor {
         if (StringKit.notBlank(country)) {
             prefix += "_" + country;
         }
-        if (!view.startsWith("/")) {
-            prefix = prefix + "/";
+        if (view.startsWith("/")) {
+            view = view.substring(1, view.length());
         }
-        controller.render(prefix + view);
+        controller.render("/" + prefix + ai.getViewPath() + view);
     }
 
     public String getDefaultLanguage() {
@@ -56,6 +60,7 @@ public class I18nInterceptor implements Interceptor {
 
     public void setDefaultLanguage(String defaultLanguage) {
         this.defaultLanguage = defaultLanguage;
+
     }
 
     public String getDefaultCountry() {
@@ -90,11 +95,11 @@ public class I18nInterceptor implements Interceptor {
         this.localePara = localePara;
     }
 
-    public static String getExcludeViewRegex() {
+    public String getExcludeViewRegex() {
         return excludeViewRegex;
     }
 
-    public static void setExcludeViewRegex(String excludeViewRegex) {
-        I18nInterceptor.excludeViewRegex = excludeViewRegex;
+    public void setExcludeViewRegex(String excludeViewRegex) {
+        this.excludeViewRegex = excludeViewRegex;
     }
 }

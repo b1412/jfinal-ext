@@ -12,7 +12,8 @@ public class PostTestCase extends ControllerTestCase<Config> {
         String url = "/post";
         String filePath = Thread.currentThread().getContextClassLoader().getResource("dataReq.xml").getFile();
         String fileResp = "/home/kid/git/jfinal-ext/resource/dataResp.xml";
-        use(url).post("").post(new File(filePath)).writeTo(new File(fileResp)).invoke();
+        String resp = use(url).post(new File(filePath)).writeTo(new File(fileResp)).invoke();
+        System.out.println(resp);
     }
 
     @Test

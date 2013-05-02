@@ -49,7 +49,7 @@ public class ConfigKit {
                 }
             });
             for (File file : propertiesFiles) {
-                String fileName = file.getAbsolutePath();
+                String fileName = file.getName();
                 LOG.debug("fileName:" + fileName);
                 if (fileName.endsWith("-test." + ConfigPlugin.getSuffix())) {
                     continue;
