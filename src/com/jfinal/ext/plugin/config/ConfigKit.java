@@ -25,7 +25,7 @@ public class ConfigKit {
 
     private static Map<String, String> testMap = Maps.newHashMap();
 
-    private static Map<String, Long> lastmodifies = new HashMap<String, Long>();
+    private static Map<String, Long> lastmodifies = Maps.newHashMap();
 
     private static boolean reload = true;
 
@@ -65,7 +65,11 @@ public class ConfigKit {
                 }
                 lastmodifies.put(fileName, new File(fileName).lastModified());
                 map = ResourceKit.readProperties(fileName);
-                testMap = ResourceKit.readProperties(testFileName(fileName));
+                try {
+                    testMap = ResourceKit.readProperties(testFileName(fileName));
+                } catch (IllegalArgumentException e) {
+                    LOG.info(e.getMessage());
+                }
             }
         }
         LOG.debug("map" + map);

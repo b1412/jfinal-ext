@@ -14,6 +14,7 @@ import org.junit.Before;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 import com.jfinal.config.JFinalConfig;
@@ -22,7 +23,7 @@ import com.jfinal.handler.Handler;
 import com.jfinal.log.Logger;
 
 public abstract class ControllerTestCase<T extends JFinalConfig> {
-    private static boolean configStart = false;
+    private static boolean configStarted = false;
     protected static final Logger LOG = Logger.getLogger(ControllerTestCase.class);
     protected static ServletContext servletContext = new MockServletContext();;
     protected static MockHttpRequest request;
@@ -37,9 +38,7 @@ public abstract class ControllerTestCase<T extends JFinalConfig> {
     @SuppressWarnings("unchecked")
     public ControllerTestCase() {
         Type genericSuperclass = getClass().getGenericSuperclass();
-        if (!(genericSuperclass instanceof ParameterizedType)) {
-            throw new RuntimeException("Your ControllerTestCase must have genericType");
-        }
+        Preconditions.checkArgument(genericSuperclass instanceof ParameterizedType,"Your ControllerTestCase must have genericType");
         config = (Class<? extends JFinalConfig>) ((ParameterizedType) genericSuperclass).getActualTypeArguments()[0];
     }
 
@@ -102,14 +101,14 @@ public abstract class ControllerTestCase<T extends JFinalConfig> {
     }
 
     public static void start(Class<? extends JFinalConfig> configClass) throws Exception {
-        if (configStart == true) {
+        if (configStarted == true) {
             return;
         }
         Class<JFinal> clazz = JFinal.class;
         JFinal me = JFinal.me();
         initConfig(clazz, me, servletContext, configClass.newInstance());
         handler = Reflect.on(me).get("handler");
-        configStart = true;
+        configStarted = true;
     }
 
     private String getTarget(String url, MockHttpRequest request) {

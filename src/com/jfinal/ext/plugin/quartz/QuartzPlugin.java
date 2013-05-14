@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.Properties;
 
 import org.joor.Reflect;
@@ -17,13 +18,15 @@ import org.quartz.SchedulerFactory;
 import org.quartz.impl.StdSchedulerFactory;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.Maps;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.IPlugin;
 
 public class QuartzPlugin implements IPlugin {
     private static final String JOB = "job";
 
-    protected final Logger logger = Logger.getLogger(getClass());
+    private final Logger logger = Logger.getLogger(getClass());
+    private Map<String, Job> jobs = Maps.newHashMap();
 
     private SchedulerFactory sf;
     private Scheduler sched;

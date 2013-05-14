@@ -7,6 +7,7 @@ import com.jfinal.config.JFinalConfig;
 import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
 import com.jfinal.core.JFinal;
+import com.jfinal.render.ViewType;
 
 public class Config extends JFinalConfig {
 
@@ -15,12 +16,12 @@ public class Config extends JFinalConfig {
         me.setEncoding("utf-8");
         me.setDevMode(true);
         loadPropertyFile("classes/config.txt");
+        me.setViewType(ViewType.JSP);
     }
 
     @Override
     public void configRoute(Routes me) {
-        me.add("/", TestController.class);
-        me.add("/p", Test2Controller.class); 
+        me.add("/p", TestController.class);
     }
 
     @Override
