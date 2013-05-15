@@ -1,7 +1,7 @@
 #+TITLE:     JFinal-Ext文档(v2.1)
 #+AUTHOR:    Kid Zhou
 #+EMAIL:     zhouleib1412@gmail.com.cn
-#+DATE:      2013-01-04
+#+DATE:      2013-05-15
 #+DESCRIPTION: 
 #+KEYWORDS: 
 #+LANGUAGE:  zh_CN
@@ -10,42 +10,37 @@
 #+LATEX_CLASS: cn-article
 
 * JFinal测试框架
-  在非web环境下对jfinal组件进行单元测试
-** Controller测试
-
-*** 使用说明
-
-  所有对Controller的测试必须继承ControllerTestCase,此类中方法说明如下
-  | start               | 初始化测试用的Config         |
-  | invoke              | 调用的url                   |
-  | findAttrAfterInvoke | action调用之后getAttr的值    |
- 
-*** 示例代码 
+  在非web环境下对jfinal Controller 进行单元测试
+** 使用说明
+ 所有对Controller的测试必须继承ControllerTestCase,此类中方法说明如下
+ | use                 | 需要调用的url               |
+ | post                | post数据包,支持String和File |
+ | writeTo             | response数据写入文件        |
+ | invoke              | 调用url                     |
+ | findAttrAfterInvoke | action调用之后getAttr的值   |
+** 示例代码 
 #+BEGIN_SRC java
-  public class TestRoute extends ControllerTestCase {
-	@BeforeClass
-	public static void init() throws Exception{
-		start(new Config());
-	}
-	@Test
-	public void testAController() throws Exception {
-		invoke("/aa");
-		assertEquals("zhoulei", findAttrAfterInvoke("name"));
-		assertEquals(24, findAttrAfterInvoke("age"));
-	}
-	@Test
-	public void testBController() throws Exception {
-		invoke("/bb");
-		assertEquals("zhoulei", findAttrAfterInvoke("name"));
-		assertEquals(24, findAttrAfterInvoke("age"));
-	}
+public class PostTestCase extends ControllerTestCase<Config> {
 
+    @Test
+    public void line() throws Exception {
+        String url = "/post";
+        String filePath = Thread.currentThread().getContextClassLoader().getResource("dataReq.xml").getFile();
+        String fileResp = "/home/kid/git/jfinal-ext/resource/dataResp.xml";
+        String resp = use(url).post(new File(filePath)).writeTo(new File(fileResp)).invoke();
+        System.out.println(resp);
+    }
 
+    @Test
+    public void test3() {
+        String url = "/post/1?age=1&age=2&name=2";
+        String body = "<root>中文</root>";
+        use(url).post(body).invoke();
+    }
 }
 
 #+END_SRC
     
-
 * Plugin扩展
 ** 自定绑定表 AutoTableBindPlugin 
 *** 简介
@@ -103,7 +98,6 @@
    atbp.addExcludeClass(Class<? extends Model> clazz)
  #+END_SRC
   	
-
 ** SqlInXmlPlugin 
 *** 简介
     类似ibatis的在xml中管理sql.主要用于复杂的sql管理或者有dba的开发团
@@ -216,6 +210,8 @@ a和b为任务的名字，仅作为标识，无其他用处。
 | 任务名字.cron   | 调度任务的cron表达式 |
 | 任务名字.enable | 调度任务是否启用     |
        
+*** 如何在代码中添加任务
+    在plugin上调用add方法
 ** ConfigPlugin
    分优先级加载配置文件
    在团队开发中如果自己有测试配置需要长期存在但是又不需要提交中心库的时候 
@@ -250,9 +246,6 @@ name=test
 		Assert.assertEquals(1,ConfigKit.getInt("age"));
 	}
 #+END_SRC
-
-
-
 
 ** MongodbPlugin
 *** 简介
@@ -441,10 +434,7 @@ MongoKit.updateFirst("sns", src, desc); //只能修改符合条件的第一条�
 ** FreeMarkerXMLRender
 利用freemaker生成xml
 
-
-
 * Routes扩展
- 
 ** 自动注册Route AutoBindRoutes
 
 *** 简介
@@ -471,9 +461,33 @@ MongoKit.updateFirst("sns", src, desc); //只能修改符合条件的第一条�
     | controllerKey | 访问某个 Controller 所需要的一个字符串 |
     | viewPath      | Controller 返回的视图的相对路径        |
   
+* Interceptor扩展
+** ExceptionInterceptor统一异常处理
+*** 简介
+    对Controller抛出的异常按照类型进行定制化处理
+*** 示例代码
+#+BEGIN_SRC java
+    ExceptionInterceptor exceptionInterceptor = new ExceptionInterceptor();
+    exceptionInterceptor.addMapping(IllegalArgumentException.class, "/exceptions/a.html");
+    exceptionInterceptor.addMapping(IllegalStateException.class, "exceptions/b.html");
+    exceptionInterceptor.setDefault(new ErrorRender("测试系统"));
+#+END_SRC
+   addMapping 设置一个异常类型对应的View,可以是一个视图路径，也可以是
+   一个ExceptionRender的子类，类似Controller的 render(String) 和
+   render(Render)方法
+   setDefault是当抛出的异常在mapping中没有找到的时候调用的默认的异常处
+   理方式。
+** I18nInterceptor 国际化拦截器
+*** 简介
+    简化国际化页面的render处理。
+*** render策略 
+   会在原有的render路径上加上当前请求参数中的country和language。
+   例如（/p?language=zh&country=CN）
+| 原始view | country | language | 改变之后的view      |
+| /p       | zh      | CN       | /zh_CN/p/index.html   |
+country 默认值为zh language默认值为CN
 * eclipse代码片段
  将jfinal-templates.xml导入eclipse的Preferences-java-Editor-Templates
-
 ** jfl
    在任何类中使用，生成logger
   

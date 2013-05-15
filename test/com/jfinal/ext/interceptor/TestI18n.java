@@ -16,6 +16,7 @@ public class TestI18n extends ControllerTestCase<Config> {
     @Test
     public void test3(){
         use("/p?language=en").invoke();
+
     }
     @Test
     public void test4(){

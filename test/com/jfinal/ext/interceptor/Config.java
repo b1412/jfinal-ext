@@ -35,7 +35,6 @@ public class Config extends JFinalConfig {
         exceptionInterceptor.addMapping(IllegalStateException.class, "exceptions/b.html");
         exceptionInterceptor.setDefault(new ErrorRender("测试系统"));
         I18nInterceptor i18nInterceptor = new I18nInterceptor();
-        i18nInterceptor.setDefaultCountry("");
         me.add(i18nInterceptor);
         me.add(exceptionInterceptor);
     }
