@@ -1,0 +1,748 @@
+% Created 2013-05-15 三 21:57
+
+\documentclass{scrartcl}
+\usepackage{hyperref}
+\usepackage{color}
+\usepackage[hyperref,x11names,usenames,dvipsnames]{xcolor}
+\hypersetup{colorlinks=true,linkcolor=BlueViolet}
+\usepackage{minted}
+\usepackage[top=1in,bottom=1in,left=0.8in,right=0.8in]{geometry}
+\usepackage[center,pagestyles]{titlesec}
+\usepackage{indentfirst}
+\usemintedstyle{emacs}
+\setlength{\parskip}{0.5\baselineskip}
+\setlength{\parindent}{0em}
+\titleformat{\section}{\Large\bfseries}{\S\,\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries}{\S\,\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\bfseries}{$\cdot$~\,\thesubsubsection}{0.5em}{}
+\newpagestyle{main}{
+\sethead{\small\S\,\thesection\quad\sectiontitle}{}{$\cdot$~\thepage~$\cdot$}
+\setfoot{}{}{}\headrule}
+\pagestyle{main}
+
+\usepackage{xeCJK}
+\setCJKmainfont[BoldFont=SimHei, ItalicFont=KaiTi]{SimSun}
+\setCJKmonofont[Scale=0.9]{SimSun}
+\setCJKfamilyfont{song}[BoldFont=SimHei]{SimSun}
+\setCJKfamilyfont{sf}[BoldFont=SimHei]{SimSun}
+\renewcommand{\contentsname}{目录}
+\renewcommand{\listfigurename}{插图目录}
+\renewcommand{\listtablename}{表格目录}
+\renewcommand{\refname}{参考文献}
+\renewcommand{\abstractname}{摘要}
+\renewcommand{\indexname}{索引}
+\renewcommand{\tablename}{表}
+\renewcommand{\figurename}{图}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\providecommand{\alert}[1]{\textbf{#1}}
+
+\title{JFinal-Ext文档(v2.1)}
+\author{Kid Zhou}
+\date{2013-05-15}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs Org-mode version 7.9.3f}}
+
+\begin{document}
+
+\maketitle
+
+\setcounter{tocdepth}{3}
+\tableofcontents
+\vspace*{1cm}
+
+\section{JFinal测试框架}
+\label{sec-1}
+
+  在非web环境下对jfinal Controller 进行单元测试
+\subsection{使用说明}
+\label{sec-1-1}
+
+ 所有对Controller的测试必须继承ControllerTestCase,此类中方法说明如下
+
+\begin{tabular}{ll}
+ use                  &  需要调用的url                \\
+ post                 &  post数据包,支持String和File  \\
+ writeTo              &  response数据写入文件         \\
+ invoke               &  调用url                      \\
+ findAttrAfterInvoke  &  action调用之后getAttr的值    \\
+\end{tabular}
+\subsection{示例代码}
+\label{sec-1-2}
+
+
+\begin{minted}[]{java}
+public class PostTestCase extends ControllerTestCase<Config> {
+
+    @Test
+    public void line() throws Exception {
+        String url = "/post";
+        String filePath = Thread.currentThread().getContextClassLoader().getResource("dataReq.xml").getFile();
+        String fileResp = "/home/kid/git/jfinal-ext/resource/dataResp.xml";
+        String resp = use(url).post(new File(filePath)).writeTo(new File(fileResp)).invoke();
+        System.out.println(resp);
+    }
+
+    @Test
+    public void test3() {
+        String url = "/post/1?age=1&age=2&name=2";
+        String body = "<root>中文</root>";
+        use(url).post(body).invoke();
+    }
+}
+\end{minted}
+    
+\section{Plugin扩展}
+\label{sec-2}
+\subsection{自定绑定表 AutoTableBindPlugin}
+\label{sec-2-1}
+\subsubsection{简介}
+\label{sec-2-1-1}
+
+   扫描clsspath和lib中继承了model的类自动注册，可选择不同的命名规则自定映射表名，也可以在每一个model上用注解指定表名
+\subsubsection{AutoTableBindPlugin使用示例}
+\label{sec-2-1-2}
+\begin{itemize}
+
+\item 基本使用\\
+\label{sec-2-1-2-1}%
+AutoTableBindPlugin 继承自ActivitiRecordPlugin，所以如果你使用
+      AutoTableBindPlugin则不用再使用ActivitiRecordPlugin,其他需要在
+      ActiviRecordPlugin中的设置都在此plugin中设置，比如方言，大小写不敏
+      感等..
+
+\begin{minted}[]{java}
+DruidPlugin druid = new DruidPlugin("jdbc:mysql://127.0.0.1/jfinal_demo", "root", "root");
+AutoTableBindPlugin atbp = new AutoTableBindPlugin(druid);
+\end{minted}
+   
+  \textbf{记住一定要在启动atbp之前启动连接池的plugin ***}  jar包扫描 
+      如果你需要载入jar包中的model，需要调用以下的api将jar包加入扫描
+
+\begin{minted}[]{java}
+atbp.addJar("modelInJar.jar");
+atbp.addJars("jar1,jar2");
+\end{minted}
+
+
+\item 表名风格INameStyle 配置\\
+\label{sec-2-1-2-3}%
+一个model自动绑定的表明默认是该类的simpleClassname，如果需要用其他
+   的命名风格，需要在构造函数中指定，如
+
+\begin{minted}[]{java}
+AutoTableBindPlugin atbp = new AutoTableBindPlugin(cp,SimpleNameStyles.LOWER);
+\end{minted}
+   
+   SimpleNameStyles 中已有的命名风格以及映射的表明如下表：
+
+
+\begin{tabular}{lllllll}
+               &  DEFAULT  &  \texttt{FIRST\_LOWER}  &  UP       &  LOWER    &  \texttt{UP\_UNDERLINE}  &  \texttt{LOWER\_UNDERLINE}  \\
+ DevInfo.java  &  DevInfo  &  devInfo                &  DEVINFO  &  devinfo  &  \texttt{DEV\_INFO}      &  \texttt{dev\_info}         \\
+\end{tabular}
+
+
+  
+   ParamNameStyles 含有构造参数的命名风格：
+
+\begin{tabular}{llllll}
+               &  module(test)            &  lowerModule(test)       &  upModule(test)          &  upUnderlineModule(test)   &  lowerUnderlineModule(test)  \\
+ DevInfo.java  &  \texttt{test\_DevInfo}  &  \texttt{test\_devinfo}  &  \texttt{test\_DEVINFO}  &  \texttt{test\_DEV\_INFO}  &  \texttt{test\_dev\_info}    \\
+\end{tabular}
+
+
+ 
+
+\item TableName 配置\\
+\label{sec-2-1-2-4}%
+如果有Model到表的映射命名不符合规范需要单独配置，则在Model上加上
+      TableName注解，属性说明如下：
+
+\begin{tabular}{ll}
+ tableName  &  表名    \\
+ pkName     &  外键名  \\
+\end{tabular}
+
+
+   
+
+\item 关闭自动扫描\\
+\label{sec-2-1-2-5}%
+如果你只想用注解而不想让没有注解的model被自动注册，则如下使用
+
+\begin{minted}[]{java}
+atbp.setAutoScan(false);
+\end{minted}
+
+
+\item 忽略不想自动扫描的Model\\
+\label{sec-2-1-2-6}%
+如果你打开了自动扫描，但是又有不想要被扫描进去的,如通用的BaseModel
+
+\begin{minted}[]{java}
+atbp.addExcludeClass(Class<? extends Model> clazz)
+\end{minted}
+        
+\end{itemize} % ends low level
+\subsection{SqlInXmlPlugin}
+\label{sec-2-2}
+\subsubsection{简介}
+\label{sec-2-2-1}
+
+    类似ibatis的在xml中管理sql.主要用于复杂的sql管理或者有dba的开发团
+    队
+\subsubsection{使用示例}
+\label{sec-2-2-2}
+
+ 插件会扫描classpath根目录下以sql结尾的xml文件，如user-sql.xml，内容如
+ 下
+
+\begin{minted}[]{java}
+<sqlGroup name="blog" >
+      <sql id="findBlog">select * from blog</sql>
+      <sql id="findUser">select * from user</sql>
+</sqlGroup>
+\end{minted}
+插件会将name+id作为一个sql语句的唯一标识，
+在java中获取该sql的方法为
+SqlKit.sql(``blog.findBlog'')
+\subsection{jms消息处理 JmsPlugin}
+\label{sec-2-3}
+\subsubsection{消息接收}
+\label{sec-2-3-1}
+
+如果你需要处理某个消息号对应的消息，需要实现com.jfinal.plugin.jms.ReceiveResolver
+
+\begin{minted}[]{java}
+public class AReceiveResolver implements ReceiveResolver {
+
+        @Override
+        public void resolve(Serializable objectMessage) throws Exception {
+                System.out.println("AReceiveResolver");
+        }
+
+}
+\end{minted}
+\subsubsection{消息发送}
+\label{sec-2-3-2}
+
+\begin{itemize}
+\item 示例 JmsKit.sendQueue(``q1'', new M(), ``a'');
+\item 接口 public static boolean sendQueue(String queueName, Serializable
+\end{itemize}
+ message, String msgName)
+ 
+\begin{itemize}
+\item 参数说明
+
+\begin{tabular}{lll}
+ queueName       &  message         &  msgName         \\
+ 发送队列的名字  &  发送的消息对象  &  发送的消息名字  \\
+\end{tabular}
+
+
+\end{itemize}
+\subsubsection{配置文件说明}
+\label{sec-2-3-3}
+
+
+\begin{minted}[]{java}
+
+################################
+#          server info         #
+################################
+# jms服务器地址
+serverUrl=tcp://localhost:61616
+username=system
+password=manager
+
+################################
+#          queue info          #
+################################
+# 发送的队列名字，用“，”号分隔
+sendQueues=q1,q2
+
+# 接受的队列的名字，用“，”号分隔
+receiveQueues=q1,q3
+# 队列q1上消息名字为a的消息号
+queue.q1.a=10000
+#接受到队列q1上消息名字为a的消息的时候调用的处理器
+queue.q1.a.resolver=test.com.jfinal.plugin.jms.AReceiveResolver
+
+queue.q1.b=20000
+queue.q1.b.resolver=test.com.jfinal.plugin.jms.BReceiveResolver
+
+################################
+#          topic info          #
+################################
+
+sendTopics=t1,t2
+
+receiveTopics=t1,t3
+topic.t1.c=30000
+topic.t1.c.resolver=test.com.jfinal.plugin.jms.CReceiveResolver
+
+topic.t3.d=40000
+topic.t3.d.resolver=test.com.jfinal.plugin.jms.DReceiveResolver
+\end{minted}
+\subsection{任务调度  QuartzPlugin Cron4jPlugin}
+\label{sec-2-4}
+
+  
+\subsubsection{业务如何调度}
+\label{sec-2-4-1}
+\begin{itemize}
+
+\item QuartzPlugin\\
+\label{sec-2-4-1-1}%
+需要进行的调度任务实现必须实现org.quartz.Job接口
+
+
+\item Cron4jPlugin\\
+\label{sec-2-4-1-2}%
+需要进行的调度任务实现必须实现java.lang.Runnable接口
+\end{itemize} % ends low level
+\subsubsection{如何加载配置}
+\label{sec-2-4-2}
+
+  插件默认加载classpath根目录下job.properties文件。
+  如果需要加载指定的配置文件，需要在构造方法中传入参数
+\subsubsection{配置文件说明}
+\label{sec-2-4-3}
+
+job.properties配置示例
+
+\begin{minted}[]{java}
+#JobA
+a.job=test.com.jfinal.plugin.quzrtz.JobA
+a.cron=*/5 * * * * ?
+a.enable=true
+#JobB
+b.job=test.com.jfinal.plugin.quartz.JobB
+b.cron=*/10 * * * * ?
+b.enable=false
+\end{minted}
+配置说明
+job cron enable为配置关键字
+a和b为任务的名字，仅作为标识，无其他用处。
+
+
+\begin{tabular}{ll}
+ 任务名字.job     &  调度任务的类全名      \\
+ 任务名字.cron    &  调度任务的cron表达式  \\
+ 任务名字.enable  &  调度任务是否启用      \\
+\end{tabular}
+
+
+       
+\subsubsection{如何在代码中添加任务}
+\label{sec-2-4-4}
+
+    在plugin上调用add方法
+\subsection{ConfigPlugin}
+\label{sec-2-5}
+
+   分优先级加载配置文件
+   在团队开发中如果自己有测试配置需要长期存在但是又不需要提交中心库的时候 
+可以采用分级配置加载的策略。 如中心库中有config.properties这个配置，你可以创建 config-test.properties文件，配置相同的key，ConfigKit中的方法会优先加载 xx-test.properties文件。
+\subsubsection{如何加载配置}
+\label{sec-2-5-1}
+
+
+
+\begin{minted}[]{java}
+ConfigPlugin configPlugin = new ConfigPlugin();
+        configPlugin.addResource(".*.properties");
+\end{minted}
+addResource支持正则表达式
+当我们加载config.properties时候会找config-test.properties一起加载.
+\subsubsection{配置说明}
+\label{sec-2-5-2}
+
+ 如果我们加载了以下两个配置,下面的测试用列能通过,也就是说当*-test中同
+ 名的key优先读取.
+config.properties
+
+\begin{minted}[]{java}
+name=aa
+age=1
+\end{minted}
+
+config-test.properties
+
+\begin{minted}[]{java}
+name=test
+\end{minted}
+
+
+\begin{minted}[]{java}
+@Test
+public void testGetStr() throws InterruptedException {
+        Assert.assertEquals("test",ConfigKit.getStr("name"));
+        Assert.assertEquals(1,ConfigKit.getInt("age"));
+}
+\end{minted}
+\subsection{MongodbPlugin}
+\label{sec-2-6}
+\subsubsection{简介}
+\label{sec-2-6-1}
+
+   MongodbPlugin 是Jfinal-ext扩展的nosql插件，在MongoKit中封装mongodb
+   的常用操作。
+\subsubsection{使用方法}
+\label{sec-2-6-2}
+\begin{itemize}
+
+\item 创建\\
+\label{sec-2-6-2-1}%
+默认ip和端口
+
+\begin{minted}[]{java}
+MongodbPlugin mongodbPlugin = new MongodbPlugin("log")
+MongodbPlugin mongodbPlugin = new MongodbPlugin("127.0.0.1", 8888, "other");
+\end{minted}
+
+
+
+\item 分页查询\\
+\label{sec-2-6-2-2}%
+\begin{minted}[]{java}
+Map<String, Object> filter = new HashMap<String, Object>();
+filter.put("age", "20") ;  //精确过滤
+Map<String, Object> like = new HashMap<String, Object>();
+like.put("name","zhang");  //模糊匹配，相当于sql 的 like %zhang%
+Map<String, Object> sort = new HashMap<String, Object>();
+sort.put("age","desc");     //排序
+Page<Record> page = MongoKit.paginate("sns", 1, 10, filter, like,sort);
+\end{minted}
+
+\item 新增\\
+\label{sec-2-6-2-3}%
+\begin{minted}[]{java}
+MongoKit.save("sns", record) //保存一个record
+MongoKit.save("sns", records)//批量保存record
+\end{minted}
+
+
+\item 删除\\
+\label{sec-2-6-2-4}%
+\begin{minted}[]{java}
+MongoKit.removeAll("sns")  //删除所有sns
+
+Map<String, Object> filter  = new HashMap<String,Object>();
+filter.put("name", "bb");
+filter.put("age", "1");
+MongoKit.remove("sns", filter);  //删除符合条件的sns
+\end{minted}
+
+\item 修改\\
+\label{sec-2-6-2-5}%
+\begin{minted}[]{java}
+Map<String, Object> src = new HashMap<String, Object>();
+src.put("age", "1");  //查询条件
+Map<String, Object> desc = new HashMap<String, Object>();
+desc.put("addr", "test"); //将符合查询条件的文档修改为此文档
+MongoKit.updateFirst("sns", src, desc); //只能修改符合条件的第一条数据..
+\end{minted}
+\end{itemize} % ends low level
+\section{Render扩展}
+\label{sec-3}
+\subsection{DwzRender}
+\label{sec-3-1}
+
+
+\begin{minted}[]{java}
+public void save() {
+         Blog model = getModel(Blog.class);
+         if (model.getInt("id") == null) {
+                 model.save();
+         } else {
+                 model.update();
+         }
+         render(DwzRender.closeCurrentAndRefresh("pageBlog"));
+ }
+
+ public void edit() {
+         int id = getParaToInt(0);
+         Blog blog = Blog.dao.findById(id);
+         if (id == -1) {
+                 blog = new Blog();
+         } else if (blog == null) {
+                 render(DwzRender.error("该记录已被删除，请您先刷新列表"));
+         }
+         setAttr("blog", blog);
+ }
+
+ public void delete() {
+         Blog.dao.deleteById(getParaToInt());
+         render(DwzRender.success());
+ }
+\end{minted}
+\subsection{JxlsRender}
+\label{sec-3-2}
+
+   通过list数据生成excel,支持的数据类型为map ,record , model。
+\subsection{PoiRender}
+\label{sec-3-3}
+
+   通过list数据生成excel,支持的数据类型为map ,record , model。
+\subsection{CsvRender}
+\label{sec-3-4}
+
+   通过list数据生成csv,支持的数据类型为map ,record , model。
+\subsection{AmChartsRender}
+\label{sec-3-5}
+
+新增AmChartsRener,对AmCharts报表工具进行了简单的封装
+
+
+\begin{minted}[]{java}
+public void pie(){
+         List<KeyLabel> pies = new ArrayList<KeyLabel>();
+         KeyLabel e= new KeyLabel("java","111");
+         pies.add(e);
+         KeyLabel e2= new KeyLabel("c","11");
+         pies.add(e2);
+         render(AmChartsRender.pie(pies, "ampie.swf", "pie_settings.xml",500,500));
+ }
+
+ public void multiple(){
+         List<String> data = new ArrayList<String>();
+         data.add("10");
+         data.add("11");
+         data.add("12");
+         data.add("13");
+         data.add("14");
+         List<String> data1 = new ArrayList<String>();
+         data1.add("20");
+         data1.add("21");
+         data1.add("22");
+         data1.add("23");
+         data1.add("24");
+         List<List<String>> list = new ArrayList<List<String>>();
+         list.add(data);
+         list.add(data1);
+         List<String> series = new ArrayList<String>();
+         series.add("1月");
+         series.add("2月");
+         series.add("3月");
+         series.add("4月");
+         series.add("5月");
+         render(AmChartsRender.graph(list, series, "amline.swf", "line_settings.xml"));
+ }
+ public void simple(){
+         List<String> data = new ArrayList<String>();
+         data.add("10");
+         data.add("11");
+         data.add("12");
+         data.add("13");
+         data.add("14");
+         List<String> series = new ArrayList<String>();
+         series.add("1月");
+         series.add("2月");
+         series.add("3月");
+         series.add("4月");
+         series.add("5月");
+         render(AmChartsRender.graph(data, series, "amline.swf", "line_settings.xml"));
+ }public void pie(){
+         List<KeyLabel> pies = new ArrayList<KeyLabel>();
+         KeyLabel e= new KeyLabel("java","111");
+         pies.add(e);
+         KeyLabel e2= new KeyLabel("c","11");
+         pies.add(e2);
+         render(AmChartsRender.pie(pies, "ampie.swf", "pie_settings.xml",500,500));
+ }
+
+ public void multiple(){
+         List<String> data = new ArrayList<String>();
+         data.add("10");
+         data.add("11");
+         data.add("12");
+         data.add("13");
+         data.add("14");
+         List<String> data1 = new ArrayList<String>();
+         data1.add("20");
+         data1.add("21");
+         data1.add("22");
+         data1.add("23");
+         data1.add("24");
+         List<List<String>> list = new ArrayList<List<String>>();
+         list.add(data);
+         list.add(data1);
+         List<String> series = new ArrayList<String>();
+         series.add("1月");
+         series.add("2月");
+         series.add("3月");
+         series.add("4月");
+         series.add("5月");
+         render(AmChartsRender.graph(list, series, "amline.swf", "line_settings.xml"));
+ }
+ public void simple(){
+         List<String> data = new ArrayList<String>();
+         data.add("10");
+         data.add("11");
+         data.add("12");
+         data.add("13");
+         data.add("14");
+         List<String> series = new ArrayList<String>();
+         series.add("1月");
+         series.add("2月");
+         series.add("3月");
+         series.add("4月");
+         series.add("5月");
+         render(AmChartsRender.graph(data, series, "amline.swf", "line_settings.xml"));
+ }
+\end{minted}
+\subsection{FreeMarkerXMLRender}
+\label{sec-3-6}
+
+利用freemaker生成xml
+\section{Routes扩展}
+\label{sec-4}
+\subsection{自动注册Route AutoBindRoutes}
+\label{sec-4-1}
+\subsubsection{简介}
+\label{sec-4-1-1}
+
+    扫描clsspath和lib中继承了Route的类按照约定的规则自动注册，也可以在
+    每一个Route上用注解配置
+\subsubsection{示例代码}
+\label{sec-4-1-2}
+
+
+\begin{minted}[]{java}
+public void configRoute(Routes me) {
+    me.add(new AutoBindRoutes());
+}
+\end{minted}
+    如果我们有一个AController，以上代码则相当于
+
+\begin{minted}[]{java}
+public void configRoute(Routes me) {
+     me.add("/a",AController.class);
+ }
+\end{minted}
+    默认的注册规则是截取类名Controller前的部分并首字母小写.
+\subsubsection{ControllerBind配置}
+\label{sec-4-1-3}
+
+    如果需要单独配置Route，需要在Controller上加上ControllerBind注解
+
+    ControllerBind 注解，属性说明如下：
+
+\begin{tabular}{ll}
+ controllerKey  &  访问某个 Controller 所需要的一个字符串  \\
+ viewPath       &  Controller 返回的视图的相对路径         \\
+\end{tabular}
+
+
+  
+\section{Interceptor扩展}
+\label{sec-5}
+\subsection{ExceptionInterceptor统一异常处理}
+\label{sec-5-1}
+\subsubsection{简介}
+\label{sec-5-1-1}
+
+    对Controller抛出的异常按照类型进行定制化处理
+\subsubsection{示例代码}
+\label{sec-5-1-2}
+
+
+\begin{minted}[]{java}
+ExceptionInterceptor exceptionInterceptor = new ExceptionInterceptor();
+exceptionInterceptor.addMapping(IllegalArgumentException.class, "/exceptions/a.html");
+exceptionInterceptor.addMapping(IllegalStateException.class, "exceptions/b.html");
+exceptionInterceptor.setDefault(new ErrorRender("测试系统"));
+\end{minted}
+   addMapping 设置一个异常类型对应的View,可以是一个视图路径，也可以是
+   一个ExceptionRender的子类，类似Controller的 render(String) 和
+   render(Render)方法
+   setDefault是当抛出的异常在mapping中没有找到的时候调用的默认的异常处
+   理方式。
+\subsection{I18nInterceptor 国际化拦截器}
+\label{sec-5-2}
+\subsubsection{简介}
+\label{sec-5-2-1}
+
+    简化国际化页面的render处理。
+\subsubsection{render策略}
+\label{sec-5-2-2}
+
+   会在原有的render路径上加上当前请求参数中的country和language。
+   例如（/p?language=zh\&country=CN）
+
+\begin{tabular}{llll}
+ 原始view  &  country  &  language  &  改变之后的view       \\
+ /p        &  zh       &  CN        &  /zh_CN/p/index.html  \\
+\end{tabular}
+
+
+country 默认值为zh language默认值为CN
+\section{eclipse代码片段}
+\label{sec-6}
+
+ 将jfinal-templates.xml导入eclipse的Preferences-java-Editor-Templates
+\subsection{jfl}
+\label{sec-6-1}
+
+   在任何类中使用，生成logger
+  
+
+\begin{minted}[]{java}
+protected final Logger logger = Logger.getLogger(getClass());
+protected final static Logger logger = Logger.getLogger(Object.class);
+\end{minted}
+\subsection{jfd}
+\label{sec-6-2}
+
+   在Model中使用，生成dao
+
+
+\begin{minted}[]{java}
+public final static Model dao = new Model();
+\end{minted}
+\subsection{jfld}
+\label{sec-6-3}
+
+
+   在需要打印日志的变量下面使用
+
+\begin{minted}[]{java}
+logger.debug("var :" + var);
+\end{minted}
+\subsection{jfli}
+\label{sec-6-4}
+
+   在需要打印日志的变量下面使用
+
+\begin{minted}[]{java}
+logger.info("var :" + var);
+\end{minted}
+\subsection{jfle}
+\label{sec-6-5}
+
+   在需要打印日志的变量下面使用
+
+\begin{minted}[]{java}
+logger.error("var :" + var);
+\end{minted}
+
+\end{document}

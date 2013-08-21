@@ -1,0 +1,30 @@
+apply plugin: 'war'
+apply plugin: 'eclipse'
+apply plugin: 'eclipse-wtp'
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+group = 'com.jfinal'
+
+dependencies {
+    compile 'com.alibaba:druid:0.2.16'
+    compile 'com.alibaba:fastjson:1.1.29'
+    compile 'org.freemarker:freemarker:2.3.19'
+    compile 'mysql:mysql-connector-java:5.1.24'
+    compile 'org.quartz-scheduler:quartz:1.8.6'
+    compile 'joda-time:joda-time:2.2'
+    compile 'com.google.guava:guava:14.0.1'
+    compile 'redis.clients:jedis:2.1.0'
+    compile 'net.sf.jxls:jxls-core:1.0.3'
+    compile 'org.apache.poi:poi:3.9'
+    compile 'org.mongodb:mongo-java-driver:2.11.2'
+    compile 'org.apache.activemq:activemq-core:5.7.0'
+    compile 'com.jfinal:joor:0.9.4'
+    compile 'com.jfinal:jfinal:1.4.0'
+    compile 'log4j:log4j:1.2.16'
+    compile 'com.github.peichhorn:lombok-pg:0.11.3'
+    compile 'it.sauronsoftware.cron4j:cron4j:2.2.5'
+    providedCompile 'com.jfinal:jetty-server:8.1.8'
+    providedCompile 'junit:junit:4.11'
+}
+
+
