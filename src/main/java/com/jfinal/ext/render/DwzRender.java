@@ -10,13 +10,55 @@ import com.jfinal.render.RenderException;
 @SuppressWarnings("serial")
 public class DwzRender extends Render {
     private static final String CONTENT_TYPE = "text/html;charset=" + getEncoding();
-    private String statusCode = "200";
-    private String message = "";
-    private String navTabId = "";
+    public static DwzRender closeCurrentAndRefresh(String refreshNavTabId) {
+        DwzRender dwzRender = new DwzRender();
+        dwzRender.navTabId = refreshNavTabId;
+        dwzRender.callbackType = "closeCurrent";
+        return dwzRender;
+    }
+    public static DwzRender error() {
+        DwzRender dwzRender = new DwzRender();
+        dwzRender.statusCode = "300";
+        dwzRender.message = "操作失败";
+        return dwzRender;
+    }
+    public static DwzRender error(String errorMsg) {
+        DwzRender dwzRender = new DwzRender();
+        dwzRender.statusCode = "300";
+        dwzRender.message = errorMsg;
+        return dwzRender;
+    }
+    public static Render refresh(String refreshNavTabId) {
+        DwzRender dwzRender = new DwzRender();
+        dwzRender.navTabId = refreshNavTabId;
+        return dwzRender;
+    }
+    public static DwzRender success() {
+        DwzRender dwzRender = new DwzRender();
+        dwzRender.message("操作成功");
+        return dwzRender;
+    }
+    public static DwzRender success(String successMsg) {
+        DwzRender dwzRender = new DwzRender();
+        dwzRender.message(successMsg);
+        return dwzRender;
+    }
     private String callbackType = "";
-    private String forwardUrl = "";
-    private String rel = "";
+
     private String confirmMsg = "";
+
+    private String forwardUrl = "";
+
+    private String message = "";
+
+    private String navTabId = "";
+
+    private String rel = "";
+
+    private String statusCode = "200";
+
+    public DwzRender() {
+    }
 
     public DwzRender(String message, String navTabId, String callbackType) {
         this.message = message;
@@ -24,46 +66,34 @@ public class DwzRender extends Render {
         this.callbackType = callbackType;
     }
 
-    public DwzRender() {
+    public DwzRender callbackType(String callbackType) {
+        this.callbackType = callbackType;
+        return this;
     }
 
-    public static DwzRender success() {
-        DwzRender dwzRender = new DwzRender();
-        dwzRender.setMessage("操作成功");
-        return dwzRender;
+    public DwzRender confirmMsg(String confirmMsg) {
+        this.confirmMsg = confirmMsg;
+        return this;
     }
 
-    public static DwzRender success(String successMsg) {
-        DwzRender dwzRender = new DwzRender();
-        dwzRender.setMessage(successMsg);
-        return dwzRender;
+    public DwzRender forwardUrl(String forwardUrl) {
+        this.forwardUrl = forwardUrl;
+        return this;
     }
 
-    public static DwzRender error() {
-        DwzRender dwzRender = new DwzRender();
-        dwzRender.statusCode = "300";
-        dwzRender.message = "操作失败";
-        return dwzRender;
+    public DwzRender message(String message) {
+        this.message = message;
+        return this;
     }
 
-    public static DwzRender error(String errorMsg) {
-        DwzRender dwzRender = new DwzRender();
-        dwzRender.statusCode = "300";
-        dwzRender.message = errorMsg;
-        return dwzRender;
+    public DwzRender navTabId(String navTabId) {
+        this.navTabId = navTabId;
+        return this;
     }
 
-    public static Render refresh(String refreshNavTabId) {
-        DwzRender dwzRender = new DwzRender();
-        dwzRender.navTabId = refreshNavTabId;
-        return dwzRender;
-    }
-
-    public static DwzRender closeCurrentAndRefresh(String refreshNavTabId) {
-        DwzRender dwzRender = new DwzRender();
-        dwzRender.navTabId = refreshNavTabId;
-        dwzRender.callbackType = "closeCurrent";
-        return dwzRender;
+    public DwzRender rel(String rel) {
+        this.rel = rel;
+        return this;
     }
 
     @Override
@@ -93,60 +123,9 @@ public class DwzRender extends Render {
         }
     }
 
-    public String getStatusCode() {
-        return statusCode;
-    }
-
-    public void setStatusCode(String statusCode) {
+    public DwzRender statusCode(String statusCode) {
         this.statusCode = statusCode;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getNavTabId() {
-        return navTabId;
-    }
-
-    public void setNavTabId(String navTabId) {
-        this.navTabId = navTabId;
-    }
-
-    public String getCallbackType() {
-        return callbackType;
-    }
-
-    public void setCallbackType(String callbackType) {
-        this.callbackType = callbackType;
-    }
-
-    public String getForwardUrl() {
-        return forwardUrl;
-    }
-
-    public void setForwardUrl(String forwardUrl) {
-        this.forwardUrl = forwardUrl;
-    }
-
-    public String getRel() {
-        return rel;
-    }
-
-    public void setRel(String rel) {
-        this.rel = rel;
-    }
-
-    public String getConfirmMsg() {
-        return confirmMsg;
-    }
-
-    public void setConfirmMsg(String confirmMsg) {
-        this.confirmMsg = confirmMsg;
+        return this;
     }
 
 }

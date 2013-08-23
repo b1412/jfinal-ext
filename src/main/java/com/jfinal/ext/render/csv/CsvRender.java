@@ -9,58 +9,19 @@ import com.jfinal.render.RenderException;
 
 @SuppressWarnings("serial")
 public class CsvRender extends Render {
-    private static final String DEFAULT_FILE_NAME = "default.csv";
-    private static final String DEFAULT_ENCODE_TYPE = "gbk";
-
-    private List<String> headers;
+    private List<String> clomuns;
     private List<?> data;
-    private String fileName;
-    private String encodeType;
-    private List<String> clomuns; // 隐藏列
+    private String encodeType = "gbk";
+    private String fileName = "default.csv";
+    private List<String> headers;
 
-    public CsvRender() {
-    }
-
-    public CsvRender(List<String> headers, List<?> data, String fileName, String encodeType) {
+    public CsvRender(List<String> headers, List<?> data) {
         this.headers = headers;
         this.data = data;
-        this.fileName = fileName;
-        this.encodeType = encodeType;
     }
 
-    public CsvRender(List<String> headers, List<?> data, String fileName, String encodeType, List<String> clomuns) {
-        this.headers = headers;
-        this.data = data;
-        this.fileName = fileName;
-        this.encodeType = encodeType;
-        this.clomuns = clomuns;
-    }
-
-    // 未包含隐藏列
-    public static CsvRender csv(List<String> headers, List<?> data) {
-        return new CsvRender(headers, data, DEFAULT_FILE_NAME, DEFAULT_ENCODE_TYPE);
-    }
-
-    public static CsvRender csv(List<String> headers, List<?> data, String fileName) {
-        return new CsvRender(headers, data, fileName, DEFAULT_ENCODE_TYPE);
-    }
-
-    public static CsvRender csv(List<String> headers, List<?> data, String fileName, String encodeType) {
-        return new CsvRender(headers, data, fileName, encodeType);
-    }
-
-    // 包含隐藏列
-    public static CsvRender csv(List<String> headers, List<?> data, List<String> clomuns) {
-        return new CsvRender(headers, data, DEFAULT_FILE_NAME, DEFAULT_ENCODE_TYPE, clomuns);
-    }
-
-    public static CsvRender csv(List<String> headers, List<?> data, String fileName, List<String> clomuns) {
-        return new CsvRender(headers, data, fileName, DEFAULT_ENCODE_TYPE, clomuns);
-    }
-
-    public static CsvRender csv(List<String> headers, List<?> data, String fileName, String encodeType,
-            List<String> clomuns) {
-        return new CsvRender(headers, data, fileName, encodeType, clomuns);
+    public static CsvRender me(List<String> headers, List<?> data) {
+        return new CsvRender(headers, data);
     }
 
     @Override
@@ -68,7 +29,7 @@ public class CsvRender extends Render {
         response.reset();
         PrintWriter out = null;
         try {
-            response.setContentType("application/csv;charset=gbk");
+            response.setContentType("application/vnd.ms-excel;charset=" + encodeType);
             response.setHeader("Content-Disposition",
                     "attachment;  filename=" + URLEncoder.encode(fileName, encodeType));
             out = response.getWriter();
@@ -83,44 +44,29 @@ public class CsvRender extends Render {
         }
     }
 
-    public List<?> getData() {
-        return data;
-    }
-
-    public void setData(List<Object> data) {
-        this.data = data;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getEncodeType() {
-        return encodeType;
-    }
-
-    public void setEncodeType(String encodeType) {
-        this.encodeType = encodeType;
-    }
-
-    public List<String> getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(List<String> headers) {
-        this.headers = headers;
-    }
-
-    public List<String> getClomuns() {
-        return clomuns;
-    }
-
-    public void setClomuns(List<String> clomuns) {
+    public CsvRender clomuns(List<String> clomuns) {
         this.clomuns = clomuns;
+        return this;
+    }
+
+    public CsvRender data(List<? extends Object> data) {
+        this.data = data;
+        return this;
+    }
+
+    public CsvRender encodeType(String encodeType) {
+        this.encodeType = encodeType;
+        return this;
+    }
+
+    public CsvRender fileName(String fileName) {
+        this.fileName = fileName;
+        return this;
+    }
+
+    public CsvRender headers(List<String> headers) {
+        this.headers = headers;
+        return this;
     }
 
 }

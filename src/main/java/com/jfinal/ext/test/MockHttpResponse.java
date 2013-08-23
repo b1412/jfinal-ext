@@ -19,90 +19,6 @@ public class MockHttpResponse implements HttpServletResponse {
     }
 
     @Override
-    public void flushBuffer() throws IOException {
-
-    }
-
-    @Override
-    public int getBufferSize() {
-
-        return 0;
-    }
-
-    @Override
-    public String getCharacterEncoding() {
-
-        return null;
-    }
-
-    @Override
-    public String getContentType() {
-
-        return null;
-    }
-
-    @Override
-    public Locale getLocale() {
-
-        return null;
-    }
-
-    @Override
-    public ServletOutputStream getOutputStream() throws IOException {
-        // OutputStream os = new FileOutputStream(new File("/home/kid/mock"));
-        // return new MockServletOutputStream(os);
-        return null;
-    }
-
-    @Override
-    public PrintWriter getWriter() throws IOException {
-        PrintWriter writer = new PrintWriter(resp);
-//        PrintWriter writer = new PrintWriter(System.out);
-        return writer;
-    }
-
-    @Override
-    public boolean isCommitted() {
-
-        return false;
-    }
-
-    @Override
-    public void reset() {
-
-    }
-
-    @Override
-    public void resetBuffer() {
-
-    }
-
-    @Override
-    public void setBufferSize(int arg0) {
-
-    }
-
-    @Override
-    public void setCharacterEncoding(String arg0) {
-
-    }
-
-    @Override
-    public void setContentLength(int arg0) {
-
-    }
-
-    @Override
-    public void setContentType(String arg0) {
-
-    }
-
-    @Override
-    public void setLocale(Locale arg0) {
-
-    }
-
-    @Override
     public void addCookie(Cookie arg0) {
 
     }
@@ -129,19 +45,13 @@ public class MockHttpResponse implements HttpServletResponse {
     }
 
     @Override
-    public String encodeRedirectURL(String arg0) {
-
-        return null;
-    }
-
-    @Override
     public String encodeRedirectUrl(String arg0) {
 
         return null;
     }
 
     @Override
-    public String encodeURL(String arg0) {
+    public String encodeRedirectURL(String arg0) {
 
         return null;
     }
@@ -153,43 +63,32 @@ public class MockHttpResponse implements HttpServletResponse {
     }
 
     @Override
-    public void sendError(int arg0) throws IOException {
+    public String encodeURL(String arg0) {
+
+        return null;
+    }
+
+    @Override
+    public void flushBuffer() throws IOException {
 
     }
 
     @Override
-    public void sendError(int arg0, String arg1) throws IOException {
+    public int getBufferSize() {
 
+        return 0;
     }
 
     @Override
-    public void sendRedirect(String arg0) throws IOException {
+    public String getCharacterEncoding() {
 
+        return null;
     }
 
     @Override
-    public void setDateHeader(String arg0, long arg1) {
+    public String getContentType() {
 
-    }
-
-    @Override
-    public void setHeader(String arg0, String arg1) {
-
-    }
-
-    @Override
-    public void setIntHeader(String arg0, int arg1) {
-
-    }
-
-    @Override
-    public void setStatus(int arg0) {
-
-    }
-
-    @Override
-    public void setStatus(int arg0, String arg1) {
-
+        return null;
     }
 
     @Override
@@ -211,9 +110,110 @@ public class MockHttpResponse implements HttpServletResponse {
     }
 
     @Override
+    public Locale getLocale() {
+
+        return null;
+    }
+
+    @Override
+    public ServletOutputStream getOutputStream() throws IOException {
+        // OutputStream os = new FileOutputStream(new File("/home/kid/mock"));
+        // return new MockServletOutputStream(os);
+        return null;
+    }
+
+    @Override
     public int getStatus() {
 
         return 0;
+    }
+
+    @Override
+    public PrintWriter getWriter() throws IOException {
+        PrintWriter writer = new PrintWriter(resp);
+//        PrintWriter writer = new PrintWriter(System.out);
+        return writer;
+    }
+
+    @Override
+    public boolean isCommitted() {
+
+        return false;
+    }
+
+    @Override
+    public void reset() {
+
+    }
+
+    @Override
+    public void resetBuffer() {
+
+    }
+
+    @Override
+    public void sendError(int arg0) throws IOException {
+
+    }
+
+    @Override
+    public void sendError(int arg0, String arg1) throws IOException {
+
+    }
+
+    @Override
+    public void sendRedirect(String arg0) throws IOException {
+
+    }
+
+    @Override
+    public void setBufferSize(int arg0) {
+
+    }
+
+    @Override
+    public void setCharacterEncoding(String arg0) {
+
+    }
+
+    @Override
+    public void setContentLength(int arg0) {
+
+    }
+
+    @Override
+    public void setContentType(String arg0) {
+
+    }
+
+    @Override
+    public void setDateHeader(String arg0, long arg1) {
+
+    }
+
+    @Override
+    public void setHeader(String arg0, String arg1) {
+
+    }
+
+    @Override
+    public void setIntHeader(String arg0, int arg1) {
+
+    }
+
+    @Override
+    public void setLocale(Locale arg0) {
+
+    }
+
+    @Override
+    public void setStatus(int arg0) {
+
+    }
+
+    @Override
+    public void setStatus(int arg0, String arg1) {
+
     }
 
 }

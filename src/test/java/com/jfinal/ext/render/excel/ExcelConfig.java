@@ -13,6 +13,10 @@ import com.jfinal.plugin.druid.DruidPlugin;
 
 public class ExcelConfig extends JFinalConfig {
 
+    public static void main(String[] args) {
+        JFinal.start("WebRoot", 8080, "/", 5);
+    }
+
     @Override
     public void configConstant(Constants me) {
         me.setEncoding("utf-8");
@@ -21,9 +25,12 @@ public class ExcelConfig extends JFinalConfig {
     }
 
     @Override
-    public void configRoute(Routes me) {
-        me.add("/poi", PoiController.class);
-        me.add("/jxls", JxlsController.class);
+    public void configHandler(Handlers me) {
+
+    }
+
+    @Override
+    public void configInterceptor(Interceptors me) {
     }
 
     @Override
@@ -36,16 +43,9 @@ public class ExcelConfig extends JFinalConfig {
     }
 
     @Override
-    public void configInterceptor(Interceptors me) {
-    }
-
-    @Override
-    public void configHandler(Handlers me) {
-
-    }
-
-    public static void main(String[] args) {
-        JFinal.start("WebRoot", 8080, "/", 5);
+    public void configRoute(Routes me) {
+        me.add("/poi", PoiController.class);
+        me.add("/jxls", JxlsController.class);
     }
 
 }

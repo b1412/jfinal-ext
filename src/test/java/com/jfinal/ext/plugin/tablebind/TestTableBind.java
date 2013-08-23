@@ -7,14 +7,19 @@ import org.junit.Test;
 import com.jfinal.plugin.druid.DruidPlugin;
 
 public class TestTableBind {
-    private static DruidPlugin druidPlugin;
-
     private static AutoTableBindPlugin atbp;
+
+    private static DruidPlugin druidPlugin;
 
     @BeforeClass
     public static void init() {
         druidPlugin = new DruidPlugin("jdbc:mysql://127.0.0.1/jfinal_demo", "root", "root");
         druidPlugin.start();
+    }
+
+    @AfterClass
+    public static void stop() {
+        druidPlugin.stop();
     }
 
     @Test
@@ -25,8 +30,7 @@ public class TestTableBind {
 
     @Test
     public void testInJar() {
-        atbp = new AutoTableBindPlugin(druidPlugin);
-        atbp.setAutoScan(false).addJar("modelInJar.jar");
+        atbp = new AutoTableBindPlugin(druidPlugin).autoScan(false).addJars("modelInJar.jar");
         atbp.start();
     }
 
@@ -34,11 +38,6 @@ public class TestTableBind {
     public void testMoudle() {
         atbp = new AutoTableBindPlugin(druidPlugin, ParamNameStyles.lowerModule("SNS_"));
         atbp.start();
-    }
-
-    @AfterClass
-    public static void stop() {
-        druidPlugin.stop();
     }
 
 }

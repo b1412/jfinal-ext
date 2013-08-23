@@ -11,6 +11,10 @@ import com.jfinal.plugin.activerecord.tx.TxByRegex;
 
 public class DwzConfig extends JFinalConfig {
 
+    public static void main(String[] args) {
+        JFinal.start("WebRoot", 9090, "/", 5);
+    }
+
     @Override
     public void configConstant(Constants me) {
         me.setEncoding("utf-8");
@@ -19,12 +23,8 @@ public class DwzConfig extends JFinalConfig {
     }
 
     @Override
-    public void configRoute(Routes me) {
-        me.add("/dwz", DwzController.class, "WEB-INF/");
-    }
+    public void configHandler(Handlers me) {
 
-    @Override
-    public void configPlugin(Plugins me) {
     }
 
     @Override
@@ -33,12 +33,12 @@ public class DwzConfig extends JFinalConfig {
     }
 
     @Override
-    public void configHandler(Handlers me) {
-
+    public void configPlugin(Plugins me) {
     }
 
-    public static void main(String[] args) {
-        JFinal.start("WebRoot", 9090, "/", 5);
+    @Override
+    public void configRoute(Routes me) {
+        me.add("/dwz", DwzController.class, "WEB-INF/");
     }
 
 }

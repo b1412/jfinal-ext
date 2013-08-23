@@ -18,21 +18,36 @@ import com.jfinal.render.RenderException;
 @SuppressWarnings("serial")
 public class JxlsRender extends Render {
     private static final String CONTENT_TYPE = "application/vnd.ms-excel;charset=" + getEncoding();
-    private String filename = "file1.xls";
-    private String templetFile;
-    private Map<String, Object> beans = Maps.<String, Object> newHashMap();
-
-    public JxlsRender(String filename, String templetFile, Map<String, Object> beans) {
-        this.filename = filename;
-        this.templetFile = templetFile;
-        this.beans = beans;
-    }
-
-    private JxlsRender() {
-    }
-
     public static JxlsRender me(String templetFile) {
-        return new JxlsRender().templetFile(templetFile);
+        return new JxlsRender(templetFile);
+    }
+    private Map<String, Object> beans = Maps.newHashMap();
+    private String filename = "file1.xls";
+
+    private String templetFile;
+
+    public JxlsRender(String templetFile) {
+        this.templetFile = templetFile;
+    }
+
+    public JxlsRender beans(Map<String, Object> beans) {
+        this.beans = beans;
+        return this;
+    }
+
+    private void buildBean() {
+        Enumeration<String> attrs = request.getAttributeNames();
+        while (attrs.hasMoreElements()) {
+            String key = attrs.nextElement();
+            Object value = request.getAttribute(key);
+            beans.put(key, value);
+        }
+
+    }
+
+    public JxlsRender filename(String filename) {
+        this.filename = filename;
+        return this;
     }
 
     @Override
@@ -54,28 +69,8 @@ public class JxlsRender extends Render {
 
     }
 
-    private void buildBean() {
-        Enumeration<String> attrs = request.getAttributeNames();
-        while (attrs.hasMoreElements()) {
-            String key = attrs.nextElement();
-            Object value = request.getAttribute(key);
-            beans.put(key, value);
-        }
-
-    }
-
-    public JxlsRender filename(String filename) {
-        this.filename = filename;
-        return this;
-    }
-
     public JxlsRender templetFile(String templetFile) {
         this.templetFile = templetFile;
-        return this;
-    }
-
-    public JxlsRender beans(Map<String, Object> beans) {
-        this.beans = beans;
         return this;
     }
 

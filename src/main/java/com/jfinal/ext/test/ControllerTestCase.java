@@ -29,10 +29,25 @@ public abstract class ControllerTestCase<T extends JFinalConfig> {
     protected static MockHttpRequest request;
     protected static MockHttpResponse response;
     protected static Handler handler;
+    private static void initConfig(Class<JFinal> clazz, JFinal me, ServletContext servletContext, JFinalConfig config) {
+        Reflect.on(me).call("init", config, servletContext);
+    }
+    public static void start(Class<? extends JFinalConfig> configClass) throws Exception {
+        if (configStarted == true) {
+            return;
+        }
+        Class<JFinal> clazz = JFinal.class;
+        JFinal me = JFinal.me();
+        initConfig(clazz, me, servletContext, configClass.newInstance());
+        handler = Reflect.on(me).get("handler");
+        configStarted = true;
+    }
     private String actionUrl;
     private String bodyData;
     private File bodyFile;
+
     private File responseFile;
+
     private Class<? extends JFinalConfig> config;
 
     @SuppressWarnings("unchecked")
@@ -42,29 +57,30 @@ public abstract class ControllerTestCase<T extends JFinalConfig> {
         config = (Class<? extends JFinalConfig>) ((ParameterizedType) genericSuperclass).getActualTypeArguments()[0];
     }
 
+    public Object findAttrAfterInvoke(String key) {
+        return request.getAttribute(key);
+    }
+
+    private String getTarget(String url, MockHttpRequest request) {
+        String target = url;
+        if (url.contains("?")) {
+            target = url.substring(0, url.indexOf("?"));
+            String queryString = url.substring(url.indexOf("?") + 1);
+            String[] keyVals = queryString.split("&");
+            for (String keyVal : keyVals) {
+                int i = keyVal.indexOf('=');
+                String key = keyVal.substring(0, i);
+                String val = keyVal.substring(i + 1);
+                request.setParameter(key, val);
+            }
+        }
+        return target;
+
+    }
+
     @Before
     public void init() throws Exception {
         start(config);
-    }
-
-    public ControllerTestCase<T> use(String actionUrl) {
-        this.actionUrl = actionUrl;
-        return this;
-    }
-
-    public ControllerTestCase<T> post(String bodyData) {
-        this.bodyData = bodyData;
-        return this;
-    }
-
-    public ControllerTestCase<T> post(File bodyFile) {
-        this.bodyFile = bodyFile;
-        return this;
-    }
-
-    public ControllerTestCase<T> writeTo(File responseFile) {
-        this.responseFile = responseFile;
-        return this;
     }
 
     public String invoke() {
@@ -100,40 +116,24 @@ public abstract class ControllerTestCase<T extends JFinalConfig> {
         return response;
     }
 
-    public static void start(Class<? extends JFinalConfig> configClass) throws Exception {
-        if (configStarted == true) {
-            return;
-        }
-        Class<JFinal> clazz = JFinal.class;
-        JFinal me = JFinal.me();
-        initConfig(clazz, me, servletContext, configClass.newInstance());
-        handler = Reflect.on(me).get("handler");
-        configStarted = true;
+    public ControllerTestCase<T> post(File bodyFile) {
+        this.bodyFile = bodyFile;
+        return this;
     }
 
-    private String getTarget(String url, MockHttpRequest request) {
-        String target = url;
-        if (url.contains("?")) {
-            target = url.substring(0, url.indexOf("?"));
-            String queryString = url.substring(url.indexOf("?") + 1);
-            String[] keyVals = queryString.split("&");
-            for (String keyVal : keyVals) {
-                int i = keyVal.indexOf('=');
-                String key = keyVal.substring(0, i);
-                String val = keyVal.substring(i + 1);
-                request.setParameter(key, val);
-            }
-        }
-        return target;
-
+    public ControllerTestCase<T> post(String bodyData) {
+        this.bodyData = bodyData;
+        return this;
     }
 
-    public Object findAttrAfterInvoke(String key) {
-        return request.getAttribute(key);
+    public ControllerTestCase<T> use(String actionUrl) {
+        this.actionUrl = actionUrl;
+        return this;
     }
 
-    private static void initConfig(Class<JFinal> clazz, JFinal me, ServletContext servletContext, JFinalConfig config) {
-        Reflect.on(me).call("init", config, servletContext);
+    public ControllerTestCase<T> writeTo(File responseFile) {
+        this.responseFile = responseFile;
+        return this;
     }
 
 }

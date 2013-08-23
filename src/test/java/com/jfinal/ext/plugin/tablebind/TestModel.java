@@ -11,12 +11,12 @@ public class TestModel extends Model<TestModel> {
         return age;
     }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public void setName(String name) {

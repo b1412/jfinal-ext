@@ -16,6 +16,7 @@ public class I18nInterceptor implements Interceptor {
     private String countryPara = "country";
     private String localePara = "locale";
     private String skipFlagPara = "skipi18n";
+
     @Override
     public void intercept(ActionInvocation ai) {
         Controller controller = ai.getController();
@@ -31,7 +32,7 @@ public class I18nInterceptor implements Interceptor {
         controller.setLocaleToCookie(locale);
         controller.setAttr(localePara, locale);
         ai.invoke();
-        if(true == (Boolean)ai.getController().getAttr(skipFlagPara)){
+        if (true == (Boolean) ai.getController().getAttr(skipFlagPara)) {
             return;
         }
         Render render = controller.getRender();
@@ -39,9 +40,9 @@ public class I18nInterceptor implements Interceptor {
             render = RenderFactory.me().getDefaultRender(ai.getMethodName());
         }
         String view = render.getView();
-        
+
         String prefix = getPrefix(country, language);
-        
+
         if (view.startsWith("/")) {
             view = "/" + prefix + "/" + view.substring(1, view.length());
         } else {
@@ -49,71 +50,52 @@ public class I18nInterceptor implements Interceptor {
         }
     }
 
-    private String getPrefix(String country,String language) {
+    private String getPrefix(String country, String language) {
         String prefix = language;
-        if(StringKit.notBlank(country)){
-            prefix = language+"_"+country;
+        if (StringKit.notBlank(country)) {
+            prefix = language + "_" + country;
         }
-//        ScriptEngineManager sem = new ScriptEngineManager();   
-//        ScriptEngine se = sem.getEngineByName("javascript");   
-//        try {
-//        	se.put("country",country);   
-//        	se.put("language", language);   
-//			prefix = (String) se.eval(exps);
-//		} catch (ScriptException e) {
-//			Throwables.propagate(e);
-//		}
-		return prefix;
-	}
-
-	public String getDefaultLanguage() {
-        return defaultLanguage;
+        //TODO
+        // ScriptEngineManager sem = new ScriptEngineManager();
+        // ScriptEngine se = sem.getEngineByName("javascript");
+        // try {
+        // se.put("country",country);
+        // se.put("language", language);
+        // prefix = (String) se.eval(exps);
+        // } catch (ScriptException e) {
+        // Throwables.propagate(e);
+        // }
+        return prefix;
     }
 
-    public void setDefaultLanguage(String defaultLanguage) {
+    public I18nInterceptor defaultLanguage(String defaultLanguage) {
         this.defaultLanguage = defaultLanguage;
-
+        return this;
     }
 
-    public String getDefaultCountry() {
-        return defaultCountry;
-    }
-
-    public void setDefaultCountry(String defaultCountry) {
+    public I18nInterceptor defaultCountry(String defaultCountry) {
         this.defaultCountry = defaultCountry;
+        return this;
     }
 
-    public String getLanguagePara() {
-        return languagePara;
-    }
-
-    public void setLanguagePara(String languagePara) {
+    public I18nInterceptor languagePara(String languagePara) {
         this.languagePara = languagePara;
+        return this;
     }
 
-    public String getCountryPara() {
-        return countryPara;
-    }
-
-    public void setCountryPara(String countryPara) {
+    public I18nInterceptor countryPara(String countryPara) {
         this.countryPara = countryPara;
+        return this;
     }
 
-    public String getLocalePara() {
-        return localePara;
-    }
-
-    public void setLocalePara(String localePara) {
+    public I18nInterceptor localePara(String localePara) {
         this.localePara = localePara;
+        return this;
     }
 
-    public String getSkipFlagPara() {
-        return skipFlagPara;
-    }
-
-    public void setSkipFlagPara(String skipFlagPara) {
+    public I18nInterceptor skipFlagPara(String skipFlagPara) {
         this.skipFlagPara = skipFlagPara;
+        return this;
     }
-    
-    
+
 }

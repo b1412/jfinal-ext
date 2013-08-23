@@ -8,14 +8,15 @@ import com.jfinal.ext.test.ControllerTestCase;
 
 public class TestDwzRender extends ControllerTestCase<DwzConfig> {
 
-    @Test
-    public void testDeleteError() throws Exception {
-        use("/dwz").invoke();
+    private int add(int i, int j) {
+        return i+j;
     }
 
     @Test
-    public void testDeleteSuccess() throws Exception {
-        use("/dwz/delete?id=1").invoke();
+    public void test1() throws Exception {
+        int i = 0;
+        int j = 1;
+        Assert.assertEquals(10000, add(i, j));
     }
     @Test
     public void testAddSuccess() throws Exception {
@@ -24,14 +25,13 @@ public class TestDwzRender extends ControllerTestCase<DwzConfig> {
     
     
     @Test
-    public void test1() throws Exception {
-        int i = 0;
-        int j = 1;
-        Assert.assertEquals(10000, add(i, j));
+    public void testDeleteError() throws Exception {
+        use("/dwz").invoke();
     }
 
-    private int add(int i, int j) {
-        return i+j;
+    @Test
+    public void testDeleteSuccess() throws Exception {
+        use("/dwz/delete?id=1").invoke();
     }
     
 }

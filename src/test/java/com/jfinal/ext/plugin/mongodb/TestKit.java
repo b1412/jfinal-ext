@@ -33,6 +33,19 @@ public class TestKit {
     }
 
     @Test
+    public void testDelete() {
+        Map<String, Object> filter = new HashMap<String, Object>();
+        filter.put("name", "bb");
+        filter.put("age", "1");
+        System.out.println(MongoKit.remove("sns", filter));
+    }
+
+    @Test
+    public void testDeleteAll() {
+        System.out.println(MongoKit.removeAll("sns"));
+    }
+
+    @Test
     public void testSave() {
         List<Record> records = new ArrayList<Record>();
         Record record = new Record();
@@ -43,19 +56,6 @@ public class TestKit {
         record2.set("age", "1");
         records.add(record2);
         System.out.println(MongoKit.save("sns", records));
-    }
-
-    @Test
-    public void testDeleteAll() {
-        System.out.println(MongoKit.removeAll("sns"));
-    }
-
-    @Test
-    public void testDelete() {
-        Map<String, Object> filter = new HashMap<String, Object>();
-        filter.put("name", "bb");
-        filter.put("age", "1");
-        System.out.println(MongoKit.remove("sns", filter));
     }
 
     @Test

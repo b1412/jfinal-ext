@@ -18,12 +18,20 @@ public class ConfigPlugin implements IPlugin {
 
     private boolean reload = true;
 
-    public ConfigPlugin(String includeResource) {
-        this.includeResources.add(includeResource);
+    public ConfigPlugin(String... includeResources) {
+        if (includeResources != null) {
+            for (String includeResource : includeResources) {
+                this.includeResources.add(includeResource);
+            }
+        }
     }
 
-    public ConfigPlugin excludeResource(String resource) {
-        excludeResources.add(resource);
+    public ConfigPlugin excludeResource(String... resource) {
+        if (includeResources != null) {
+            for (String excludeResource : excludeResources) {
+                excludeResources.add(excludeResource);
+            }
+        }
         return this;
     }
 
@@ -40,6 +48,7 @@ public class ConfigPlugin implements IPlugin {
     public static void setSuffix(String suffix) {
         ConfigPlugin.suffix = suffix;
     }
+
     @Override
     public boolean start() {
         ConfigKit.init(includeResources, excludeResources, reload);

@@ -8,9 +8,9 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 public class JobB implements Job {
-    int [] ii = new int[]{};
     static int callTime = 0;
     static int l = 0;
+    int [] ii = new int[]{};
 
     @Override
     public void execute(JobExecutionContext arg0) throws JobExecutionException {

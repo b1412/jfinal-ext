@@ -13,22 +13,23 @@ import com.jfinal.render.RenderException;
 @SuppressWarnings("serial")
 public class PoiRender extends Render {
 
-    protected final Logger logger = Logger.getLogger(getClass());
-    private final static String CONTENT_TYPE = "application/msexcel;charset=utf-8";
-
-    private List<? extends Object> data;
-    private String[] columns;
-    private String[] headers;
-    private String fileName = "file1.xls";
-    private String sheetName = "sheet1";
+    protected final Logger LOG = Logger.getLogger(getClass());
+    private final static String CONTENT_TYPE = "application/msexcel;charset=" + getEncoding();
     private int cellWidth;
+    private String[] columns;
+    private List<?> data;
+    private String fileName = "file1.xls";
     private int headerRow;
-    
-    private PoiRender() {
+    private String[] headers;
+    private String sheetName = "sheet1";
+
+    public PoiRender(List<?> data, String[] headers) {
+        this.data = data;
+        this.headers = headers;
     }
-    
-    public static PoiRender excel(List<? extends Object> data, String[] headers) {
-        return new PoiRender().headers(headers).data(data);
+
+    public static PoiRender me(List<?> data, String[] headers) {
+        return new PoiRender(data, headers);
     }
 
     @Override
@@ -45,39 +46,19 @@ public class PoiRender extends Render {
             throw new RenderException(e);
         } finally {
             try {
-                if(os != null){
+                if (os != null) {
                     os.flush();
                     os.close();
                 }
             } catch (IOException e) {
-                logger.error(e.getMessage(), e);
+                LOG.error(e.getMessage(), e);
             }
 
         }
     }
 
-    public PoiRender columns(String[] columns) {
-        this.columns = columns;
-        return this;
-    }
-
-    public PoiRender headers(String[] headers) {
-        this.headers = headers;
-        return this;
-    }
-
-    public PoiRender fileName(String fileName) {
-        this.fileName = fileName;
-        return this;
-    }
-
     public PoiRender sheetName(String sheetName) {
         this.sheetName = sheetName;
-        return this;
-    }
-    
-    public PoiRender data(List<? extends Object> data) {
-        this.data = data;
         return this;
     }
 
@@ -86,5 +67,23 @@ public class PoiRender extends Render {
         return this;
     }
 
-    
+    public PoiRender columns(String[] columns) {
+        this.columns = columns;
+        return this;
+    }
+
+    public PoiRender data(List<?> data) {
+        this.data = data;
+        return this;
+    }
+
+    public PoiRender fileName(String fileName) {
+        this.fileName = fileName;
+        return this;
+    }
+
+    public PoiRender headers(String[] headers) {
+        this.headers = headers;
+        return this;
+    }
 }

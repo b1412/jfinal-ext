@@ -1,6 +1,5 @@
 package com.jfinal.ext.route;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.base.Preconditions;
@@ -13,59 +12,29 @@ import com.jfinal.log.Logger;
 
 public class AutoBindRoutes extends Routes {
 
-    protected final Logger logger = Logger.getLogger(getClass());
+    private boolean autoScan = true;
 
     private List<Class<? extends Controller>> excludeClasses = Lists.newArrayList();
 
-    private List<String> includeJars = Lists.newArrayList();
-
     private boolean includeAllJarsInLib;
 
-    private boolean autoScan = true;
+    private List<String> includeJars = Lists.newArrayList();
+
+    protected final Logger logger = Logger.getLogger(getClass());
 
     private String suffix = "Controller";
 
-    public AutoBindRoutes() {
-    }
-
-    public AutoBindRoutes(boolean autoScan) {
+    public AutoBindRoutes autoScan(boolean autoScan) {
         this.autoScan = autoScan;
+        return this;
     }
 
-
-    public AutoBindRoutes addJar(String jarName) {
-        if (StringKit.notBlank(jarName)) {
-            includeJars.add(jarName);
+    public AutoBindRoutes addExcludeClasses(Class<? extends Controller>... clazzes) {
+        if (clazzes != null) {
+            for (Class<? extends Controller> clazz : clazzes) {
+                excludeClasses.add(clazz);
+            }
         }
-        return this;
-    }
-
-    public AutoBindRoutes addJars(String jarNames) {
-        if (StringKit.notBlank(jarNames)) {
-            addJars(jarNames.split(","));
-        }
-        return this;
-    }
-
-    public AutoBindRoutes addJars(String[] jarsName) {
-        includeJars.addAll(Arrays.asList(jarsName));
-        return this;
-    }
-
-    public AutoBindRoutes addJars(List<String> jarsName) {
-        includeJars.addAll(jarsName);
-        return this;
-    }
-
-    public AutoBindRoutes addExcludeClass(Class<? extends Controller> clazz) {
-        if (clazz != null) {
-            excludeClasses.add(clazz);
-        }
-        return this;
-    }
-
-    public AutoBindRoutes addExcludeClasses(Class<? extends Controller>[] clazzes) {
-        excludeClasses.addAll(Arrays.asList(clazzes));
         return this;
     }
 
@@ -74,10 +43,20 @@ public class AutoBindRoutes extends Routes {
         return this;
     }
 
+    public AutoBindRoutes addJars(String... jars) {
+        if (jars != null) {
+            for (String jar : jars) {
+                includeJars.add(jar);
+            }
+        }
+        return this;
+    }
+
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void config() {
-        List<Class<? extends Controller>> controllerClasses = ClassSearcher.me.includeAllJarsInLib(includeAllJarsInLib).addJars(includeJars).search(Controller.class);
+        List<Class<? extends Controller>> controllerClasses = ClassSearcher.of(Controller.class)
+                .includeAllJarsInLib(includeAllJarsInLib).injars(includeJars).search();
         ControllerBind controllerBind = null;
         for (Class controller : controllerClasses) {
             if (excludeClasses.contains(controller)) {
@@ -109,22 +88,8 @@ public class AutoBindRoutes extends Routes {
         return controllerKey;
     }
 
-    public void excludeClasses(List<Class<? extends Controller>> excludeClasses) {
-        this.excludeClasses = excludeClasses;
-    }
-
-    public AutoBindRoutes includeJars(List<String> includeJars) {
-        this.includeJars = includeJars;
-        return this;
-    }
-
     public AutoBindRoutes includeAllJarsInLib(boolean includeAllJarsInLib) {
         this.includeAllJarsInLib = includeAllJarsInLib;
-        return this;
-    }
-
-    public AutoBindRoutes autoScan(boolean autoScan) {
-        this.autoScan = autoScan;
         return this;
     }
 

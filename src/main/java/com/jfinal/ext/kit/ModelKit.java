@@ -41,4 +41,12 @@ public class ModelKit {
         }
         return map;
     }
+    
+    public static void hashCode(Model model){
+        //TODO
+    }
+    public static void equals(Model model){
+        //TODO
+        
+    }
 }

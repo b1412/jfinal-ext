@@ -28,6 +28,23 @@ public class JxlsController extends Controller {
         render(JxlsRender.me(templateFileName).filename(filename).beans(beans));
     }
 
+    public void model() {
+        Blog model = new Blog();
+        model.set("title", "Derek");
+        model.set("content", "35");
+        Blog model2 = new Blog();
+        model2.set("title", "Oleg");
+        model2.set("content", "31");
+        List<Blog> blogs  = Lists.newArrayList();
+        blogs.add(model);
+        blogs.add(model2);
+        Map<String, Object> beans = Maps.newHashMap();
+        beans.put("employee", blogs);
+        String templateFileName = "/home/kid/git/jfinal-ext/resource/employees.xls";
+        String filename = "test.xls";
+        render(JxlsRender.me(templateFileName).filename(filename).beans(beans));
+    }
+
     public void para() {
         List<Employee> staff = new ArrayList<Employee>();
         staff.add(new Employee("Derek", 35, 3000, 0.30));
@@ -41,6 +58,7 @@ public class JxlsController extends Controller {
         // String filename = "test.xls";
         render(JxlsRender.me(templateFileName));
     }
+    
 
     public void record() {
         Record record = new Record();
@@ -58,24 +76,6 @@ public class JxlsController extends Controller {
         records.add(record2);
         Map<String, Object> beans = new HashMap<String, Object>();
         beans.put("employee", records);
-        String templateFileName = "/home/kid/git/jfinal-ext/resource/employees.xls";
-        String filename = "test.xls";
-        render(JxlsRender.me(templateFileName).filename(filename).beans(beans));
-    }
-    
-
-    public void model() {
-        Blog model = new Blog();
-        model.set("title", "Derek");
-        model.set("content", "35");
-        Blog model2 = new Blog();
-        model2.set("title", "Oleg");
-        model2.set("content", "31");
-        List<Blog> blogs  = Lists.newArrayList();
-        blogs.add(model);
-        blogs.add(model2);
-        Map<String, Object> beans = Maps.newHashMap();
-        beans.put("employee", blogs);
         String templateFileName = "/home/kid/git/jfinal-ext/resource/employees.xls";
         String filename = "test.xls";
         render(JxlsRender.me(templateFileName).filename(filename).beans(beans));

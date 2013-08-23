@@ -14,6 +14,10 @@ import com.jfinal.render.ViewType;
 
 public class Config extends JFinalConfig {
 
+    public static void main(String[] args) {
+        JFinal.start("WebRoot", 8080, "/", 5);
+    }
+
     @Override
     public void configConstant(Constants me) {
         me.setEncoding("utf-8");
@@ -22,20 +26,8 @@ public class Config extends JFinalConfig {
     }
 
     @Override
-    public void configRoute(Routes me) {
-        AutoBindRoutes routes = new AutoBindRoutes();
-        routes.addExcludeClass(BaseController.class);
-        me.add(routes);
-    }
+    public void configHandler(Handlers me) {
 
-    @Override
-    public void configPlugin(Plugins me) {
-        DruidPlugin druidPlugin = new DruidPlugin("jdbc:mysql://127.0.0.1/jfinal_demo", "root", "root");
-
-        AutoTableBindPlugin atbp = new AutoTableBindPlugin(druidPlugin);
-        atbp.setAutoScan(false);
-        me.add(druidPlugin);
-        me.add(atbp);
     }
 
     @Override
@@ -44,12 +36,18 @@ public class Config extends JFinalConfig {
     }
 
     @Override
-    public void configHandler(Handlers me) {
+    public void configPlugin(Plugins me) {
+        DruidPlugin druidPlugin = new DruidPlugin("jdbc:mysql://127.0.0.1/jfinal_demo", "root", "root");
 
+        AutoTableBindPlugin atbp = new AutoTableBindPlugin(druidPlugin).autoScan(false);
+        me.add(druidPlugin);
+        me.add(atbp);
     }
 
-    public static void main(String[] args) {
-        JFinal.start("WebRoot", 8080, "/", 5);
+    @Override
+    public void configRoute(Routes me) {
+        AutoBindRoutes routes = new AutoBindRoutes();
+        me.add(routes);
     }
 
 }

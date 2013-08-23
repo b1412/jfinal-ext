@@ -22,6 +22,145 @@ import javax.servlet.descriptor.JspConfigDescriptor;
 
 public class MockServletContext implements ServletContext {
 
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#addFilter(java.lang.String, java.lang.Class)
+     */
+    @Override
+    public Dynamic addFilter(String arg0, Class<? extends Filter> arg1) {
+
+        return null;
+    }
+
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#addFilter(java.lang.String, javax.servlet.Filter)
+     */
+    @Override
+    public Dynamic addFilter(String arg0, Filter arg1) {
+
+        return null;
+    }
+
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#addFilter(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Dynamic addFilter(String arg0, String arg1) {
+
+        return null;
+    }
+
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#addListener(java.lang.Class)
+     */
+    @Override
+    public void addListener(Class<? extends EventListener> arg0) {
+
+    }
+
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#addListener(java.lang.String)
+     */
+    @Override
+    public void addListener(String arg0) {
+
+    }
+
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#addListener(java.util.EventListener)
+     */
+    @Override
+    public <T extends EventListener> void addListener(T arg0) {
+
+    }
+
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#addServlet(java.lang.String, java.lang.Class)
+     */
+    @Override
+    public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0, Class<? extends Servlet> arg1) {
+
+        return null;
+    }
+
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#addServlet(java.lang.String, javax.servlet.Servlet)
+     */
+    @Override
+    public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0, Servlet arg1) {
+
+        return null;
+    }
+
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#addServlet(java.lang.String, java.lang.String)
+     */
+    @Override
+    public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0, String arg1) {
+
+        return null;
+    }
+
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#createFilter(java.lang.Class)
+     */
+    @Override
+    public <T extends Filter> T createFilter(Class<T> arg0) throws ServletException {
+
+        return null;
+    }
+
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#createListener(java.lang.Class)
+     */
+    @Override
+    public <T extends EventListener> T createListener(Class<T> arg0) throws ServletException {
+
+        return null;
+    }
+
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#createServlet(java.lang.Class)
+     */
+    @Override
+    public <T extends Servlet> T createServlet(Class<T> arg0) throws ServletException {
+
+        return null;
+    }
+
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#declareRoles(java.lang.String[])
+     */
+    @Override
+    public void declareRoles(String... arg0) {
+
+    }
+
     @Override
     public Object getAttribute(String arg0) {
 
@@ -35,8 +174,91 @@ public class MockServletContext implements ServletContext {
         return null;
     }
 
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#getClassLoader()
+     */
+    @Override
+    public ClassLoader getClassLoader() {
+
+        return null;
+    }
+
     @Override
     public ServletContext getContext(String arg0) {
+
+        return null;
+    }
+
+    @Override
+    public String getContextPath() {
+
+        return null;
+    }
+
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#getDefaultSessionTrackingModes()
+     */
+    @Override
+    public Set<SessionTrackingMode> getDefaultSessionTrackingModes() {
+
+        return null;
+    }
+
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#getEffectiveMajorVersion()
+     */
+    @Override
+    public int getEffectiveMajorVersion() {
+
+        return 0;
+    }
+
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#getEffectiveMinorVersion()
+     */
+    @Override
+    public int getEffectiveMinorVersion() {
+
+        return 0;
+    }
+
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#getEffectiveSessionTrackingModes()
+     */
+    @Override
+    public Set<SessionTrackingMode> getEffectiveSessionTrackingModes() {
+
+        return null;
+    }
+
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#getFilterRegistration(java.lang.String)
+     */
+    @Override
+    public FilterRegistration getFilterRegistration(String arg0) {
+
+        return null;
+    }
+
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#getFilterRegistrations()
+     */
+    @Override
+    public Map<String, ? extends FilterRegistration> getFilterRegistrations() {
 
         return null;
     }
@@ -49,6 +271,17 @@ public class MockServletContext implements ServletContext {
 
     @Override
     public Enumeration<String> getInitParameterNames() {
+
+        return null;
+    }
+
+    /**
+     * 
+     * 
+     * @see javax.servlet.ServletContext#getJspConfigDescriptor()
+     */
+    @Override
+    public JspConfigDescriptor getJspConfigDescriptor() {
 
         return null;
     }
@@ -130,270 +363,6 @@ public class MockServletContext implements ServletContext {
         return null;
     }
 
-    @Override
-    public Enumeration<Servlet> getServlets() {
-
-        return null;
-    }
-
-    @Override
-    public void log(String arg0) {
-
-    }
-
-    @Override
-    public void log(Exception arg0, String arg1) {
-
-    }
-
-    @Override
-    public void log(String arg0, Throwable arg1) {
-
-    }
-
-    @Override
-    public void removeAttribute(String arg0) {
-
-    }
-
-    @Override
-    public void setAttribute(String arg0, Object arg1) {
-
-    }
-
-    @Override
-    public String getContextPath() {
-
-        return null;
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#addFilter(java.lang.String, java.lang.String)
-     */
-    @Override
-    public Dynamic addFilter(String arg0, String arg1) {
-
-        return null;
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#addFilter(java.lang.String, javax.servlet.Filter)
-     */
-    @Override
-    public Dynamic addFilter(String arg0, Filter arg1) {
-
-        return null;
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#addFilter(java.lang.String, java.lang.Class)
-     */
-    @Override
-    public Dynamic addFilter(String arg0, Class<? extends Filter> arg1) {
-
-        return null;
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#addListener(java.lang.String)
-     */
-    @Override
-    public void addListener(String arg0) {
-
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#addListener(java.util.EventListener)
-     */
-    @Override
-    public <T extends EventListener> void addListener(T arg0) {
-
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#addListener(java.lang.Class)
-     */
-    @Override
-    public void addListener(Class<? extends EventListener> arg0) {
-
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#addServlet(java.lang.String, java.lang.String)
-     */
-    @Override
-    public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0, String arg1) {
-
-        return null;
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#addServlet(java.lang.String, javax.servlet.Servlet)
-     */
-    @Override
-    public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0, Servlet arg1) {
-
-        return null;
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#addServlet(java.lang.String, java.lang.Class)
-     */
-    @Override
-    public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0, Class<? extends Servlet> arg1) {
-
-        return null;
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#createFilter(java.lang.Class)
-     */
-    @Override
-    public <T extends Filter> T createFilter(Class<T> arg0) throws ServletException {
-
-        return null;
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#createListener(java.lang.Class)
-     */
-    @Override
-    public <T extends EventListener> T createListener(Class<T> arg0) throws ServletException {
-
-        return null;
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#createServlet(java.lang.Class)
-     */
-    @Override
-    public <T extends Servlet> T createServlet(Class<T> arg0) throws ServletException {
-
-        return null;
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#declareRoles(java.lang.String[])
-     */
-    @Override
-    public void declareRoles(String... arg0) {
-
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#getClassLoader()
-     */
-    @Override
-    public ClassLoader getClassLoader() {
-
-        return null;
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#getDefaultSessionTrackingModes()
-     */
-    @Override
-    public Set<SessionTrackingMode> getDefaultSessionTrackingModes() {
-
-        return null;
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#getEffectiveMajorVersion()
-     */
-    @Override
-    public int getEffectiveMajorVersion() {
-
-        return 0;
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#getEffectiveMinorVersion()
-     */
-    @Override
-    public int getEffectiveMinorVersion() {
-
-        return 0;
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#getEffectiveSessionTrackingModes()
-     */
-    @Override
-    public Set<SessionTrackingMode> getEffectiveSessionTrackingModes() {
-
-        return null;
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#getFilterRegistration(java.lang.String)
-     */
-    @Override
-    public FilterRegistration getFilterRegistration(String arg0) {
-
-        return null;
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#getFilterRegistrations()
-     */
-    @Override
-    public Map<String, ? extends FilterRegistration> getFilterRegistrations() {
-
-        return null;
-    }
-
-    /**
-     * 
-     * 
-     * @see javax.servlet.ServletContext#getJspConfigDescriptor()
-     */
-    @Override
-    public JspConfigDescriptor getJspConfigDescriptor() {
-
-        return null;
-    }
-
     /**
      * 
      * 
@@ -416,6 +385,12 @@ public class MockServletContext implements ServletContext {
         return null;
     }
 
+    @Override
+    public Enumeration<Servlet> getServlets() {
+
+        return null;
+    }
+
     /**
      * 
      * 
@@ -425,6 +400,31 @@ public class MockServletContext implements ServletContext {
     public SessionCookieConfig getSessionCookieConfig() {
 
         return null;
+    }
+
+    @Override
+    public void log(Exception arg0, String arg1) {
+
+    }
+
+    @Override
+    public void log(String arg0) {
+
+    }
+
+    @Override
+    public void log(String arg0, Throwable arg1) {
+
+    }
+
+    @Override
+    public void removeAttribute(String arg0) {
+
+    }
+
+    @Override
+    public void setAttribute(String arg0, Object arg1) {
+
     }
 
     /**

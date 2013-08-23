@@ -11,6 +11,10 @@ import com.jfinal.log.Log4jLoggerFactory;
 
 public class ChartConfig extends JFinalConfig {
 
+    public static void main(String[] args) {
+        JFinal.start("WebRoot", 8080, "/chart", 5);
+    }
+
     @Override
     public void configConstant(Constants me) {
         me.setEncoding("utf-8");
@@ -20,13 +24,7 @@ public class ChartConfig extends JFinalConfig {
     }
 
     @Override
-    public void configRoute(Routes me) {
-        me.add("/chart", ChartController.class);
-        // AutoControllerRegist.regist(me);
-    }
-
-    @Override
-    public void configPlugin(Plugins me) {
+    public void configHandler(Handlers me) {
 
     }
 
@@ -35,12 +33,14 @@ public class ChartConfig extends JFinalConfig {
     }
 
     @Override
-    public void configHandler(Handlers me) {
+    public void configPlugin(Plugins me) {
 
     }
 
-    public static void main(String[] args) {
-        JFinal.start("WebRoot", 8080, "/chart", 5);
+    @Override
+    public void configRoute(Routes me) {
+        me.add("/chart", ChartController.class);
+        // AutoControllerRegist.regist(me);
     }
 
 }

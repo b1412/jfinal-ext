@@ -10,20 +10,33 @@ import java.util.Random;
  */
 public class Employee {
 
-    static Random random = new Random(System.currentTimeMillis());
     static long current = System.currentTimeMillis();
-    private String name;
+    static Random random = new Random(System.currentTimeMillis());
+    public static List<Employee> generate(int num) {
+        List<Employee> result = new ArrayList<Employee>();
+        for (int index = 0; index < num; index++) {
+            result.add(generateOne("" + index));
+        }
+        return result;
+    }
+    public static Employee generateOne(String nameSuffix) {
+        return new Employee("Employee " + nameSuffix, random.nextInt(100), 1000 + random.nextDouble() * 5000, random.nextInt(100) / 100.0d,
+                new Date(current - (1000000 + random.nextInt(1000000))));
+    }
     private int age;
-    private Double payment;
-    private Double bonus;
     private Date birthDate;
+    private Double bonus;
+    private String name;
+
+    private Double payment;
+
     private Employee superior;
 
-    public Employee(String name, int age, Double payment, Double bonus) {
+    public Employee(String name, int age, double payment, double bonus) {
         this.name = name;
         this.age = age;
-        this.payment = payment;
-        this.bonus = bonus;
+        this.payment = new Double(payment);
+        this.bonus = new Double(bonus);
     }
 
     public Employee(String name, int age, double payment, double bonus, Date birthDate) {
@@ -34,68 +47,55 @@ public class Employee {
         this.birthDate = birthDate;
     }
 
-    public Employee(String name, int age, double payment, double bonus) {
+    public Employee(String name, int age, Double payment, Double bonus) {
         this.name = name;
         this.age = age;
-        this.payment = new Double(payment);
-        this.bonus = new Double(bonus);
-    }
-
-    public static List<Employee> generate(int num) {
-        List<Employee> result = new ArrayList<Employee>();
-        for (int index = 0; index < num; index++) {
-            result.add(generateOne("" + index));
-        }
-        return result;
-    }
-
-    public static Employee generateOne(String nameSuffix) {
-        return new Employee("Employee " + nameSuffix, random.nextInt(100), 1000 + random.nextDouble() * 5000, random.nextInt(100) / 100.0d,
-                new Date(current - (1000000 + random.nextInt(1000000))));
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        this.payment = payment;
+        this.bonus = bonus;
     }
 
     public int getAge() {
         return age;
     }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public Double getPayment() {
-        return payment;
-    }
-
-    public void setPayment(Double payment) {
-        this.payment = payment;
+    public Date getBirthDate() {
+        return birthDate;
     }
 
     public Double getBonus() {
         return bonus;
     }
 
-    public void setBonus(Double bonus) {
-        this.bonus = bonus;
+    public String getName() {
+        return name;
     }
 
-    public Date getBirthDate() {
-        return birthDate;
+    public Double getPayment() {
+        return payment;
+    }
+
+    public Employee getSuperior() {
+        return superior;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }
 
-    public Employee getSuperior() {
-        return superior;
+    public void setBonus(Double bonus) {
+        this.bonus = bonus;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPayment(Double payment) {
+        this.payment = payment;
     }
 
     public void setSuperior(Employee superior) {

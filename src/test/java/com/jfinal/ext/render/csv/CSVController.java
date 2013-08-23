@@ -23,6 +23,6 @@ public class CSVController extends Controller {
         columns.add("title");
         // List<Blog> blogs=Blog.dao.find("select * from blog");
         // List<Record> records=Db.find("select * from blog");
-        render(CsvRender.csv(header, data, "csvTest.csv", columns));
+        render(CsvRender.me(header, data).fileName("csvTest.csv").clomuns(columns));
     }
 }

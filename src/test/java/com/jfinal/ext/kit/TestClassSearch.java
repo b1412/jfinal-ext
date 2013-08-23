@@ -16,17 +16,17 @@ import com.jfinal.plugin.activerecord.Model;
  */
 public class TestClassSearch {
     @Test
-    public void testFindInClasspath() {
-        List<Class<? extends Model>> models = ClassSearcher.me.search(Model.class);
-        for (Class<? extends Model> model : models) {
+    public void findInClasspathAndJars() {
+        List<Class<? extends Model>> models2 = ClassSearcher.of(Model.class).search();
+        for (Class<? extends Model> model : models2) {
             System.out.println(model);
         }
     }
 
     @Test
-    public void findInClasspathAndJars() {
-        List<Class<? extends Model>> models2 = ClassSearcher.me.addJar("modelInJar.jar").search(Model.class);
-        for (Class<? extends Model> model : models2) {
+    public void testFindInClasspath() {
+        List<Class<? extends Model>> models = ClassSearcher.of(Model.class).inJars("modelInJar.jar").search();
+        for (Class<? extends Model> model : models) {
             System.out.println(model);
         }
     }

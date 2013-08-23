@@ -11,6 +11,13 @@ import com.jfinal.render.ViewType;
 
 public class Config extends JFinalConfig {
 
+    public static void main(String[] args) {
+        JFinal.start("WebRoot", 9090, "/", 5);
+        // System.out.println(new Locale("cn"));
+        // System.out.println(new Locale("tw"));
+        // System.out.println(new Locale("en"));
+    }
+
     @Override
     public void configConstant(Constants me) {
         me.setEncoding("utf-8");
@@ -20,12 +27,8 @@ public class Config extends JFinalConfig {
     }
 
     @Override
-    public void configRoute(Routes me) {
-        me.add("/p", TestController.class);
-    }
+    public void configHandler(Handlers me) {
 
-    @Override
-    public void configPlugin(Plugins me) {
     }
 
     @Override
@@ -40,15 +43,12 @@ public class Config extends JFinalConfig {
     }
 
     @Override
-    public void configHandler(Handlers me) {
-
+    public void configPlugin(Plugins me) {
     }
 
-    public static void main(String[] args) {
-        JFinal.start("WebRoot", 9090, "/", 5);
-        // System.out.println(new Locale("cn"));
-        // System.out.println(new Locale("tw"));
-        // System.out.println(new Locale("en"));
+    @Override
+    public void configRoute(Routes me) {
+        me.add("/p", TestController.class);
     }
 
 }

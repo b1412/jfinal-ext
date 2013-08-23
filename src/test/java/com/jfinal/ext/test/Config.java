@@ -10,18 +10,17 @@ import com.jfinal.core.JFinal;
 
 public class Config extends JFinalConfig {
 
+    public static void main(String[] args) {
+        JFinal.start("WebRoot", 8080, "/", 5);
+    }
+
     @Override
     public void configConstant(Constants me) {
         me.setDevMode(true);
     }
 
     @Override
-    public void configRoute(Routes me) {
-        me.add("/post", PostDataController.class);
-    }
-
-    @Override
-    public void configPlugin(Plugins me) {
+    public void configHandler(Handlers me) {
 
     }
 
@@ -30,12 +29,13 @@ public class Config extends JFinalConfig {
     }
 
     @Override
-    public void configHandler(Handlers me) {
+    public void configPlugin(Plugins me) {
 
     }
 
-    public static void main(String[] args) {
-        JFinal.start("WebRoot", 8080, "/", 5);
+    @Override
+    public void configRoute(Routes me) {
+        me.add("/post", PostDataController.class);
     }
 
 }

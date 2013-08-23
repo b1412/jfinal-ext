@@ -1,7 +1,5 @@
 package com.jfinal.ext.render.excel;
 
-import static com.jfinal.ext.render.excel.PoiRender.excel;
-
 import java.util.List;
 import java.util.Map;
 
@@ -11,29 +9,9 @@ import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Record;
 
 public class PoiController extends Controller {
+    String[] columns = new String[] { "ACC_NBR", "DEVID", "IMSI" };
     String[] headers = new String[] { "电话号码", "设备id", "imsi", "最后上线时间" };
     String[] headers2 = new String[] { "电话号码", "设备id", "imsi" };
-    String[] columns = new String[] { "ACC_NBR", "DEVID", "IMSI" };
-
-    public void record() {
-        List<Object> data = Lists.newArrayList();
-        for (int i = 0; i < 5; i++) {
-            Record record = new Record();
-            Map<String, Object> map = getMap(i);
-            record.setColumns(map);
-            data.add(record);
-        }
-        render(excel(data, headers));
-    }
-
-    public void map() {
-        List<Object> data = Lists.newArrayList();
-        for (int i = 0; i < 5; i++) {
-            Map<String, Object> map = getMap(i);
-            data.add(map);
-        }
-        render(excel(data, headers));
-    }
 
     public void columns() {
         List<Object> data = Lists.newArrayList();
@@ -41,7 +19,7 @@ public class PoiController extends Controller {
             Map<String, Object> map = getMap(i);
             data.add(map);
         }
-        render(excel(data, headers2).columns(columns));
+        render(PoiRender.me(data, headers2).columns(columns));
 
     }
 
@@ -52,5 +30,25 @@ public class PoiController extends Controller {
         map.put("DEVID", "DEVID" + i);
         map.put("LASTTIME", "LASTTIME" + i);
         return map;
+    }
+
+    public void map() {
+        List<Object> data = Lists.newArrayList();
+        for (int i = 0; i < 5; i++) {
+            Map<String, Object> map = getMap(i);
+            data.add(map);
+        }
+        render(PoiRender.me(data, headers));
+    }
+
+    public void record() {
+        List<Object> data = Lists.newArrayList();
+        for (int i = 0; i < 5; i++) {
+            Record record = new Record();
+            Map<String, Object> map = getMap(i);
+            record.setColumns(map);
+            data.add(record);
+        }
+        render(PoiRender.me(data, headers));
     }
 }

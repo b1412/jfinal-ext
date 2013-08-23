@@ -38,6 +38,18 @@ public class MockHttpRequest implements HttpServletRequest {
     }
 
     @Override
+    public boolean authenticate(HttpServletResponse arg0) throws IOException, ServletException {
+
+        return false;
+    }
+
+    @Override
+    public AsyncContext getAsyncContext() {
+
+        return null;
+    }
+
+    @Override
     public Object getAttribute(String key) {
         return attr.get(key);
     }
@@ -45,6 +57,12 @@ public class MockHttpRequest implements HttpServletRequest {
     @Override
     public Enumeration<String> getAttributeNames() {
         return new Hashtable<String, Object>(attr).keys();
+    }
+
+    @Override
+    public String getAuthType() {
+
+        return null;
     }
 
     @Override
@@ -65,12 +83,72 @@ public class MockHttpRequest implements HttpServletRequest {
     }
 
     @Override
+    public String getContextPath() {
+
+        return null;
+    }
+
+    @Override
+    public Cookie[] getCookies() {
+
+        return null;
+    }
+
+    @Override
+    public long getDateHeader(String arg0) {
+
+        return 0;
+    }
+
+    @Override
+    public DispatcherType getDispatcherType() {
+
+        return null;
+    }
+
+    @Override
+    public String getHeader(String arg0) {
+
+        return null;
+    }
+
+    @Override
+    public Enumeration<String> getHeaderNames() {
+
+        return null;
+    }
+
+    @Override
+    public Enumeration<String> getHeaders(String arg0) {
+
+        return null;
+    }
+
+    @Override
     public ServletInputStream getInputStream() throws IOException {
         return new MockServletInputStream(body);
     }
 
     @Override
+    public int getIntHeader(String arg0) {
+
+        return 0;
+    }
+
+    @Override
     public String getLocalAddr() {
+
+        return null;
+    }
+
+    @Override
+    public Locale getLocale() {
+
+        return null;
+    }
+
+    @Override
+    public Enumeration<Locale> getLocales() {
 
         return null;
     }
@@ -88,13 +166,7 @@ public class MockHttpRequest implements HttpServletRequest {
     }
 
     @Override
-    public Locale getLocale() {
-
-        return null;
-    }
-
-    @Override
-    public Enumeration<Locale> getLocales() {
+    public String getMethod() {
 
         return null;
     }
@@ -102,10 +174,6 @@ public class MockHttpRequest implements HttpServletRequest {
     @Override
     public String getParameter(String key) {
         return para.get(key);
-    }
-
-    public void setParameter(String key, String val) {
-        para.put(key, val);
     }
 
     @Override
@@ -124,7 +192,37 @@ public class MockHttpRequest implements HttpServletRequest {
     }
 
     @Override
+    public Part getPart(String arg0) throws IOException, ServletException {
+
+        return null;
+    }
+
+    @Override
+    public Collection<Part> getParts() throws IOException, ServletException {
+
+        return null;
+    }
+
+    @Override
+    public String getPathInfo() {
+
+        return null;
+    }
+
+    @Override
+    public String getPathTranslated() {
+
+        return null;
+    }
+
+    @Override
     public String getProtocol() {
+
+        return null;
+    }
+
+    @Override
+    public String getQueryString() {
 
         return null;
     }
@@ -160,6 +258,12 @@ public class MockHttpRequest implements HttpServletRequest {
     }
 
     @Override
+    public String getRemoteUser() {
+
+        return null;
+    }
+
+    @Override
     public RequestDispatcher getRequestDispatcher(final String view) {
         return new RequestDispatcher() {
             @Override
@@ -175,6 +279,24 @@ public class MockHttpRequest implements HttpServletRequest {
 
             }
         };
+    }
+
+    @Override
+    public String getRequestedSessionId() {
+
+        return null;
+    }
+
+    @Override
+    public String getRequestURI() {
+
+        return null;
+    }
+
+    @Override
+    public StringBuffer getRequestURL() {
+
+        return null;
     }
 
     @Override
@@ -196,118 +318,7 @@ public class MockHttpRequest implements HttpServletRequest {
     }
 
     @Override
-    public boolean isSecure() {
-
-        return false;
-    }
-
-    @Override
-    public void removeAttribute(String arg0) {
-
-    }
-
-    @Override
-    public void setAttribute(String key, Object value) {
-        attr.put(key, value);
-    }
-
-    @Override
-    public void setCharacterEncoding(String arg0) throws UnsupportedEncodingException {
-
-    }
-
-    @Override
-    public String getAuthType() {
-
-        return null;
-    }
-
-    @Override
-    public String getContextPath() {
-
-        return null;
-    }
-
-    @Override
-    public Cookie[] getCookies() {
-
-        return null;
-    }
-
-    @Override
-    public long getDateHeader(String arg0) {
-
-        return 0;
-    }
-
-    @Override
-    public String getHeader(String arg0) {
-
-        return null;
-    }
-
-    @Override
-    public Enumeration<String> getHeaderNames() {
-
-        return null;
-    }
-
-    @Override
-    public Enumeration<String> getHeaders(String arg0) {
-
-        return null;
-    }
-
-    @Override
-    public int getIntHeader(String arg0) {
-
-        return 0;
-    }
-
-    @Override
-    public String getMethod() {
-
-        return null;
-    }
-
-    @Override
-    public String getPathInfo() {
-
-        return null;
-    }
-
-    @Override
-    public String getPathTranslated() {
-
-        return null;
-    }
-
-    @Override
-    public String getQueryString() {
-
-        return null;
-    }
-
-    @Override
-    public String getRemoteUser() {
-
-        return null;
-    }
-
-    @Override
-    public String getRequestURI() {
-
-        return null;
-    }
-
-    @Override
-    public StringBuffer getRequestURL() {
-
-        return null;
-    }
-
-    @Override
-    public String getRequestedSessionId() {
+    public ServletContext getServletContext() {
 
         return null;
     }
@@ -337,54 +348,6 @@ public class MockHttpRequest implements HttpServletRequest {
     }
 
     @Override
-    public boolean isRequestedSessionIdFromCookie() {
-
-        return false;
-    }
-
-    @Override
-    public boolean isRequestedSessionIdFromURL() {
-
-        return false;
-    }
-
-    @Override
-    public boolean isRequestedSessionIdFromUrl() {
-
-        return false;
-    }
-
-    @Override
-    public boolean isRequestedSessionIdValid() {
-
-        return false;
-    }
-
-    @Override
-    public boolean isUserInRole(String arg0) {
-
-        return false;
-    }
-
-    @Override
-    public AsyncContext getAsyncContext() {
-
-        return null;
-    }
-
-    @Override
-    public DispatcherType getDispatcherType() {
-
-        return null;
-    }
-
-    @Override
-    public ServletContext getServletContext() {
-
-        return null;
-    }
-
-    @Override
     public boolean isAsyncStarted() {
 
         return false;
@@ -397,33 +360,39 @@ public class MockHttpRequest implements HttpServletRequest {
     }
 
     @Override
-    public AsyncContext startAsync() {
-
-        return null;
-    }
-
-    @Override
-    public AsyncContext startAsync(ServletRequest arg0, ServletResponse arg1) {
-
-        return null;
-    }
-
-    @Override
-    public boolean authenticate(HttpServletResponse arg0) throws IOException, ServletException {
+    public boolean isRequestedSessionIdFromCookie() {
 
         return false;
     }
 
     @Override
-    public Part getPart(String arg0) throws IOException, ServletException {
+    public boolean isRequestedSessionIdFromUrl() {
 
-        return null;
+        return false;
     }
 
     @Override
-    public Collection<Part> getParts() throws IOException, ServletException {
+    public boolean isRequestedSessionIdFromURL() {
 
-        return null;
+        return false;
+    }
+
+    @Override
+    public boolean isRequestedSessionIdValid() {
+
+        return false;
+    }
+
+    @Override
+    public boolean isSecure() {
+
+        return false;
+    }
+
+    @Override
+    public boolean isUserInRole(String arg0) {
+
+        return false;
     }
 
     @Override
@@ -434,6 +403,37 @@ public class MockHttpRequest implements HttpServletRequest {
     @Override
     public void logout() throws ServletException {
 
+    }
+
+    @Override
+    public void removeAttribute(String arg0) {
+
+    }
+
+    @Override
+    public void setAttribute(String key, Object value) {
+        attr.put(key, value);
+    }
+
+    @Override
+    public void setCharacterEncoding(String arg0) throws UnsupportedEncodingException {
+
+    }
+
+    public void setParameter(String key, String val) {
+        para.put(key, val);
+    }
+
+    @Override
+    public AsyncContext startAsync() {
+
+        return null;
+    }
+
+    @Override
+    public AsyncContext startAsync(ServletRequest arg0, ServletResponse arg1) {
+
+        return null;
     }
 
 }

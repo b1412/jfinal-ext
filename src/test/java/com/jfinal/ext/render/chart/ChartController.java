@@ -13,13 +13,19 @@ public class ChartController extends Controller {
 
     protected final Logger logger = Logger.getLogger(getClass());
 
-    public void pie() {
+    public void fpie() {
         List<KeyLabel> pies = new ArrayList<KeyLabel>();
-        KeyLabel e = new KeyLabel("java", "111");
+        KeyLabel e = new KeyLabel("1111", "java");
         pies.add(e);
-        KeyLabel e2 = new KeyLabel("c", "11");
+        KeyLabel e2 = new KeyLabel("222", "c");
         pies.add(e2);
-        render(AmChartsRender.pie(pies, "ampie.swf", "pie_settings.xml", 500, 500));
+        FunshionChartsRender fr = new FunshionChartsRender();
+        fr.setPies(pies);
+        fr.setHeight("500");
+        fr.setWidth("500");
+        fr.setCaption("pie");
+        fr.setFlashFile("Pie3D.swf");
+        render(fr);
     }
 
     public void multiple() {
@@ -47,6 +53,15 @@ public class ChartController extends Controller {
         render(AmChartsRender.graph(list, series, "amline.swf", "line_settings.xml"));
     }
 
+    public void pie() {
+        List<KeyLabel> pies = new ArrayList<KeyLabel>();
+        KeyLabel e = new KeyLabel("java", "111");
+        pies.add(e);
+        KeyLabel e2 = new KeyLabel("c", "11");
+        pies.add(e2);
+        render(AmChartsRender.pie(pies, "ampie.swf", "pie_settings.xml", 500, 500));
+    }
+
     public void simple() {
         List<String> data = new ArrayList<String>();
         data.add("10");
@@ -61,20 +76,5 @@ public class ChartController extends Controller {
         series.add("4月");
         series.add("5月");
         render(AmChartsRender.graph(data, series, "amline.swf", "line_settings.xml"));
-    }
-
-    public void fpie() {
-        List<KeyLabel> pies = new ArrayList<KeyLabel>();
-        KeyLabel e = new KeyLabel("1111", "java");
-        pies.add(e);
-        KeyLabel e2 = new KeyLabel("222", "c");
-        pies.add(e2);
-        FunshionChartsRender fr = new FunshionChartsRender();
-        fr.setPies(pies);
-        fr.setHeight("500");
-        fr.setWidth("500");
-        fr.setCaption("pie");
-        fr.setFlashFile("Pie3D.swf");
-        render(fr);
     }
 }
