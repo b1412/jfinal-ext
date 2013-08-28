@@ -6,20 +6,22 @@ public class TestController extends Controller {
     public void a() {
         throw new IllegalArgumentException();
     }
+
     public void b() {
         throw new IllegalStateException();
     }
 
     public void c() {
-        int i = 1/0;
-        renderText(i+"");
+        int i = 1 / 0;
+        renderText(i + "");
     }
+
     public void d() {
         render("d.html");
     }
 
-    public void index(){
-        
+    public void index() {
+
     }
 
 }

@@ -12,12 +12,11 @@ import com.jfinal.render.ViewType;
 public class Config extends JFinalConfig {
 
     public static void main(String[] args) {
-        JFinal.start("WebRoot", 9090, "/", 5);
+        JFinal.start("src/main/webapp", 9090, "/", 5);
         // System.out.println(new Locale("cn"));
         // System.out.println(new Locale("tw"));
         // System.out.println(new Locale("en"));
     }
-
     @Override
     public void configConstant(Constants me) {
         me.setEncoding("utf-8");

@@ -12,69 +12,62 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.Region;
 
 import com.google.common.base.Preconditions;
-import com.jfinal.kit.StringKit;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
 
 public class PoiKit {
 
-    public static final int DEFAULT_CELL_WIDTH = 8000;
-    private static final String DEFAULT_SHEET_NAME = "new sheet";
-    public static final int HEADER_ROW = 1;
+    private static final int HEADER_ROW = 1;
     private static final int MAX_ROWS = 65536;
 
-    /**
-     * 
-     * @param sheetName
-     *            sheet名称
-     * @param cellWidth
-     *            设置单元格宽度
-     * @param headerRow
-     *            设置头列占的行数
-     * @param headers
-     *            头列值
-     * @param columns
-     *            列key(即 list<Map<String ,Ojbect>> 中 map的key)
-     * @param list
-     *            数据
-     * @return
-     */
+    private String sheetName = "new sheet";
+    private int cellWidth = 8000;
+    private int headerRow;
+    private String[] headers = new String[] {};
+    private String[] columns;
+    private List<?> data;
 
-    public static HSSFWorkbook export(String sheetName, int cellWidth, int headerRow, String[] headers,
-            String[] columns, List<?> list, int columnNum, boolean hasHeaders) {
+    public PoiKit(List<?> data) {
+        this.data = data;
+    }
+
+    public static PoiKit with(List<?> data) {
+        return new PoiKit(data);
+    }
+
+    public HSSFWorkbook export() {
         Preconditions.checkNotNull(headers, "headers can not be null");
         Preconditions.checkNotNull(columns, "columns can not be null");
-        Preconditions.checkArgument(cellWidth > 0, "cellWidth < 0");
-        if (StringKit.isBlank(sheetName)) {
-            sheetName = DEFAULT_SHEET_NAME;
-        }
+        Preconditions.checkArgument(cellWidth >= 0, "cellWidth < 0");
         HSSFWorkbook wb = new HSSFWorkbook();
         HSSFSheet sheet = wb.createSheet(sheetName);
         HSSFRow row = null;
         HSSFCell cell = null;
-        setCellWidth(sheet, cellWidth, columnNum);
-        if (hasHeaders) {
+        if (headers.length > 0) {
             row = sheet.createRow(0);
             if (headerRow <= 0) {
                 headerRow = HEADER_ROW;
             }
             headerRow = Math.min(headerRow, MAX_ROWS);
             for (int h = 0, lenH = headers.length; h < lenH; h++) {
+                @SuppressWarnings("deprecation")
                 Region region = new Region(0, (short) h, (short) headerRow - 1, (short) h);// 合并从第rowFrom行columnFrom列
                 sheet.addMergedRegion(region);// 到rowTo行columnTo的区域
                 // 得到所有区域
                 sheet.getNumMergedRegions();
-                sheet.setColumnWidth(h, cellWidth);
+                if (cellWidth > 0) {
+                    sheet.setColumnWidth(h, cellWidth);
+                }
                 cell = row.createCell(h);
                 cell.setCellValue(headers[h]);
             }
         }
-        if (list.size() == 0) {
+        if (data.size() == 0) {
             return wb;
         }
-        for (int i = 0, len = list.size(); i < len; i++) {
+        for (int i = 0, len = data.size(); i < len; i++) {
             row = sheet.createRow(i + headerRow);
-            Object obj = list.get(i);
+            Object obj = data.get(i);
             if (obj == null) {
                 continue;
             }
@@ -87,30 +80,6 @@ public class PoiKit {
             }
         }
         return wb;
-    }
-    /**
-     * @param String
-     *            sheetName sheet名称
-     * @param int headerRow 设置头列占的行数
-     * @param String
-     *            [] headers 头列值
-     * @param String
-     *            [] columns 列key(即 list<Map<String ,Ojbect>> 中 map的key)
-     * @param List
-     *            <Map<String, Object>> list 数据
-     * @param int cellWidth 设置单元格宽度
-     * @return
-     */
-    public static HSSFWorkbook export(String sheetName, int headerRow, String[] headers, String[] columns,
-            List<? extends Object> list, int cellWidth) {
-        boolean hasHeaders = false;
-        int columnNum = Math.max(0, columns.length);
-        if (headers.length > 0) {
-            hasHeaders = true;
-            columnNum = headers.length;
-        }
-        return export(sheetName, cellWidth, headerRow, headers, columns, list, columnNum, hasHeaders);
-
     }
 
     @SuppressWarnings("unchecked")
@@ -173,18 +142,29 @@ public class PoiKit {
         }
     }
 
-    /**
-     * 设置单元格宽度
-     * 
-     * @param sheet
-     * @param cellWidth
-     * @param columnNum
-     */
-    private static void setCellWidth(HSSFSheet sheet, int cellWidth, int columnNum) {
-        for (int i = 0; i < columnNum; i++) {
-            sheet.setColumnWidth(i, cellWidth);
-        }
+    public PoiKit sheetName(String sheetName) {
+        this.sheetName = sheetName;
+        return this;
+    }
 
+    public PoiKit cellWidth(int cellWidth) {
+        this.cellWidth = cellWidth;
+        return this;
+    }
+
+    public PoiKit headerRow(int headerRow) {
+        this.headerRow = headerRow;
+        return this;
+    }
+
+    public PoiKit headers(String[] headers) {
+        this.headers = headers;
+        return this;
+    }
+
+    public PoiKit columns(String[] columns) {
+        this.columns = columns;
+        return this;
     }
 
 }

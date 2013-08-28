@@ -32,7 +32,7 @@ public class I18nInterceptor implements Interceptor {
         controller.setLocaleToCookie(locale);
         controller.setAttr(localePara, locale);
         ai.invoke();
-        if (true == (Boolean) ai.getController().getAttr(skipFlagPara)) {
+        if (Boolean.TRUE.equals(ai.getController().getAttr(skipFlagPara))) {
             return;
         }
         Render render = controller.getRender();

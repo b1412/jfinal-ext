@@ -6,12 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.jxls.exception.ParsePropertyException;
 import net.sf.jxls.transformer.XLSTransformer;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 public class TestJxlsKit {
-    public static void main(String[] args) throws InvalidFormatException, IOException {
+    public static void main(String[] args) throws ParsePropertyException, IOException {
         List<Employee> staff = new ArrayList<Employee>();
         staff.add(new Employee("Derek", 35, 3000, 0.30));
         staff.add(new Employee("Elsa", 28, 1500, 0.15));

@@ -14,7 +14,7 @@ import com.jfinal.plugin.druid.DruidPlugin;
 public class ExcelConfig extends JFinalConfig {
 
     public static void main(String[] args) {
-        JFinal.start("WebRoot", 8080, "/", 5);
+        JFinal.start("src/main/webapp", 8080, "/", 0);
     }
 
     @Override
@@ -35,11 +35,11 @@ public class ExcelConfig extends JFinalConfig {
 
     @Override
     public void configPlugin(Plugins me) {
-        DruidPlugin db = new DruidPlugin(getProperty("url"), "root", "root");
-        ActiveRecordPlugin arp = new ActiveRecordPlugin(db);
-        arp.addMapping("blog", Blog.class);
-        me.add(db);
-        me.add(arp);
+//        DruidPlugin db = new DruidPlugin(getProperty("url"), "root", "root");
+//        ActiveRecordPlugin arp = new ActiveRecordPlugin(db);
+//        arp.addMapping("blog", Blog.class);
+//        me.add(db);
+//        me.add(arp);
     }
 
     @Override

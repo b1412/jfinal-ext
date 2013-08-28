@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-
 import com.jfinal.log.Logger;
 import com.jfinal.render.Render;
 import com.jfinal.render.RenderException;
@@ -15,21 +13,20 @@ public class PoiRender extends Render {
 
     protected final Logger LOG = Logger.getLogger(getClass());
     private final static String CONTENT_TYPE = "application/msexcel;charset=" + getEncoding();
-    private int cellWidth;
-    private String[] columns;
     private List<?> data;
-    private String fileName = "file1.xls";
-    private int headerRow;
     private String[] headers;
     private String sheetName = "sheet1";
+    private int cellWidth;
+    private String[] columns = new String[] {};
+    private String fileName = "file1.xls";
+    private int headerRow;
 
-    public PoiRender(List<?> data, String[] headers) {
+    public PoiRender(List<?> data) {
         this.data = data;
-        this.headers = headers;
     }
 
-    public static PoiRender me(List<?> data, String[] headers) {
-        return new PoiRender(data, headers);
+    public static PoiRender me(List<?> data) {
+        return new PoiRender(data);
     }
 
     @Override
@@ -40,8 +37,8 @@ public class PoiRender extends Render {
         OutputStream os = null;
         try {
             os = response.getOutputStream();
-            HSSFWorkbook wb = PoiKit.export(sheetName, headerRow, headers, columns, data, cellWidth);
-            wb.write(os);
+            PoiKit.with(data).sheetName(sheetName).headerRow(headerRow).headers(headers).columns(columns)
+                    .cellWidth(cellWidth).export().write(os);
         } catch (Exception e) {
             throw new RenderException(e);
         } finally {
@@ -57,6 +54,21 @@ public class PoiRender extends Render {
         }
     }
 
+    public PoiRender headers(String... headers) {
+        this.headers = headers;
+        return this;
+    }
+
+    public PoiRender headerRow(int headerRow) {
+        this.headerRow = headerRow;
+        return this;
+    }
+
+    public PoiRender columns(String... columns) {
+        this.columns = columns;
+        return this;
+    }
+
     public PoiRender sheetName(String sheetName) {
         this.sheetName = sheetName;
         return this;
@@ -67,23 +79,8 @@ public class PoiRender extends Render {
         return this;
     }
 
-    public PoiRender columns(String[] columns) {
-        this.columns = columns;
-        return this;
-    }
-
-    public PoiRender data(List<?> data) {
-        this.data = data;
-        return this;
-    }
-
     public PoiRender fileName(String fileName) {
         this.fileName = fileName;
-        return this;
-    }
-
-    public PoiRender headers(String[] headers) {
-        this.headers = headers;
         return this;
     }
 }
