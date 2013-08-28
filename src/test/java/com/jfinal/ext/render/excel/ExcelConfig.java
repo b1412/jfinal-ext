@@ -7,9 +7,6 @@ import com.jfinal.config.JFinalConfig;
 import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
 import com.jfinal.core.JFinal;
-import com.jfinal.ext.plugin.tablebind.Blog;
-import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
-import com.jfinal.plugin.druid.DruidPlugin;
 
 public class ExcelConfig extends JFinalConfig {
 
