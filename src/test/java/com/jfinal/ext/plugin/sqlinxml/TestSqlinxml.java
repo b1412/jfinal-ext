@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class TestSqlinxml {
 
-    @Test
+    //@Test
     public void test() throws InterruptedException {
         SqlInXmlPlugin plugin = new SqlInXmlPlugin();
         plugin.start();

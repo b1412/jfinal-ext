@@ -22,19 +22,19 @@ public class TestTableBind {
         druidPlugin.stop();
     }
 
-    @Test
+    //@Test
     public void testDefault() {
         atbp = new AutoTableBindPlugin(druidPlugin);
         atbp.start();
     }
 
-    @Test
+    //@Test
     public void testInJar() {
         atbp = new AutoTableBindPlugin(druidPlugin).autoScan(false).addJars("modelInJar.jar");
         atbp.start();
     }
 
-    @Test
+    //@Test
     public void testMoudle() {
         atbp = new AutoTableBindPlugin(druidPlugin, ParamNameStyles.lowerModule("SNS_"));
         atbp.start();

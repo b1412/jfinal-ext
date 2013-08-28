@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class TestQuartz {
 
-    @Test
+    //@Test
     public void test() throws InterruptedException {
 //        QuartzPlugin quartzPlugin = new QuartzPlugin("quartzjob.properties");
 //        quartzPlugin.start();

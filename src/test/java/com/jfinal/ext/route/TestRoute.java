@@ -9,21 +9,21 @@ import com.jfinal.ext.test.ControllerTestCase;
 public class TestRoute extends ControllerTestCase<Config> {
 
 
-    @Test
+    //@Test
     public void testAController() throws Exception {
         use("/aa").invoke();
         assertEquals("zhoulei", findAttrAfterInvoke("name"));
         assertEquals(24, findAttrAfterInvoke("age"));
     }
 
-    @Test
+    //@Test
     public void testBController() throws Exception {
         use("/bb").invoke();
         assertEquals("zhoulei", findAttrAfterInvoke("name"));
         assertEquals(24, findAttrAfterInvoke("age"));
     }
 
-    @Test
+    //@Test
     public void testCController() throws Exception {
         use("/c").invoke();
     }

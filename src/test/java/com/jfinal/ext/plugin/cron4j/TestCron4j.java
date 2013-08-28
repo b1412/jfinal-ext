@@ -8,7 +8,7 @@ import com.jfinal.ext.plugin.cron.Cron4jPlugin;
 
 public class TestCron4j {
 
-    @Test
+    //@Test
     public void test() throws InterruptedException {
 //        Cron4jPlugin cron4jPlugin = new Cron4jPlugin().config("cronjob.properties");
 //        cron4jPlugin.start();

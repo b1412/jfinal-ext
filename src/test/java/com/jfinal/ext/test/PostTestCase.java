@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class PostTestCase extends ControllerTestCase<Config> {
 
-    @Test
+    //@Test
     public void line() throws Exception {
 
         String url = "/post";
@@ -16,7 +16,7 @@ public class PostTestCase extends ControllerTestCase<Config> {
         System.out.println(resp);
     }
 
-    @Test
+    //@Test
     public void test3() {
         String url = "/post/1?age=1&age=2&name=2";
         String body = "<root>中文</root>";

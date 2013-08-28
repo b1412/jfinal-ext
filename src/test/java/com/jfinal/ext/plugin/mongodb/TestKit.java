@@ -22,7 +22,7 @@ public class TestKit {
 
     }
 
-    @Test
+    //@Test
     public void page() {
         Map<String, Object> filter = new HashMap<String, Object>();
         filter.put("age", "1");
@@ -32,7 +32,7 @@ public class TestKit {
         System.out.println(page.getList());
     }
 
-    @Test
+    //@Test
     public void testDelete() {
         Map<String, Object> filter = new HashMap<String, Object>();
         filter.put("name", "bb");
@@ -40,12 +40,12 @@ public class TestKit {
         System.out.println(MongoKit.remove("sns", filter));
     }
 
-    @Test
+    //@Test
     public void testDeleteAll() {
         System.out.println(MongoKit.removeAll("sns"));
     }
 
-    @Test
+    //@Test
     public void testSave() {
         List<Record> records = new ArrayList<Record>();
         Record record = new Record();
@@ -58,7 +58,7 @@ public class TestKit {
         System.out.println(MongoKit.save("sns", records));
     }
 
-    @Test
+    //@Test
     public void testUpdate() {
         MongoKit.removeAll("sns");
         List<Record> records = new ArrayList<Record>();
