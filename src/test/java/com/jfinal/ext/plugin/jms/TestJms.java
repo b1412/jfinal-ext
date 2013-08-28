@@ -3,13 +3,10 @@ package com.jfinal.ext.plugin.jms;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.jfinal.ext.plugin.config.ConfigPlugin;
 
 public class TestJms {
-    @Test
+    //@Test
     public void sendQueue() throws InterruptedException {
         JmsPlugin jmsPlugin = new JmsPlugin("jms.properties");
         jmsPlugin.start();
@@ -17,8 +14,7 @@ public class TestJms {
         TimeUnit.SECONDS.sleep(60);
     }
 
-    @Ignore
-    @Test
+   // @Test
     public void sendQueueWithConfigPlugin() throws InterruptedException {
         ConfigPlugin configPlugin = new ConfigPlugin("jms.properties");
         JmsPlugin jmsPlugin = new JmsPlugin(configPlugin);
