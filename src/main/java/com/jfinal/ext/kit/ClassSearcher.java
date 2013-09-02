@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.joor.Reflect;
-
 import com.google.common.collect.Lists;
 import com.jfinal.kit.PathKit;
 import com.jfinal.log.Logger;

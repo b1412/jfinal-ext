@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import com.jfinal.ext.plugin.monogodb.MongoKit;
 import com.jfinal.ext.plugin.monogodb.MongodbPlugin;

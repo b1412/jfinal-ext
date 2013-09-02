@@ -1,8 +1,5 @@
 package com.jfinal.ext.plugin.quartz;
 
-import java.util.concurrent.TimeUnit;
-
-import org.junit.Test;
 
 public class TestQuartz {
 

@@ -8,7 +8,6 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
 
-import org.joor.Reflect;
 import org.quartz.CronTrigger;
 import org.quartz.Job;
 import org.quartz.JobDetail;
@@ -19,6 +18,7 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
+import com.jfinal.ext.kit.Reflect;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.IPlugin;
 

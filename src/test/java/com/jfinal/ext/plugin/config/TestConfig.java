@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit;
 import junit.framework.Assert;
 
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import com.jfinal.log.Logger;
 

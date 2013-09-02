@@ -2,8 +2,6 @@ package com.jfinal.ext.route;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-
 import com.jfinal.ext.test.ControllerTestCase;
 
 public class TestRoute extends ControllerTestCase<Config> {

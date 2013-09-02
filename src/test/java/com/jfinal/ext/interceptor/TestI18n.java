@@ -1,7 +1,5 @@
 package com.jfinal.ext.interceptor;
 
-import org.junit.Test;
-
 import com.jfinal.ext.test.ControllerTestCase;
 
 public class TestI18n extends ControllerTestCase<Config> {

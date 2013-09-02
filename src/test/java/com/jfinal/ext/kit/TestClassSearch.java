@@ -6,8 +6,6 @@ package com.jfinal.ext.kit;
 
 import java.util.List;
 
-import org.junit.Test;
-
 import com.jfinal.plugin.activerecord.Model;
 
 /**

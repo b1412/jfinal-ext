@@ -1,7 +1,5 @@
 package com.jfinal.ext.render.dwz;
 
-import org.junit.Test;
-
 import com.jfinal.ext.test.ControllerTestCase;
 
 public class TestDwzRender extends ControllerTestCase<DwzConfig> {

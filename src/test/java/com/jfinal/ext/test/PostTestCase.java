@@ -2,8 +2,6 @@ package com.jfinal.ext.test;
 
 import java.io.File;
 
-import org.junit.Test;
-
 public class PostTestCase extends ControllerTestCase<Config> {
 
     //@Test

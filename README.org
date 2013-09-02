@@ -1,0 +1,90 @@
+
+#+TITLE:     JFinal-Ext
+#+AUTHOR:    Kid Zhou
+#+EMAIL:     zhouleib1412@gmail.com
+#+DATE:      2012-10-18
+#+DESCRIPTION: JFinal-Ext 介绍
+#+KEYWORDS:  JFinal-Ext JFinal
+#+LANGUAGE:  zh_CN
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+LATEX_CLASS: cn-article
+
+
+Jfinal-ext是对java极速web框架jfinal (https://github.com/jfinal/jfinal)
+的功能扩展
+使用手册 https://github.com/b1412/jfinal-ext/blob/master/doc/doc.org
+*  Plugin扩展
+** 自定绑定表 AutoTableBindPlugin 
+扫描clsspath和lib中继承了model的类自动注册，可选择不同的命名规则自定映射表名，也可以在每一个model上用注解指定表名
+
+** 类似ibatis在xml中管理sql SqlInXmlPlugin 
+
+xml配置格式
+#+BEGIN_SRC elisp
+ <sqlGroup name="blog" >
+       <sql id="findBlog">select * from blog</sql>
+       <sql id="findUser">select * from user</sql>
+ </sqlGroup>
+#+END_SRC
+
+获取配置的sql
+SqlManager.sql("blog.findBlog")
+** jms消息处理 JmsPlugin
+
+JmsKit.sendQueue("q1", new M(), "a");
+** 任务调度  QuartzPlugin Cron4jPlugin
+
+*** Quartz 
+
+调度任务实现org.quartz.Job接口
+
+job.properties中配置任务
+
+#+BEGIN_SRC elisp
+#JobA
+a.job=test.com.jfinal.plugin.quzrtz.JobA
+a.cron=*/5 * * * * ?
+a.enable=true
+#JobB
+b.job=test.com.jfinal.plugin.quartz.JobB
+b.cron=*/10 * * * * ?
+b.enable=false
+#+END_SRC
+
+*** Cron4j
+
+调度任务实现java.lang.Runnable接口
+
+job.properties中配置任务
+
+#+BEGIN_SRC elisp
+#JobA
+a.job=test.com.jfinal.plugin.cron4j.JobA
+a.cron=* * * * *
+a.enable=true
+#JobB
+b.job=test.com.jfinal.plugin.cron4j.JobB
+b.cron=* * * * *
+b.enable=false
+#+END_SRC
+
+** ConfigPlugin
+   分优先级加载配置文件
+   在团队开发中如果自己有测试配置需要长期存在但是又不需要提交中心库的时候 
+可以采用分级配置加载的策略。 如中心库中有config.properties这个配置，你可以创建 config-test.properties文件，配置相同的key，ConfigKit中的方法会优先加载 xx-test.properties文件。
+
+** MongodbPlugin
+  
+*  Render扩展
+** DwzRender
+** excel支持
+   通过list数据生成excel,支持的数据类型为map ,record , model。
+*** PoiRender
+*** JxlsRender
+** AmChartsRender
+** FreeMarkerXMLRender
+利用freemaker生成xml
+
+
+

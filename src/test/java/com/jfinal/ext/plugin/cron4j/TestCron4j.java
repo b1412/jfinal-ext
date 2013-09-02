@@ -1,10 +1,5 @@
 package com.jfinal.ext.plugin.cron4j;
 
-import java.util.concurrent.TimeUnit;
-
-import org.junit.Test;
-
-import com.jfinal.ext.plugin.cron.Cron4jPlugin;
 
 public class TestCron4j {
 

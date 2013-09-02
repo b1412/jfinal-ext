@@ -10,10 +10,9 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import org.joor.Reflect;
-
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
+import com.jfinal.ext.kit.Reflect;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.IPlugin;
 

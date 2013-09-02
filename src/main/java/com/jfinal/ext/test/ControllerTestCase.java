@@ -9,7 +9,6 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
-import org.joor.Reflect;
 import org.junit.Before;
 
 import com.google.common.base.Charsets;
@@ -19,6 +18,7 @@ import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 import com.jfinal.config.JFinalConfig;
 import com.jfinal.core.JFinal;
+import com.jfinal.ext.kit.Reflect;
 import com.jfinal.handler.Handler;
 import com.jfinal.log.Logger;
 

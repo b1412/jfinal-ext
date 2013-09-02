@@ -2,8 +2,6 @@ package com.jfinal.ext.kit;
 
 import java.util.List;
 
-import org.joor.Reflect;
-
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
 import com.jfinal.config.Interceptors;
