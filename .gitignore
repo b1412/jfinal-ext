@@ -7,3 +7,5 @@
 src/main/webapp/WEB-INF/classes/
 /bin
 /target
+*.tex
+*.pdf

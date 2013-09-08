@@ -32,6 +32,19 @@ public class Config extends JFinalConfig {
     public void configPlugin(Plugins me) {
 
     }
+    
+    
+
+    @Override
+    public void afterJFinalStart() {
+        System.out.println(1);
+    }
+
+    
+    @Override
+    public void beforeJFinalStop() {
+        System.out.println(2);
+    }
 
     @Override
     public void configRoute(Routes me) {

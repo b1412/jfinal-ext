@@ -30,8 +30,6 @@ public class Cron4jPlugin implements IPlugin {
     
     private Properties properties;
     
-    public Cron4jPlugin() {
-    }
 
     public Cron4jPlugin add(String jobCronExp, Runnable job) {
         jobs.put(jobCronExp, job);

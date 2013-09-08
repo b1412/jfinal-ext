@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 
 import com.google.common.base.Charsets;
@@ -23,37 +24,41 @@ import com.jfinal.handler.Handler;
 import com.jfinal.log.Logger;
 
 public abstract class ControllerTestCase<T extends JFinalConfig> {
-    private static boolean configStarted = false;
     protected static final Logger LOG = Logger.getLogger(ControllerTestCase.class);
     protected static ServletContext servletContext = new MockServletContext();;
     protected static MockHttpRequest request;
     protected static MockHttpResponse response;
     protected static Handler handler;
+    private static boolean configStarted = false;
+    private static JFinalConfig configInstance;
+    private String actionUrl;
+    private String bodyData;
+    private File bodyFile;
+    private File responseFile;
+    private Class<? extends JFinalConfig> config;
+
     private static void initConfig(Class<JFinal> clazz, JFinal me, ServletContext servletContext, JFinalConfig config) {
         Reflect.on(me).call("init", config, servletContext);
     }
+
     public static void start(Class<? extends JFinalConfig> configClass) throws Exception {
-        if (configStarted == true) {
+        if (configStarted) {
             return;
         }
         Class<JFinal> clazz = JFinal.class;
         JFinal me = JFinal.me();
-        initConfig(clazz, me, servletContext, configClass.newInstance());
+        configInstance = configClass.newInstance();
+        initConfig(clazz, me, servletContext, configInstance);
         handler = Reflect.on(me).get("handler");
         configStarted = true;
+        configInstance.afterJFinalStart();
     }
-    private String actionUrl;
-    private String bodyData;
-    private File bodyFile;
-
-    private File responseFile;
-
-    private Class<? extends JFinalConfig> config;
 
     @SuppressWarnings("unchecked")
     public ControllerTestCase() {
         Type genericSuperclass = getClass().getGenericSuperclass();
-        Preconditions.checkArgument(genericSuperclass instanceof ParameterizedType,"Your ControllerTestCase must have genericType");
+        Preconditions.checkArgument(genericSuperclass instanceof ParameterizedType,
+                "Your ControllerTestCase must have genericType");
         config = (Class<? extends JFinalConfig>) ((ParameterizedType) genericSuperclass).getActualTypeArguments()[0];
     }
 
@@ -83,6 +88,11 @@ public abstract class ControllerTestCase<T extends JFinalConfig> {
         start(config);
     }
 
+    @AfterClass
+    public static void stop() throws Exception {
+        configInstance.beforeJFinalStop();
+    }
+
     public String invoke() {
         if (bodyFile != null) {
             List<String> req = null;
@@ -96,14 +106,6 @@ public abstract class ControllerTestCase<T extends JFinalConfig> {
         StringWriter resp = new StringWriter();
         request = new MockHttpRequest(bodyData);
         response = new MockHttpResponse(resp);
-        if (handler == null) {
-            System.err.println("请在ControllerTestCase的子类里面添加如下方法，YourConfig为你想测试的Config");
-            System.err.println("    @BeforeClass ");
-            System.err.println("    public static void init() throws Exception {");
-            System.err.println("        start(YourConfig.class)");
-            System.err.println("    }");
-            return "";
-        }
         Reflect.on(handler).call("handle", getTarget(actionUrl, request), request, response, new boolean[] { true });
         String response = resp.toString();
         if (responseFile != null) {

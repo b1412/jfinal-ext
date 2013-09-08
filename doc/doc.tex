@@ -1,4 +1,4 @@
-% Created 2013-05-15 三 21:57
+% Created 2013-09-07 六 12:15
 
 \documentclass{scrartcl}
 \usepackage{hyperref}
@@ -51,9 +51,9 @@
 \tolerance=1000
 \providecommand{\alert}[1]{\textbf{#1}}
 
-\title{JFinal-Ext文档(v2.1)}
+\title{JFinal-Ext文档(v3.0)}
 \author{Kid Zhou}
-\date{2013-05-15}
+\date{2013-09-09}
 \hypersetup{
   pdfkeywords={},
   pdfsubject={},
@@ -503,6 +503,11 @@ public void save() {
 \label{sec-3-3}
 
    通过list数据生成excel,支持的数据类型为map ,record , model。
+
+\begin{minted}[]{java}
+PoiRender.me(data).fileName("your_file_name.xls").headers(headers).cellWidth(5000).headerRow(2)
+\end{minted}
+  
 \subsection{CsvRender}
 \label{sec-3-4}
 

@@ -329,6 +329,10 @@ MongoKit.updateFirst("sns", src, desc); //只能修改符合条件的第一条�
    通过list数据生成excel,支持的数据类型为map ,record , model。
 ** PoiRender
    通过list数据生成excel,支持的数据类型为map ,record , model。
+   #+BEGIN_SRC java
+   PoiRender.me(data).fileName("your_file_name.xls").headers(headers).cellWidth(5000).headerRow(2)
+   #+END_SRC
+  
 ** CsvRender
    通过list数据生成csv,支持的数据类型为map ,record , model。
 ** AmChartsRender
@@ -517,3 +521,4 @@ country 默认值为zh language默认值为CN
    #+BEGIN_SRC java
      logger.error("var :" + var);
    #+END_SRC
+p
