@@ -8,12 +8,16 @@ import java.util.Set;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.jfinal.kit.StringKit;
+import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.DbKit;
 import com.jfinal.plugin.activerecord.Model;
+import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.TableInfo;
 import com.jfinal.plugin.activerecord.TableInfoMapping;
+import com.jfinal.plugin.druid.DruidPlugin;
 
 public class ModelKit {
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -47,8 +51,10 @@ public class ModelKit {
         }
         return map;
     }
+
+    @SuppressWarnings("rawtypes")
     public static int[] batchSave(List<? extends Model> data) {
-        return batchSave(data,data.size());
+        return batchSave(data, data.size());
     }
 
     @SuppressWarnings("rawtypes")
@@ -70,12 +76,62 @@ public class ModelKit {
         return Db.batch(sql.toString(), batchPara, batchSize);
     }
 
-    public static void hashCode(Model model) {
-        // TODO
+    public static int hashCode(Model<?> model) {
+        final int prime = 31;
+        int result = 1;
+        TableInfo tableinfo = TableInfoMapping.me().getTableInfo(model.getClass());
+        Set<Entry<String, Object>> attrsEntrySet = model.getAttrsEntrySet();
+        for (Entry<String, Object> entry : attrsEntrySet) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            Class<?> clazz = tableinfo.getColType(key);
+            if (clazz == Integer.class) {
+                result = prime * result + (Integer) value;
+            } else if (clazz == Short.class) {
+                result = prime * result + (Short) value;
+            } else if (clazz == Long.class) {
+                result = prime * result + (int) ((Long) value ^ ((Long) value >>> 32));
+            } else if (clazz == Float.class) {
+                result = prime * result + Float.floatToIntBits((Float) value);
+            } else if (clazz == Double.class) {
+                long temp = Double.doubleToLongBits((Double) value);
+                result = prime * result + (int) (temp ^ (temp >>> 32));
+            } else if (clazz == Boolean.class) {
+                result = prime * result + ((Boolean) value ? 1231 : 1237);
+            } else if (clazz == Model.class) {
+                result = hashCode((Model<?>) value);
+            } else {
+                result = prime * result + ((value == null) ? 0 : value.hashCode());
+            }
+        }
+        return result;
     }
 
-    public static void equals(Model model) {
-        // TODO
-
+    public static boolean equals(Model<?> model, Object obj) {
+        if (model == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (model.getClass() != obj.getClass())
+            return false;
+        Model<?> other = (Model<?>) obj;
+        TableInfo tableinfo = TableInfoMapping.me().getTableInfo(model.getClass());
+        Set<Entry<String, Object>> attrsEntrySet = model.getAttrsEntrySet();
+        for (Entry<String, Object> entry : attrsEntrySet) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            Class<?> clazz = tableinfo.getColType(key);
+            if (clazz == Float.class) {
+            } else if (clazz == Double.class) {
+            } else if (clazz == Model.class) {
+            } else {
+                if (value == null) {
+                    if (other.get(key) != null)
+                        return false;
+                } else if (!value.equals(other.get(key)))
+                    return false;
+            }
+        }
+        return true;
     }
 }
