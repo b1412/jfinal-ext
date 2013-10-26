@@ -1,4 +1,4 @@
-package com.michael.blog.plugin.redis;
+package com.jfinal.ext.plugin.redis;
 
 import org.apache.log4j.Logger;
 import redis.clients.jedis.Jedis;

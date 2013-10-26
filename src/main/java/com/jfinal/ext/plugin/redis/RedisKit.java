@@ -1,4 +1,4 @@
-package com.michael.blog.plugin.redis;
+package com.jfinal.ext.plugin.redis;
 
 import com.jfinal.plugin.ehcache.IDataLoader;
 import org.apache.log4j.Logger;

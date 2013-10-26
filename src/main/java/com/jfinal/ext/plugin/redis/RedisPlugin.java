@@ -1,4 +1,4 @@
-package com.michael.blog.plugin.redis;
+package com.jfinal.ext.plugin.redis;
 
 import com.jfinal.plugin.IPlugin;
 

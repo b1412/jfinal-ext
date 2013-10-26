@@ -1,0 +1,1 @@
+<OTA_AirPNRPATRQ xmlns="http://www.trafree.com/OTA/2011/05"	Version="1.000" encoding="UTF-8">	<POS>		<Requestors>			<Requestor Type="1" Password="923D0F97CE780200E44B18391A786A32"				ID="platform" />		</Requestors>	</POS>	<UniqueID ID="JFRQQ2" Resource="TFR" InfoSource="PEK440"		InfoSourceType="14" /></OTA_AirPNRPATRQ>

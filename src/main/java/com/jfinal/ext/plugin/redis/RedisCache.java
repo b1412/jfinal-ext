@@ -1,4 +1,4 @@
-package com.michael.blog.plugin.redis;
+package com.jfinal.ext.plugin.redis;
 
 import org.apache.commons.lang3.SerializationUtils;
 import redis.clients.jedis.Jedis;

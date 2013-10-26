@@ -1,3 +1,18 @@
+/**
+ * Copyright (c) 2011-2013, kidzhou 周磊 (zhouleib1412@gmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.jfinal.ext.plugin.cron;
 
 import it.sauronsoftware.cron4j.Scheduler;
@@ -56,6 +71,9 @@ public class Cron4jPlugin implements IPlugin {
 
     private void loadJobsFromProperties() {
         loadProperties();
+        if(properties == null){
+            return;
+        }
         Enumeration<Object> enums = properties.keys();
         while (enums.hasMoreElements()) {
             String key = enums.nextElement() + "";
@@ -93,6 +111,9 @@ public class Cron4jPlugin implements IPlugin {
         properties = new Properties();
         log.debug("config is: " + config);
         InputStream is = Cron4jPlugin.class.getClassLoader().getResourceAsStream(config);
+        if(is == null){
+            return;
+        }
         try {
             properties.load(is);
         } catch (IOException e) {

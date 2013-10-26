@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jfinal.aop.PrototypeInterceptor;
@@ -19,6 +17,7 @@ import com.jfinal.kit.StringKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.TableInfo;
 import com.jfinal.plugin.activerecord.TableInfoMapping;
 
@@ -49,8 +48,7 @@ public abstract class PageInfoInterceptor extends PrototypeInterceptor {
         config();
         Controller controller;
         controller = ai.getController();
-        PageInfo pageInfo = injectPageInfo(StringKit.firstCharToLowerCase(model.getSimpleName()),
-                controller.getRequest());
+        PageInfo pageInfo = injectPageInfo(StringKit.firstCharToLowerCase(model.getSimpleName()), controller);
         pageInfo.setPageNumber(controller.getParaToInt("pageNumber", 1));
         pageInfo.setPageSize(controller.getParaToInt("pageSize", PageInfo.DEFAULT_PAGE_SIZE));
         Page page = page(pageInfo);
@@ -67,7 +65,11 @@ public abstract class PageInfoInterceptor extends PrototypeInterceptor {
         String select = "select ";
         Set<String> set = columnTypeMap.keySet();
         for (String item : set) {
-            select += StringKit.firstCharToLowerCase(model.getSimpleName()) + "." + item + ",";
+            select += StringKit.firstCharToLowerCase(model.getSimpleName()) + "." + item + " ";
+            if (!relations.isEmpty()) {
+                select += StringKit.firstCharToLowerCase(model.getSimpleName()) + "_" + item;
+            }
+            select += ",";
         }
         if (!relations.isEmpty()) {
             Set<Class<? extends Model>> modelClasses = relations.keySet();
@@ -76,7 +78,8 @@ public abstract class PageInfoInterceptor extends PrototypeInterceptor {
                 Map<String, Class<?>> relationColumnTypeMap = Reflect.on(relationTableinfo).get("columnTypeMap");
                 set = relationColumnTypeMap.keySet();
                 for (String item : set) {
-                    select += StringKit.firstCharToLowerCase(modelClass.getSimpleName()) + "." + item + ",";
+                    select += StringKit.firstCharToLowerCase(modelClass.getSimpleName()) + "." + item + " "
+                            + StringKit.firstCharToLowerCase(modelClass.getSimpleName()) + "_" + item + ",";
                 }
             }
         }
@@ -96,7 +99,11 @@ public abstract class PageInfoInterceptor extends PrototypeInterceptor {
             if (value == null) {
                 continue;
             }
-            paras.add(value);
+            if (filter.getOperater().equals(Filter.OPERATOR_LIKE)) {
+                paras.add("%" + value + "%");
+            } else {
+                paras.add(value);
+            }
             sqlExceptSelect += " and " + fieldName + " " + filter.getOperater() + " ?";
         }
         String sorterField = pageInfo.getSorterField();
@@ -114,21 +121,24 @@ public abstract class PageInfoInterceptor extends PrototypeInterceptor {
         }
     }
 
-    private PageInfo injectPageInfo(String modelName, HttpServletRequest request) {
+    private PageInfo injectPageInfo(String modelName, Controller controller) {
         PageInfo pageInfo = new PageInfo();
         Map<String, String> model = Maps.newHashMap();
-        List<String> modelNameAndDot = Lists.newArrayList();
-        modelNameAndDot.add(modelName + ".");
+        Map<String, Record> modelPara = Maps.newHashMap();
+        List<String> modelNames = Lists.newArrayList();
+        modelNames.add(modelName);
+        modelPara.put(modelName, new Record());
         Set<Class<? extends Model>> modelClasses = relations.keySet();
         for (Class<? extends Model> modelClasse : modelClasses) {
             String tableName = TableInfoMapping.me().getTableInfo(modelClasse).getTableName();
-            modelNameAndDot.add(tableName + ".");
+            modelNames.add(tableName);
         }
-        Map<String, String[]> parasMap = request.getParameterMap();
+
+        Map<String, String[]> parasMap = controller.getRequest().getParameterMap();
         for (Entry<String, String[]> e : parasMap.entrySet()) {
             String paraKey = e.getKey();
-            for (String entry : modelNameAndDot) {
-                if (paraKey.startsWith(entry)) {
+            for (String entry : modelNames) {
+                if (paraKey.startsWith(entry + ".")) {
                     String[] paraValue = e.getValue();
                     String value = paraValue[0] != null ? paraValue[0] + "" : null;
                     model.put(paraKey, value);
@@ -140,13 +150,18 @@ public abstract class PageInfoInterceptor extends PrototypeInterceptor {
         Set<Entry<String, String>> entries = model.entrySet();
         for (Entry<String, String> entry : entries) {
             String key = entry.getKey();
-            for (String item : modelNameAndDot) {
-                if (key.startsWith(item + FILTER_PREFIX)) { // 过滤条件
+            for (String item : modelNames) {
+                if (key.startsWith(item + "." + FILTER_PREFIX)) { // 过滤条件
                     int index = key.indexOf(FILTER_PREFIX);
                     String value = entry.getValue();
                     if (StringKit.isBlank(value)) {
                         continue;
                     }
+//                    int manyIndex = propertyName.lastIndexOf("0");
+//                    if(manyIndex < 0)
+//                        filterName = propertyName.substring("f_".length());
+//                    else
+//                        filterName = propertyName.substring("f_".length(),manyIndex);
                     filter.put(key.substring(0, index) + key.substring(index + FILTER_PREFIX.length()), value);
                 }
             }
@@ -161,18 +176,25 @@ public abstract class PageInfoInterceptor extends PrototypeInterceptor {
             if (StringKit.isBlank(operater)) {
                 operater = Filter.OPERATOR_EQ;
             }
+            int index = key.indexOf(".");
+            modelPara.get(key.substring(0, index)).set(FILTER_PREFIX + key.substring(index + 1, key.length()),
+                    entry.getValue());
             filters.add(new Filter(key, entry.getValue(), operater));
         }
         pageInfo.setFilters(filters);
         // sorter
-        String sorterField = request.getParameter("sorterField");
+        String sorterField = controller.getRequest().getParameter("sorterField");
         if (StringKit.notBlank(sorterField)) {
-            String sorterDirection = request.getParameter("sorterDirection");
+            String sorterDirection = controller.getRequest().getParameter("sorterDirection");
             if (StringKit.isBlank(sorterDirection)) {
                 sorterDirection = "desc";
             }
             pageInfo.setSorterField(sorterField);
             pageInfo.setSorterDirection(sorterDirection);
+        }
+        System.out.println(modelPara.entrySet());
+        for (Entry<String, Record> item : modelPara.entrySet()) {
+            controller.setAttr(item.getKey(), item.getValue());
         }
         return pageInfo;
     }
