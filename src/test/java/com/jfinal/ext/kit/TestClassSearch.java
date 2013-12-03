@@ -6,6 +6,8 @@ package com.jfinal.ext.kit;
 
 import java.util.List;
 
+import org.junit.Test;
+
 import com.jfinal.plugin.activerecord.Model;
 
 /**
@@ -13,8 +15,9 @@ import com.jfinal.plugin.activerecord.Model;
  * @author kid create 2013-4-13
  */
 public class TestClassSearch {
-    //@Test
+    @Test
     public void findInClasspathAndJars() {
+
         List<Class<? extends Model>> models2 = ClassSearcher.of(Model.class).search();
         for (Class<? extends Model> model : models2) {
             System.out.println(model);

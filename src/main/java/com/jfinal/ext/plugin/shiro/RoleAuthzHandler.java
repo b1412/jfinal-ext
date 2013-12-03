@@ -35,7 +35,8 @@ class RoleAuthzHandler extends AbstractAuthzHandler {
 		this.annotation = annotation;
 	}
 
-	public void assertAuthorized() throws AuthorizationException {
+	@Override
+    public void assertAuthorized() throws AuthorizationException {
 		//if (!(annotation instanceof RequiresRoles)) return;
         RequiresRoles rrAnnotation = (RequiresRoles) annotation;
         String[] roles = rrAnnotation.value();

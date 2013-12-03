@@ -23,6 +23,7 @@ import java.util.Set;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.jfinal.log.Logger;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.DbKit;
 import com.jfinal.plugin.activerecord.Model;
@@ -31,6 +32,9 @@ import com.jfinal.plugin.activerecord.TableInfo;
 import com.jfinal.plugin.activerecord.TableInfoMapping;
 
 public class ModelKit {
+
+    protected final static Logger logger = Logger.getLogger(ModelKit.class);
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static Record toRecord(Model model) {
         Record record = new Record();
@@ -61,6 +65,18 @@ public class ModelKit {
             map.put(entry.getKey(), entry.getValue());
         }
         return map;
+    }
+
+    public static Model<?> fromBean(Class<? extends Model<?>> clazz, Object bean) {
+        Model<?> model = null;
+        try {
+            model = clazz.newInstance();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return model;
+        }
+        //TODO bean to model
+        return model;
     }
 
     @SuppressWarnings("rawtypes")

@@ -1,4 +1,4 @@
-% Created 2013-09-07 六 12:15
+% Created 2013-11-07 四 11:38
 
 \documentclass{scrartcl}
 \usepackage{hyperref}
@@ -420,7 +420,6 @@ MongodbPlugin mongodbPlugin = new MongodbPlugin("127.0.0.1", 8888, "other");
 \end{minted}
 
 
-
 \item 分页查询\\
 \label{sec-2-6-2-2}%
 \begin{minted}[]{java}
@@ -695,16 +694,85 @@ exceptionInterceptor.setDefault(new ErrorRender("测试系统"));
    例如（/p?language=zh\&country=CN）
 
 \begin{tabular}{llll}
- 原始view  &  country  &  language  &  改变之后的view       \\
- /p        &  zh       &  CN        &  /zh_CN/p/index.html  \\
+ 原始view  &  country  &  language  &  改变之后的view                 \\
+ /p        &  zh       &  CN        &  \texttt{/zh\_CN/p/index.html}  \\
 \end{tabular}
 
 
+
 country 默认值为zh language默认值为CN
+\subsection{SysInterceptor 系统日志拦截器}
+\label{sec-5-3}
+\subsubsection{简介}
+\label{sec-5-3-1}
+
+ ActionReport的人性化版本，用于后台管理系统的日志记录
+\subsubsection{使用方法}
+\label{sec-5-3-2}
+\begin{itemize}
+
+\item 配置LogConfig\\
+\label{sec-5-3-2-1}%
+\begin{minted}[]{java}
+SysLogInterceptor log = new SysLogInterceptor();
+log.addConfig("/blog", new LogConfig("查看博客").addPara("user", "作者名字"));
+\end{minted}
+
+\item 实现LogProcessor\\
+\label{sec-5-3-2-2}%
+需要实现以下方法
+
+\begin{minted}[]{java}
+| process(SysLog sysLog)                                   | 处理一条日志       |
+| getUsername(Controller c)                                | 获取当前登陆用户名 |
+| formatMessage(String title, Map<String, String> message) | 格式化日志信息     |
+\end{minted}
+\end{itemize} % ends low level
+\subsubsection{示例代码}
+\label{sec-5-3-3}
+
+一个简单的日志处理器的实现
+
+\begin{minted}[]{java}
+public class DefaultLogProccesor implements LogProccesor {
+    @Override
+    @Rethrow
+    public void process(SysLog sysLog) {
+        Map map = BeanUtils.describe(sysLog);
+        map.remove("class");
+        Record record = new Record();
+        record.setColumns(map);
+        Db.save("syslog", record);
+    }
+
+    @Override
+    public String getUsername(Controller c) {
+        User user = c.getSessionAttr("user");
+        return user.getStr("username");
+    }
+
+    @Override
+    public String formatMessage(String title, Map<String, String> message) {
+        String result = title;
+        if (message.isEmpty()) {
+            return result;
+        }
+        result += ", ";
+        Set<Entry<String, String>> entrySet = message.entrySet();
+        for (Entry<String, String> entry : entrySet) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            result += key + ":" + value;
+        }
+        return result;
+    }
+
+}
+\end{minted}
 \section{eclipse代码片段}
 \label{sec-6}
 
- 将jfinal-templates.xml导入eclipse的Preferences-java-Editor-Templates
+  将jfinal-templates.xml导入eclipse的Preferences-java-Editor-Templates
 \subsection{jfl}
 \label{sec-6-1}
 
@@ -749,5 +817,6 @@ logger.info("var :" + var);
 \begin{minted}[]{java}
 logger.error("var :" + var);
 \end{minted}
+   
 
 \end{document}

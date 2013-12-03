@@ -23,7 +23,8 @@ import com.jfinal.core.ActionInvocation;
 
 public class ShiroInterceptor implements Interceptor {
 
-	public void intercept(ActionInvocation ai) {
+	@Override
+    public void intercept(ActionInvocation ai) {
 		AuthzHandler ah = ShiroKit.getAuthzHandler(ai.getActionKey());
 		// 存在访问控制处理器。
 		if (ah != null) {

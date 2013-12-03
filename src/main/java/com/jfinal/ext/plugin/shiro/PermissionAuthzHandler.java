@@ -34,7 +34,8 @@ class PermissionAuthzHandler extends AbstractAuthzHandler {
 		this.annotation = annotation;
 	}
 
-	public void assertAuthorized() throws AuthorizationException {
+	@Override
+    public void assertAuthorized() throws AuthorizationException {
 		if (!(annotation instanceof RequiresPermissions))
 			return;
 

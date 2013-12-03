@@ -260,7 +260,6 @@ name=test
 
 #+END_SRC
 
-
 **** 分页查询
 #+BEGIN_SRC java
 Map<String, Object> filter = new HashMap<String, Object>();
@@ -487,11 +486,66 @@ MongoKit.updateFirst("sns", src, desc); //只能修改符合条件的第一条�
 *** render策略 
    会在原有的render路径上加上当前请求参数中的country和language。
    例如（/p?language=zh&country=CN）
-| 原始view | country | language | 改变之后的view      |
-| /p       | zh      | CN       | /zh_CN/p/index.html   |
+   | 原始view | country | language | 改变之后的view        |
+   | /p       | zh      | CN       | =/zh_CN/p/index.html= |
+
 country 默认值为zh language默认值为CN
+** SysInterceptor 系统日志拦截器
+*** 简介
+ ActionReport的人性化版本，用于后台管理系统的日志记录
+*** 使用方法
+**** 配置LogConfig
+#+BEGIN_SRC java
+    SysLogInterceptor log = new SysLogInterceptor();
+    log.addConfig("/blog", new LogConfig("查看博客").addPara("user", "作者名字"));
+#+END_SRC
+**** 实现LogProcessor
+需要实现以下方法
+#+BEGIN_SRC java
+     | process(SysLog sysLog)                                   | 处理一条日志       |
+     | getUsername(Controller c)                                | 获取当前登陆用户名 |
+     | formatMessage(String title, Map<String, String> message) | 格式化日志信息     |
+ #+END_SRC
+*** 示例代码
+一个简单的日志处理器的实现
+#+BEGIN_SRC java
+public class DefaultLogProccesor implements LogProccesor {
+    @Override
+    @Rethrow
+    public void process(SysLog sysLog) {
+        Map map = BeanUtils.describe(sysLog);
+        map.remove("class");
+        Record record = new Record();
+        record.setColumns(map);
+        Db.save("syslog", record);
+    }
+
+    @Override
+    public String getUsername(Controller c) {
+        User user = c.getSessionAttr("user");
+        return user.getStr("username");
+    }
+
+    @Override
+    public String formatMessage(String title, Map<String, String> message) {
+        String result = title;
+        if (message.isEmpty()) {
+            return result;
+        }
+        result += ", ";
+        Set<Entry<String, String>> entrySet = message.entrySet();
+        for (Entry<String, String> entry : entrySet) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            result += key + ":" + value;
+        }
+        return result;
+    }
+
+}
+#+END_SRC
 * eclipse代码片段
- 将jfinal-templates.xml导入eclipse的Preferences-java-Editor-Templates
+  将jfinal-templates.xml导入eclipse的Preferences-java-Editor-Templates
 ** jfl
    在任何类中使用，生成logger
   
@@ -521,4 +575,4 @@ country 默认值为zh language默认值为CN
    #+BEGIN_SRC java
      logger.error("var :" + var);
    #+END_SRC
-p
+   

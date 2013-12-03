@@ -9,3 +9,7 @@ src/main/webapp/WEB-INF/classes/
 /target
 *.tex
 *.pdf
+*.iml
+*.ipr
+*.iws
+.idea/

@@ -13,23 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jfinal.ext.interceptor;
+package com.jfinal.ext.interceptor.syslog;
 
 import java.util.Map;
 
 import com.google.common.collect.Maps;
-import com.jfinal.aop.Interceptor;
-import com.jfinal.core.ActionInvocation;
 
-public class SysLogInterceptor implements Interceptor {
-    Map<String,String> acitons = Maps.newHashMap();
-    @Override
-    public void intercept(ActionInvocation ai) {
-        
-        String actionKey = ai.getActionKey();
-        acitons.get(actionKey);
-        System.out.println(actionKey);
-        ai.invoke();
+/**
+ * 系统日志
+ */
+public class LogConfig {
+    /** 日志描述*/
+    String title;
+
+    /**
+     * key 请求参数 value 参数描述
+     */
+    Map<String, String> params = Maps.newHashMap();
+    
+    public LogConfig(String title) {
+        this.title = title;
     }
 
+    public LogConfig addPara(String key, String value) {
+        params.put(key, value);
+        return this;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public LogConfig setTitle(String title) {
+        this.title = title;
+        return this;
+    }
 }
