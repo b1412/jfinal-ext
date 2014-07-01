@@ -24,7 +24,7 @@ import com.jfinal.aop.Interceptor;
 import com.jfinal.core.ActionInvocation;
 import com.jfinal.core.Controller;
 import com.jfinal.ext.kit.ServletKit;
-import com.jfinal.kit.StringKit;
+import com.jfinal.kit.StrKit;
 
 public class SysLogInterceptor implements Interceptor {
     Map<String, LogConfig> acitonLogs = Maps.newHashMap();
@@ -62,7 +62,7 @@ public class SysLogInterceptor implements Interceptor {
             String key = entry.getKey();
             String value = entry.getValue()[0];
             String result = log.params.get(key);
-            if (StringKit.isBlank(result))
+            if (StrKit.isBlank(result))
                 continue;
             paraMap.put(result, value);
         }

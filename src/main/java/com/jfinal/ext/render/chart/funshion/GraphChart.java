@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.jfinal.kit.StringKit;
+import com.jfinal.kit.StrKit;
 
 public class GraphChart {
     /**
@@ -119,7 +119,7 @@ public class GraphChart {
     }
 
     public String getBgColor() {
-        if (StringKit.isBlank(bgColor)) {
+        if (StrKit.isBlank(bgColor)) {
             bgColor = genColor();
         }
         return bgColor;
@@ -130,7 +130,7 @@ public class GraphChart {
     }
 
     public String getDivLineColor() {
-        if (StringKit.isBlank(bgColor)) {
+        if (StrKit.isBlank(bgColor)) {
             divLineColor = genColor();
         }
         return divLineColor;

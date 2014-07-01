@@ -21,7 +21,7 @@ import javax.sql.DataSource;
 
 import com.google.common.collect.Lists;
 import com.jfinal.ext.kit.ClassSearcher;
-import com.jfinal.kit.StringKit;
+import com.jfinal.kit.StrKit;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.activerecord.IDataSourceProvider;
@@ -107,7 +107,7 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
                 log.debug("addMapping(" + tableName + ", " + modelClass.getName() + ")");
             } else {
                 tableName = tb.tableName();
-                if (StringKit.notBlank(tb.pkName())) {
+                if (StrKit.notBlank(tb.pkName())) {
                     this.addMapping(tableName, tb.pkName(), modelClass);
                     log.debug("addMapping(" + tableName + ", " + tb.pkName() + "," + modelClass.getName() + ")");
                 } else {

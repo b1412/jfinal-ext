@@ -17,7 +17,7 @@ package com.jfinal.ext.kit;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.jfinal.kit.StringKit;
+import com.jfinal.kit.StrKit;
 
 public class ServletKit {
     public static String getIp(HttpServletRequest request) {
@@ -34,7 +34,7 @@ public class ServletKit {
     public static String getUrl(HttpServletRequest request) {
         String url = request.getRequestURL().toString();
         String parmas = request.getQueryString();
-        if (StringKit.notBlank(parmas)) {
+        if (StrKit.notBlank(parmas)) {
             url = url + "?" + parmas;
         }
         return url;
