@@ -22,7 +22,7 @@ import com.google.common.collect.Lists;
 import com.jfinal.config.Routes;
 import com.jfinal.core.Controller;
 import com.jfinal.ext.kit.ClassSearcher;
-import com.jfinal.kit.StringKit;
+import com.jfinal.kit.StrKit;
 import com.jfinal.log.Logger;
 
 public class AutoBindRoutes extends Routes {
@@ -84,7 +84,7 @@ public class AutoBindRoutes extends Routes {
                 }
                 this.add(controllerKey(controller), controller);
                 logger.debug("routes.add(" + controllerKey(controller) + ", " + controller.getName() + ")");
-            } else if (StringKit.isBlank(controllerBind.viewPath())) {
+            } else if (StrKit.isBlank(controllerBind.viewPath())) {
                 this.add(controllerBind.controllerKey(), controller);
                 logger.debug("routes.add(" + controllerBind.controllerKey() + ", " + controller.getName() + ")");
             } else {
@@ -98,7 +98,7 @@ public class AutoBindRoutes extends Routes {
     private String controllerKey(Class<Controller> clazz) {
         Preconditions.checkArgument(clazz.getSimpleName().endsWith(suffix),
                 " does not has a @ControllerBind annotation and it's name is not end with " + suffix);
-        String controllerKey = "/" + StringKit.firstCharToLowerCase(clazz.getSimpleName());
+        String controllerKey = "/" + StrKit.firstCharToLowerCase(clazz.getSimpleName());
         controllerKey = controllerKey.substring(0, controllerKey.indexOf(suffix));
         return controllerKey;
     }

@@ -78,9 +78,9 @@ public class ConfigKit {
                     continue;
                 }
                 lastmodifies.put(fileName, new File(fileName).lastModified());
-                map = ResourceKit.readProperties(fileName);
+                map.putAll(ResourceKit.readProperties(fileName));
                 try {
-                    testMap = ResourceKit.readProperties(testFileName(fileName));
+                    testMap.putAll(ResourceKit.readProperties(testFileName(fileName)));
                 } catch (IllegalArgumentException e) {
                     LOG.info(e.getMessage());
                 }

@@ -11,8 +11,8 @@ import com.jfinal.ext.interceptor.pageinfo.Parent;
 import com.jfinal.plugin.activerecord.ActiveRecordException;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
-import com.jfinal.plugin.activerecord.TableInfo;
-import com.jfinal.plugin.activerecord.TableInfoMapping;
+import com.jfinal.plugin.activerecord.Table;
+import com.jfinal.plugin.activerecord.TableMapping;
 
 @SuppressWarnings("serial")
 public class ModelExt<M extends ModelExt<M>> extends Model<M> {
@@ -45,7 +45,7 @@ public class ModelExt<M extends ModelExt<M>> extends Model<M> {
         for (CallbackListener callbackListener : callbackListeners) {
             callbackListener.beforeSave(this);
         }
-        TableInfo tableInfo = TableInfoMapping.me().getTableInfo(clazz);
+        Table tableInfo = TableMapping.me().getTable(clazz);
         if (pseudoDelete()) {
             if (!tableInfo.hasColumnLabel(deleteColumnLabel)) {
                 throw new ActiveRecordException("The deleteColumnLabel (" + deleteColumnLabel + ") is not exist");
@@ -73,7 +73,7 @@ public class ModelExt<M extends ModelExt<M>> extends Model<M> {
 
     @Override
     public boolean delete() {
-        TableInfo tableInfo = TableInfoMapping.me().getTableInfo(clazz);
+        Table tableInfo = TableMapping.me().getTable(clazz);
         for (CallbackListener callbackListener : callbackListeners) {
             callbackListener.beforeDelete(this);
         }
@@ -96,7 +96,7 @@ public class ModelExt<M extends ModelExt<M>> extends Model<M> {
 
     @Override
     public boolean deleteById(Object id) {
-        TableInfo tableInfo = TableInfoMapping.me().getTableInfo(clazz);
+        Table tableInfo = TableMapping.me().getTable(clazz);
         for (CallbackListener callbackListener : callbackListeners) {
             callbackListener.beforeDelete(this);
         }
@@ -108,7 +108,7 @@ public class ModelExt<M extends ModelExt<M>> extends Model<M> {
             String pKey = tableInfo.getPrimaryKey();
             if (id == null)
                 throw new ActiveRecordException("You can't update model without Primary Key.");
-            String sql = "update "+tableInfo.getTableName()+" set "+deleteColumnLabel+" = 1 where "+pKey+" = ?";
+            String sql = "update "+tableInfo.getName()+" set "+deleteColumnLabel+" = 1 where "+pKey+" = ?";
             result = Db.update(sql,id)>=1;
         } else {
             result = super.deleteById(id);
@@ -120,7 +120,7 @@ public class ModelExt<M extends ModelExt<M>> extends Model<M> {
     }
 
     public int deleteAll() {
-        String primaryKey = TableInfoMapping.me().getTableInfo(clazz).getPrimaryKey();
+        String primaryKey = TableMapping.me().getTable(clazz).getPrimaryKey();
         return Db.update("delete from " + tableName() + " where " + primaryKey + "=?");
     }
 
@@ -133,15 +133,15 @@ public class ModelExt<M extends ModelExt<M>> extends Model<M> {
         Preconditions.checkArgument(values.size() > 0, "values is empty");
         Preconditions.checkArgument(values.size() == columns.size(), "column size != values size");
         String sql="";
-        TableInfo tableInfo = TableInfoMapping.me().getTableInfo(clazz);
+        Table tableInfo = TableMapping.me().getTable(clazz);
         if (pseudoDelete()) {
             if (!tableInfo.hasColumnLabel(deleteColumnLabel)) {
                 throw new ActiveRecordException("The deleteColumnLabel (" + deleteColumnLabel + ") is not exist");
             }
             String pKey = tableInfo.getPrimaryKey();
-            sql+= "update "+tableInfo.getTableName()+" set "+deleteColumnLabel+" = 1";
+            sql+= "update "+tableInfo.getName()+" set "+deleteColumnLabel+" = 1";
         }else{
-            sql+= "delete from " + tableInfo.getTableName() ;
+            sql+= "delete from " + tableInfo.getName() ;
         }
         sql+=" where 1=1";
         for (String column : columns) {
@@ -192,8 +192,8 @@ public class ModelExt<M extends ModelExt<M>> extends Model<M> {
         Parent child = model.getAnnotation(Parent.class);
         String foreignKey = child.foreignKey();
         Class<? extends Model> childModel = child.model();
-        String childTableName = TableInfoMapping.me().getTableInfo(childModel).getTableName();
-        String primaryKey = TableInfoMapping.me().getTableInfo(clazz).getPrimaryKey();
+        String childTableName = TableMapping.me().getTable(childModel).getName();
+        String primaryKey = TableMapping.me().getTable(clazz).getPrimaryKey();
         try {
             return childModel.newInstance().find("select * from " + childTableName + " where " + foreignKey + "= ?",
                     get(primaryKey));
@@ -207,8 +207,8 @@ public class ModelExt<M extends ModelExt<M>> extends Model<M> {
         Parent parent = model.getAnnotation(Parent.class);
         String foreignKey = parent.foreignKey();
         Class<? extends Model> parentModel = parent.model();
-        String parentTableName = TableInfoMapping.me().getTableInfo(parentModel).getTableName();
-        String primaryKey = TableInfoMapping.me().getTableInfo(clazz).getPrimaryKey();
+        String parentTableName = TableMapping.me().getTable(parentModel).getName();
+        String primaryKey = TableMapping.me().getTable(clazz).getPrimaryKey();
         try {
             return (M) parentModel.newInstance().findFirst(
                     "select * from " + parentTableName + " where " + foreignKey + "= ?", get(primaryKey));
@@ -218,6 +218,6 @@ public class ModelExt<M extends ModelExt<M>> extends Model<M> {
     }
 
     private String tableName() {
-        return TableInfoMapping.me().getTableInfo(clazz).getTableName();
+        return TableMapping.me().getTable(clazz).getName();
     }
 }

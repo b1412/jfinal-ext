@@ -31,7 +31,7 @@ public class RecordKit {
             logger.error(e.getMessage(), e);
             return model;
         }
-        for (String columnName : record.getcolumnNames()) {
+        for (String columnName : record.getColumnNames()) {
             model.set(columnName, record.get("columnName"));
         }
         return model;

@@ -25,14 +25,14 @@ import com.google.common.collect.Maps;
 import com.jfinal.core.Controller;
 import com.jfinal.ext.kit.ModelExt;
 import com.jfinal.ext.kit.Reflect;
-import com.jfinal.kit.StringKit;
+import com.jfinal.kit.StrKit;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
-import com.jfinal.plugin.activerecord.TableInfo;
-import com.jfinal.plugin.activerecord.TableInfoMapping;
+import com.jfinal.plugin.activerecord.Table;
+import com.jfinal.plugin.activerecord.TableMapping;
 
 /**
  * 
@@ -49,10 +49,10 @@ public class PageInfoKit {
     @SuppressWarnings("rawtypes")
     public static Page populate(PageInfo pageInfo, PageInfoInterceptor pageInfoInterceptor) {
         Class<? extends Model<?>> model = pageInfoInterceptor.model();
-        TableInfo tableinfo = TableInfoMapping.me().getTableInfo(model);
+        Table tableinfo = TableMapping.me().getTable(model);
         Map<String, Class<?>> columnTypeMap = Reflect.on(tableinfo).get("columnTypeMap");
         String select = "select ";
-        if (StringKit.isBlank(pageInfoInterceptor.columns())) {
+        if (StrKit.isBlank(pageInfoInterceptor.columns())) {
             Set<String> set = columnTypeMap.keySet();
             for (String item : set) {
                 select += item + ",";
@@ -60,27 +60,27 @@ public class PageInfoKit {
             if (!pageInfoInterceptor.relations().isEmpty()) {
                 for (RelationInfo relation : pageInfoInterceptor.relations()) {
                     Class<? extends Model<?>> modelClass = relation.getModel();
-                    TableInfo relationTableinfo = TableInfoMapping.me().getTableInfo(modelClass);
+                    Table relationTableinfo = TableMapping.me().getTable(modelClass);
                     Map<String, Class<?>> relationColumnTypeMap = Reflect.on(relationTableinfo).get("columnTypeMap");
                     set = relationColumnTypeMap.keySet();
                     // 如果设置了前缀表明或者字段冲突的时候
                     for (String item : set) {
                         if (pageInfoInterceptor.useColumnLabel()
                                 || columnConflict(item, model, modelClass, pageInfoInterceptor.relations())) {
-                            if (!select.contains(StringKit.firstCharToLowerCase(model.getSimpleName()) + "." + item)) {
+                            if (!select.contains(StrKit.firstCharToLowerCase(model.getSimpleName()) + "." + item)) {
                                 if (select.contains("," + item + ",")) {
                                     select = select.replace("," + item + ",",
-                                            "," + StringKit.firstCharToLowerCase(model.getSimpleName()) + "." + item
+                                            "," + StrKit.firstCharToLowerCase(model.getSimpleName()) + "." + item
                                                     + ",");
                                 }
                                 if (select.contains(" " + item + ",")) {
                                     select = select.replace(" " + item + ",",
-                                            " " + StringKit.firstCharToLowerCase(model.getSimpleName()) + "." + item
+                                            " " + StrKit.firstCharToLowerCase(model.getSimpleName()) + "." + item
                                                     + ",");
                                 }
                             }
-                            select += StringKit.firstCharToLowerCase(modelClass.getSimpleName()) + "." + item + " "
-                                    + StringKit.firstCharToLowerCase(modelClass.getSimpleName()) + "_" + item + ",";
+                            select += StrKit.firstCharToLowerCase(modelClass.getSimpleName()) + "." + item + " "
+                                    + StrKit.firstCharToLowerCase(modelClass.getSimpleName()) + "_" + item + ",";
                         } else {
                             select += item + ",";
                         }
@@ -92,9 +92,9 @@ public class PageInfoKit {
             select += pageInfoInterceptor.columns();
         }
         List<Object> paras = Lists.newArrayList();
-        String sqlExceptSelect = "from " + tableinfo.getTableName();
+        String sqlExceptSelect = "from " + tableinfo.getName();
         for (RelationInfo relationInfo : pageInfoInterceptor.relations()) {
-            String tableName = TableInfoMapping.me().getTableInfo(relationInfo.getModel()).getTableName();
+            String tableName = TableMapping.me().getTable(relationInfo.getModel()).getName();
             String val = relationInfo.getCondition();
             sqlExceptSelect += " left join " + tableName + " on ( " + val + ") ";
         }
@@ -145,12 +145,12 @@ public class PageInfoKit {
 
     private static boolean columnConflict(String item, Class<? extends Model<?>> mainModel,
             Class<? extends Model<?>> currentModel, List<RelationInfo> relations) {
-        if (TableInfoMapping.me().getTableInfo(mainModel).hasColumnLabel(item)) {
+        if (TableMapping.me().getTable(mainModel).hasColumnLabel(item)) {
             return true;
         }
         for (RelationInfo relationInfo : relations) {
             if (currentModel != relationInfo.getModel()
-                    && TableInfoMapping.me().getTableInfo(relationInfo.getModel()).hasColumnLabel(item)) {
+                    && TableMapping.me().getTable(relationInfo.getModel()).hasColumnLabel(item)) {
                 return true;
             }
         }
@@ -163,15 +163,15 @@ public class PageInfoKit {
         List<String> modelNames = Lists.newArrayList();
         Map<String, String> models = Maps.newHashMap();
         PageInfo pageInfo = new PageInfo();
-        String modelName = StringKit.firstCharToLowerCase(modelClass.getSimpleName());
+        String modelName = StrKit.firstCharToLowerCase(modelClass.getSimpleName());
         pageInfo.setPageNumber(controller.getParaToInt("pageNumber", 1));
         pageInfo.setPageSize(controller.getParaToInt("pageSize", PageInfo.DEFAULT_PAGE_SIZE));
         modelNames.add(modelName);
         modelAttrs.put(modelName, new Record());
         for (RelationInfo relationInfo : relations) {
-            String tableName = TableInfoMapping.me().getTableInfo(relationInfo.getModel()).getTableName();
+            String tableName = TableMapping.me().getTable(relationInfo.getModel()).getName();
             modelNames.add(tableName);
-            modelAttrs.put(StringKit.firstCharToLowerCase(relationInfo.getModel().getSimpleName()), new Record());
+            modelAttrs.put(StrKit.firstCharToLowerCase(relationInfo.getModel().getSimpleName()), new Record());
         }
 
         Map<String, String[]> parasMap = controller.getRequest().getParameterMap();
@@ -194,7 +194,7 @@ public class PageInfoKit {
                 if (key.startsWith(item + "." + FILTER_PREFIX)) { // 过滤条件
                     int index = key.indexOf(FILTER_PREFIX);
                     String value = entry.getValue();
-                    if (StringKit.isBlank(value)) {
+                    if (StrKit.isBlank(value)) {
                         continue;
                     }
                     // int manyIndex = propertyName.lastIndexOf("0");
@@ -213,7 +213,7 @@ public class PageInfoKit {
                 continue;
             }
             String operater = filter.get(key + OPERATOR_SUFFIX);
-            if (StringKit.isBlank(operater)) {
+            if (StrKit.isBlank(operater)) {
                 operater = Filter.OPERATOR_EQ;
             }
             int index = key.indexOf(".");
@@ -238,9 +238,9 @@ public class PageInfoKit {
 
     private static void addSorter(Controller controller, PageInfo pageInfo) {
         String sorterField = controller.getRequest().getParameter("sorterField");
-        if (StringKit.notBlank(sorterField)) {
+        if (StrKit.notBlank(sorterField)) {
             String sorterDirection = controller.getRequest().getParameter("sorterDirection");
-            if (StringKit.isBlank(sorterDirection)) {
+            if (StrKit.isBlank(sorterDirection)) {
                 sorterDirection = "desc";
             }
             pageInfo.setSorterField(sorterField);

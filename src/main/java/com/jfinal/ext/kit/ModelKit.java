@@ -28,8 +28,8 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.DbKit;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
-import com.jfinal.plugin.activerecord.TableInfo;
-import com.jfinal.plugin.activerecord.TableInfoMapping;
+import com.jfinal.plugin.activerecord.Table;
+import com.jfinal.plugin.activerecord.TableMapping;
 
 public class ModelKit {
 
@@ -89,10 +89,10 @@ public class ModelKit {
         Model model = data.get(0);
         Map<String, Object> attrs = Reflect.on(model).field("attrs").get();
         Class<? extends Model> modelClass = model.getClass();
-        TableInfo tableInfo = TableInfoMapping.me().getTableInfo(modelClass);
+        Table tableInfo = TableMapping.me().getTable(modelClass);
         StringBuilder sql = new StringBuilder();
         List<Object> paras = Lists.newArrayList();
-        DbKit.getDialect().forModelSave(tableInfo, attrs, sql, paras);
+        DbKit.getConfig().getDialect().forModelSave(tableInfo, attrs, sql, paras);
         Object[][] batchPara = new Object[data.size()][attrs.size()];
         for (int i = 0; i < data.size(); i++) {
             int j = 0;
@@ -106,12 +106,12 @@ public class ModelKit {
     public static int hashCode(Model<?> model) {
         final int prime = 31;
         int result = 1;
-        TableInfo tableinfo = TableInfoMapping.me().getTableInfo(model.getClass());
+        Table tableinfo = TableMapping.me().getTable(model.getClass());
         Set<Entry<String, Object>> attrsEntrySet = model.getAttrsEntrySet();
         for (Entry<String, Object> entry : attrsEntrySet) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            Class<?> clazz = tableinfo.getColType(key);
+            Class<?> clazz = tableinfo.getColumnType(key);
             if (clazz == Integer.class) {
                 result = prime * result + (Integer) value;
             } else if (clazz == Short.class) {
@@ -142,12 +142,12 @@ public class ModelKit {
         if (model.getClass() != obj.getClass())
             return false;
         Model<?> other = (Model<?>) obj;
-        TableInfo tableinfo = TableInfoMapping.me().getTableInfo(model.getClass());
+        Table tableinfo = TableMapping.me().getTable(model.getClass());
         Set<Entry<String, Object>> attrsEntrySet = model.getAttrsEntrySet();
         for (Entry<String, Object> entry : attrsEntrySet) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            Class<?> clazz = tableinfo.getColType(key);
+            Class<?> clazz = tableinfo.getColumnType(key);
             if (clazz == Float.class) {
             } else if (clazz == Double.class) {
             } else if (clazz == Model.class) {

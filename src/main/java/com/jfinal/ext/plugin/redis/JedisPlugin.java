@@ -26,7 +26,7 @@ import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisShardInfo;
 
 import com.jfinal.ext.kit.ResourceKit;
-import com.jfinal.kit.StringKit;
+import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.IPlugin;
 
 public class JedisPlugin implements IPlugin {
@@ -82,7 +82,7 @@ public class JedisPlugin implements IPlugin {
             parseSetting(entry.getKey(), entry.getValue().trim());
         }
         JedisShardInfo shardInfo = new JedisShardInfo(host, port, timeout);
-        if (StringKit.notBlank(password)) {
+        if (StrKit.notBlank(password)) {
             shardInfo.setPassword(password);
         }
         JedisPoolConfig poolConfig = new JedisPoolConfig();

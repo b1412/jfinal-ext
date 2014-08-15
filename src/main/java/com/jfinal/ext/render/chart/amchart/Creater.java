@@ -18,7 +18,7 @@ package com.jfinal.ext.render.chart.amchart;
 import java.util.List;
 
 import com.jfinal.ext.kit.KeyLabel;
-import com.jfinal.kit.StringKit;
+import com.jfinal.kit.StrKit;
 import com.jfinal.log.Logger;
 
 public class Creater {
@@ -75,7 +75,7 @@ public class Creater {
         List<KeyLabel> pies = chart.getPies();
         for (KeyLabel pie : pies) {
             String label = pie.getLabel();
-            if (StringKit.isBlank(label)) {
+            if (StrKit.isBlank(label)) {
                 label = "0";
             }
             strXML.append(space(1)).append("<slice title='").append(pie.getKey()).append("'>").append(pie.getLabel())
@@ -95,7 +95,7 @@ public class Creater {
             List<String> value = values.get(i);
             for (int j = 0; j < value.size(); j++) {
                 String val = value.get(j);
-                if (StringKit.isBlank(val)) {
+                if (StrKit.isBlank(val)) {
                     val = "0";
                 }
                 strXML.append(newLine()).append(space(3)).append("<value xid='").append(j).append("'>").append(val)
@@ -144,7 +144,7 @@ public class Creater {
         strXML.append(newLine()).append(space(2)).append("<graph gid = '1' ").append(">");
         for (int i = 0, size = list.size(); i < size; i++) {
             String value = list.get(i);
-            if (StringKit.isBlank(value)) {
+            if (StrKit.isBlank(value)) {
                 value = "0";
             }
             strXML.append(newLine()).append(space(3)).append("<value xid='").append(i).append("'>").append(value)

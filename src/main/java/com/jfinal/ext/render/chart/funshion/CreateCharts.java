@@ -18,7 +18,7 @@ package com.jfinal.ext.render.chart.funshion;
 import java.util.List;
 
 import com.jfinal.ext.kit.KeyLabel;
-import com.jfinal.kit.StringKit;
+import com.jfinal.kit.StrKit;
 import com.jfinal.log.Logger;
 
 public class CreateCharts {
@@ -51,7 +51,7 @@ public class CreateCharts {
      */
     public static String createChart(PieChart chart) {
         String strXML = "";
-        // if (StringKit.isBlank(chart.getFltPath())) { //freemaker模板为空调用list数据源生成xml
+        // if (StrKit.isBlank(chart.getFltPath())) { //freemaker模板为空调用list数据源生成xml
         strXML += "<chart caption='" + chart.getCaption() + "' xAxisName='" + chart.getXAxisName() + "' yAxisName='" + chart.getYAxisName()
                 + "' showValues='1' formatNumberScale='1' baseFontSize ='12' bgColor='#CCCCCC'  rotateYAxisName='0' >";
 
@@ -97,7 +97,7 @@ public class CreateCharts {
 
         for (KeyLabel key : list) {
             String tkey = key.getKey();
-            if (StringKit.isBlank(tkey)) {
+            if (StrKit.isBlank(tkey)) {
                 tkey = "0";
             }
 

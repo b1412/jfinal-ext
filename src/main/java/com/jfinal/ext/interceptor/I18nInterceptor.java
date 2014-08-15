@@ -20,7 +20,7 @@ import java.util.Locale;
 import com.jfinal.aop.Interceptor;
 import com.jfinal.core.ActionInvocation;
 import com.jfinal.core.Controller;
-import com.jfinal.kit.StringKit;
+import com.jfinal.kit.StrKit;
 import com.jfinal.render.Render;
 import com.jfinal.render.RenderFactory;
 
@@ -36,11 +36,11 @@ public class I18nInterceptor implements Interceptor {
     public void intercept(ActionInvocation ai) {
         Controller controller = ai.getController();
         String language = controller.getAttr(languagePara);
-        if (StringKit.isBlank(language)) {
+        if (StrKit.isBlank(language)) {
             language = controller.getPara(languagePara, defaultLanguage);
         }
         String country = controller.getAttr(countryPara);
-        if (StringKit.isBlank(country)) {
+        if (StrKit.isBlank(country)) {
             country = controller.getPara(countryPara, defaultCountry);
         }
         Locale locale = new Locale(language, country);
@@ -67,7 +67,7 @@ public class I18nInterceptor implements Interceptor {
 
     private String getPrefix(String country, String language) {
         String prefix = language;
-        if (StringKit.notBlank(country)) {
+        if (StrKit.notBlank(country)) {
             prefix = language + "_" + country;
         }
         //TODO

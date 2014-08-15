@@ -15,7 +15,7 @@
  */
 package com.jfinal.ext.plugin.tablebind;
 
-import com.jfinal.kit.StringKit;
+import com.jfinal.kit.StrKit;
 
 public class SimpleNameStyles {
     public static final INameStyle DEFAULT = new INameStyle() {
@@ -28,7 +28,7 @@ public class SimpleNameStyles {
     public static final INameStyle FIRST_LOWER = new INameStyle() {
         @Override
         public String name(String className) {
-            return StringKit.firstCharToLowerCase(className);
+            return StrKit.firstCharToLowerCase(className);
         }
     };
     public static final INameStyle UP = new INameStyle() {

@@ -22,7 +22,7 @@ import javax.jms.MessageListener;
 
 import com.google.common.collect.Lists;
 import com.jfinal.ext.plugin.config.ConfigPlugin;
-import com.jfinal.kit.StringKit;
+import com.jfinal.kit.StrKit;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.IPlugin;
 
@@ -80,7 +80,7 @@ public class JmsPlugin implements IPlugin {
     private void initReceiver() {
         String receiveQueues = JmsConfig.getStr("receiveQueues");
         logger.debug("receiveQueues :" + receiveQueues);
-        if (StringKit.notBlank(receiveQueues)) {
+        if (StrKit.notBlank(receiveQueues)) {
             for (String queueName : receiveQueues.split(",")) {
                 JmsReceive queueReceive = new JmsReceive(new ReceiveResolverFactory(resoruceLocation, "queue."
                         + queueName));
@@ -89,7 +89,7 @@ public class JmsPlugin implements IPlugin {
         }
         String receiveTopics = JmsConfig.getStr("receiveTopics");
         logger.debug("receiveTopic :" + receiveTopics);
-        if (StringKit.notBlank(receiveTopics)) {
+        if (StrKit.notBlank(receiveTopics)) {
             for (String topicName : receiveTopics.split(",")) {
                 JmsReceive queueReceive = new JmsReceive(new ReceiveResolverFactory(resoruceLocation, "topic."
                         + topicName));
@@ -104,7 +104,7 @@ public class JmsPlugin implements IPlugin {
         jmsSender.queueProducers = new HashMap<String, QueueProducer>();
         String sendQueues = JmsConfig.getStr("sendQueues");
         logger.debug("sendQueues :" + sendQueues);
-        if (StringKit.notBlank(sendQueues)) {
+        if (StrKit.notBlank(sendQueues)) {
             for (String queueName : sendQueues.split(",")) {
                 jmsSender.queueProducers.put(queueName, new QueueProducer(serverUrl, username, password, queueName));
             }
@@ -112,7 +112,7 @@ public class JmsPlugin implements IPlugin {
         String sendTopics = JmsConfig.getStr("sendTopics");
 
         logger.debug("sendTopics :" + sendTopics);
-        if (StringKit.notBlank(sendTopics)) {
+        if (StrKit.notBlank(sendTopics)) {
             jmsSender.topicPublishers = new HashMap<String, TopicPublisher>();
             for (String topicName : sendTopics.split(",")) {
                 jmsSender.topicPublishers.put(topicName, new TopicPublisher(serverUrl, username, password, topicName));
