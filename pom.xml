@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jfinal</groupId>
 	<artifactId>jfinal-ext</artifactId>
-	<version>3.1.1-SNAPSHOT</version>
+	<version>3.1.1</version>
 	<description />
 	<url>git@github.com:b1412/jfinal-ext.git</url>
 	<licenses>
@@ -197,11 +197,11 @@
 			<artifactId>jxls-core</artifactId>
 			<version>0.9.9</version>
 		</dependency>
-		<dependency>
-			<groupId>com.servlets</groupId>
-			<artifactId>cos</artifactId>
-			<version>05Nov2002</version>
-		</dependency>
+        <dependency>
+            <groupId>com.jfinal</groupId>
+            <artifactId>cos</artifactId>
+            <version>26Dec2008</version>
+        </dependency>
 		<dependency>
 			<groupId>com.jfinal</groupId>
 			<artifactId>jfinal</artifactId>
@@ -227,11 +227,11 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.1</version>
 		</dependency>
-		<dependency>
-			<groupId>org.crazycake</groupId>
-			<artifactId>shiro-redis</artifactId>
-			<version>1.0.0-RELEASE</version>
-		</dependency>
+        <dependency>
+            <groupId>org.crazycake</groupId>
+            <artifactId>shiro-redis</artifactId>
+            <version>1.0.0-RELEASE</version>
+        </dependency>
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-all</artifactId>
