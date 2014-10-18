@@ -111,102 +111,122 @@
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
 			<version>2.3.19</version>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.24</version>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
 			<version>1.8.6</version>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 			<version>2.2</version>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
 			<version>3.9</version>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
 			<version>2.11.2</version>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.16</version>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>it.sauronsoftware.cron4j</groupId>
 			<artifactId>cron4j</artifactId>
 			<version>2.2.5</version>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
 			<version>2.7.2</version>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>c3p0</groupId>
 			<artifactId>c3p0</artifactId>
 			<version>0.9.1.2</version>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.xerial</groupId>
 			<artifactId>sqlite-jdbc</artifactId>
 			<version>3.7.15-M1</version>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.mod4j.org.eclipse.xtext</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.15</version>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-core</artifactId>
 			<version>5.7.0</version>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>javax.jms</groupId>
 			<artifactId>jms-api</artifactId>
 			<version>1.1-rev-1</version>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity</artifactId>
 			<version>1.7</version>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>14.0.1</version>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>net.sf.jxls</groupId>
 			<artifactId>jxls-core</artifactId>
 			<version>0.9.9</version>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>com.jfinal</groupId>
             <artifactId>cos</artifactId>
             <version>26Dec2008</version>
+            <scope>provided</scope>
         </dependency>
 		<dependency>
 			<groupId>com.jfinal</groupId>
 			<artifactId>jfinal</artifactId>
 			<version>1.8</version>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>com.jfinal</groupId>
 			<artifactId>jetty-server</artifactId>

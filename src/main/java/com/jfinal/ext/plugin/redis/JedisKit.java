@@ -16,12 +16,8 @@
 package com.jfinal.ext.plugin.redis;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -42,11 +38,21 @@ public class JedisKit {
         JedisKit.pool = pool;
     }
 
-    public static List<Object> tx(JedisAtom jedisAtom) {
+    public static List<?> tx(JedisAtom jedisAtom) {
+        List<?> result = null;
         Jedis jedis = pool.getResource();
-        Transaction trans = jedis.multi();
-        jedisAtom.action(trans);
-        return trans.exec();
+        try {
+            Transaction trans = jedis.multi();
+            jedisAtom.action(trans);
+            result = trans.exec();
+        }catch (Exception e){
+            LOG.error(e.getMessage(), e);
+        }finally {
+            if(null != jedis){
+                pool.returnResource(jedis);
+            }
+        }
+        return result;
 
     }
 
@@ -56,7 +62,6 @@ public class JedisKit {
         try {
             result = jedisAction.action(jedis);
         } catch (Exception e) {
-            e.printStackTrace();
             LOG.error(e.getMessage(), e);
         } finally {
             if (null != jedis)

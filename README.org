@@ -2,7 +2,7 @@
 #+TITLE:     JFinal-Ext
 #+AUTHOR:    Kid Zhou
 #+EMAIL:     zhouleib1412@gmail.com
-#+DATE:      2013-09-09
+#+DATE:      2014-10-18
 #+DESCRIPTION: JFinal-Ext 介绍
 #+KEYWORDS:  JFinal-Ext JFinal
 #+LANGUAGE:  zh_CN

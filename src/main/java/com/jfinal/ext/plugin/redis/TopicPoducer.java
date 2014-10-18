@@ -68,7 +68,7 @@ public class TopicPoducer {
          *            expiry time
          */
     public void publish(final Serializable message, final int seconds) {
-        List<Object> exec = null;
+        List<?> exec = null;
         do {
             JedisKit.watch(topic.key());
             exec = JedisKit.tx(new JedisAtom() {

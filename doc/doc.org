@@ -1,7 +1,7 @@
-#+TITLE:     JFinal-Ext文档(v3.0)
+#+TITLE:     JFinal-Ext文档(v3.1.2)
 #+AUTHOR:    Kid Zhou
 #+EMAIL:     zhouleib1412@gmail.com.cn
-#+DATE:      2013-09-09
+#+DATE:      2013-10-20
 #+DESCRIPTION: 
 #+KEYWORDS: 
 #+LANGUAGE:  zh_CN
@@ -83,9 +83,10 @@ public class PostTestCase extends ControllerTestCase<Config> {
 ****  TableName 配置
       如果有Model到表的映射命名不符合规范需要单独配置，则在Model上加上
       TableName注解，属性说明如下：
-      | tableName | 表名   |
-      | pkName    | 外键名 |
-   
+      | tableName  | 表名     | 必填   |
+      | pkName     | 外键名   | 默认"" |
+      | configName | 数据源名 | 默认"" |
+     
 ****  关闭自动扫描
       如果你只想用注解而不想让没有注解的model被自动注册，则如下使用
  #+BEGIN_SRC java
@@ -97,7 +98,19 @@ public class PostTestCase extends ControllerTestCase<Config> {
  #+BEGIN_SRC java
    atbp.addExcludeClass(Class<? extends Model> clazz)
  #+END_SRC
-  	
+
+****  多数据源
+      推荐将不同数据源的Model放在不同的package中然后调用
+      addScanPackages 设置要扫描的package
+      #+BEGIN_SRC java
+        atbp = new AutoTableBindPlugin(druidPlugin)
+                .addScanPackages("com.xx.yy.service1.model");
+        atbp2 = new AutoTableBindPlugin("another",druidPlugin2)
+                .addScanPackages("com.xx.yy.service2.model2","com.xx.yy.service2.model3")
+      #+END_SRC
+      如果在一个package里面有属于不同数据源的model（如果不是因为无法避
+      免的历史遗留原因不要采用这样的方式），那么给Model加上TableBind注
+      解并给configName属性赋值
 ** SqlInXmlPlugin 
 *** 简介
     类似ibatis的在xml中管理sql.主要用于复杂的sql管理或者有dba的开发团

@@ -15,6 +15,10 @@
  */
 package com.jfinal.ext.kit;
 
+import com.google.common.collect.Lists;
+import com.jfinal.kit.PathKit;
+import com.jfinal.log.Logger;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -22,10 +26,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
-import com.google.common.collect.Lists;
-import com.jfinal.kit.PathKit;
-import com.jfinal.log.Logger;
 
 public class ClassSearcher {
 
@@ -130,6 +130,8 @@ public class ClassSearcher {
 
     private String classpath = PathKit.getRootClassPath();
 
+    private List<String> scanPackages = Lists.newArrayList();
+
     private boolean includeAllJarsInLib = false;
 
     private List<String> includeJars = Lists.newArrayList();
@@ -164,7 +166,14 @@ public class ClassSearcher {
     }
 
     public <T> List<Class<? extends T>> search() {
-        List<String> classFileList = findFiles(classpath, "*.class");
+        List<String> classFileList = Lists.newArrayList();
+        if(scanPackages.isEmpty()){
+            classFileList = findFiles(classpath, "*.class");
+        }else {
+            for(String scanPackage:scanPackages){
+                classFileList = findFiles(classpath+File.separator+scanPackage.replaceAll("\\.",File.separator), "*.class");
+            }
+        }
         classFileList.addAll(findjarFiles(libDir, includeJars));
         return extraction(target, classFileList);
     }
@@ -175,8 +184,8 @@ public class ClassSearcher {
      * @param baseDirName
      *            jar路径
      * @param includeJars
-     * @param jarFileURL
-     *            jar文件地址 <a href="http://my.oschina.net/u/556800" target="_blank" rel="nofollow">@return</a>
+     *
+     * @see <a href="http://my.oschina.net/u/556800" target="_blank" rel="nofollow">@return</a>
      */
     private List<String> findjarFiles(String baseDirName, final List<String> includeJars) {
         List<String> classFiles = Lists.newArrayList();
@@ -198,9 +207,19 @@ public class ClassSearcher {
                     while (entries.hasMoreElements()) {
                         JarEntry jarEntry = entries.nextElement();
                         String entryName = jarEntry.getName();
-                        if (!jarEntry.isDirectory() && entryName.endsWith(".class")) {
-                            String className = entryName.replaceAll("/", ".").substring(0, entryName.length() - 6);
-                            classFiles.add(className);
+                        if(scanPackages.isEmpty()){
+                            if (!jarEntry.isDirectory() && entryName.endsWith(".class")) {
+                                String className = entryName.replaceAll("/", ".").substring(0, entryName.length() - 6);
+                                classFiles.add(className);
+                            }
+                        }else {
+                            for(String scanPackage:scanPackages){
+                                scanPackage = scanPackage.replaceAll("\\.",File.separator);
+                                if (!jarEntry.isDirectory() && entryName.endsWith(".class") && entryName.startsWith(scanPackage)) {
+                                    String className = entryName.replaceAll("/", ".").substring(0, entryName.length() - 6);
+                                    classFiles.add(className);
+                                }
+                            }
                         }
                     }
                     localJarFile.close();
@@ -224,4 +243,10 @@ public class ClassSearcher {
         return this;
     }
 
+    public ClassSearcher scanPackages(List<String> scanPaths) {
+        if(scanPaths != null){
+            scanPackages.addAll(scanPaths);
+        }
+        return this;
+    }
 }

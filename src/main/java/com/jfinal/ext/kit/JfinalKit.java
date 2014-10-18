@@ -17,6 +17,7 @@ package com.jfinal.ext.kit;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
 import com.jfinal.config.Interceptors;
@@ -27,11 +28,12 @@ import com.jfinal.plugin.IPlugin;
 
 public class JfinalKit {
 
-    protected static final  Logger LOG = Logger.getLogger(JfinalKit.class);
+    protected static final Logger LOG = Logger.getLogger(JfinalKit.class);
 
     static {
         init();
     }
+
     private static List<IPlugin> pluginList;
     private static Constants constants;
     private static Routes routes;
@@ -75,6 +77,20 @@ public class JfinalKit {
                 iPlugin.stop();
             }
         }
+    }
+
+    public static List<IPlugin> findPlugin(Class<? extends IPlugin> plugin) {
+        return findPlugin(plugin.getSimpleName());
+    }
+
+    public static List<IPlugin> findPlugin(String pluginName) {
+        List<IPlugin> plugins = Lists.newArrayList();
+        for (IPlugin iPlugin : pluginList) {
+            if (iPlugin.getClass().getSimpleName().equals(pluginName)) {
+                plugins.add(iPlugin);
+            }
+        }
+        return plugins;
     }
 
     public static void startPlugin(String pluginName) {

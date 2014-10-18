@@ -15,6 +15,8 @@
  */
 package com.jfinal.ext.plugin.tablebind;
 
+import com.jfinal.plugin.activerecord.DbKit;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -28,4 +30,6 @@ public @interface TableBind {
     String tableName();
 
     String pkName() default "";
+
+    String configName() default "";
 }

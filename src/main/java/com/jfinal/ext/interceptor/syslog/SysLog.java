@@ -15,6 +15,8 @@
  */
 package com.jfinal.ext.interceptor.syslog;
 
+import com.jfinal.ext.kit.ModelExt;
+
 import java.sql.Timestamp;
 
 public class SysLog {

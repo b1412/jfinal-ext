@@ -158,6 +158,14 @@ public class ModelExt<M extends ModelExt<M>> extends Model<M> {
         return find(sql);
     }
 
+    public List<M> findBySecurity() {
+        String sql ="select * from " + tableName();
+        if(pseudoDelete()){
+            sql+=" where "+deleteColumnLabel+" is null or "+deleteColumnLabel+" !=1 ";
+        }
+        return find(sql);
+    }
+
     public M findFirstByColumn(String column, Object value) {
         List<M> result = findByColumns(Lists.newArrayList(column), Lists.newArrayList(value));
         return result.size() > 0 ? result.get(0) : null;
