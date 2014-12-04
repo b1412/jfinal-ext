@@ -1,37 +1,24 @@
 package com.jfinal.ext.interceptor.excel;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.jfinal.log.Logger;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import java.util.*;
 
 public class ExcelTools {
-    private final static Logger logger = LoggerFactory.getLogger(ExcelTools.class);
+    private static final Logger logger = Logger.getLogger(ExcelTools.class);
 
     /**
      * 读取excel中所有的sheet的数据集
@@ -135,8 +122,6 @@ public class ExcelTools {
     /**
      * 
      * @param file
-     * @param sheetNo
-     * @param rulePath
      * @param clazz
      * @return
      */
@@ -164,7 +149,7 @@ public class ExcelTools {
     public static <T> List<T> digesterSheetWithOneDimensionalRule(File file, ExcelBean excelBean, Class clazz)
             throws ExcelException {
         List<List<Object>> srcList = readSheet(file, excelBean);
-        logger.debug("excel data {} ", srcList);
+        logger.debug("excel data {} " +srcList);
         List<T> destList = Lists.newArrayList();
         if (srcList == null) {
             return destList;
@@ -221,8 +206,6 @@ public class ExcelTools {
      *            目标对象
      * @param list
      *            数据源
-     * @param ruleMap
-     *            一维规则 (key为该行的列坐标,value为字段名称)
      * @throws ExcelException
      */
     public static void fillObjectWithOneDimensionalRule(Object obj, List<Object> list, ExcelBean excelBean)

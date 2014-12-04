@@ -37,17 +37,17 @@ public class Cron4jPlugin implements IPlugin {
 
     private final Logger log = Logger.getLogger(getClass());
 
-    private Map<String, Runnable> jobs = Maps.newHashMap();
+    private Map<Runnable,String> jobs = Maps.newLinkedHashMap();
     
     private String config = "job.properties";
 
     private Scheduler scheduler;
-    
+
     private Properties properties;
     
 
     public Cron4jPlugin add(String jobCronExp, Runnable job) {
-        jobs.put(jobCronExp, job);
+        jobs.put(job,jobCronExp);
         return this;
     }
 
@@ -58,22 +58,23 @@ public class Cron4jPlugin implements IPlugin {
     
     @Override
     public boolean start() {
-        scheduler = new Scheduler();
         loadJobsFromProperties();
-        Set<Entry<String, Runnable>> set = jobs.entrySet();
-        for (Entry<String, Runnable> entry : set) {
-            scheduler.schedule(entry.getKey(), entry.getValue());
+        startJobs();
+        return true;
+    }
+
+    private void startJobs() {
+        scheduler = new Scheduler();
+        Set<Entry<Runnable,String>> set = jobs.entrySet();
+        for (Entry<Runnable,String> entry : set) {
+            scheduler.schedule(entry.getValue(),entry.getKey());
             log.debug(entry.getValue() + " has been scheduled to run and repeat based on expression: " + entry.getKey());
         }
         scheduler.start();
-        return true;
     }
 
     private void loadJobsFromProperties() {
         loadProperties();
-        if(properties == null){
-            return;
-        }
         Enumeration<Object> enums = properties.keys();
         while (enums.hasMoreElements()) {
             String key = enums.nextElement() + "";
@@ -84,7 +85,7 @@ public class Cron4jPlugin implements IPlugin {
             String jobCronExp = properties.getProperty(cronKey(key)) + "";
             Class<Runnable> clazz = Reflect.on(jobClassName).get();
             try {
-                jobs.put(jobCronExp, clazz.newInstance());
+                jobs.put(clazz.newInstance(),jobCronExp);
             } catch (Exception e) {
                 Throwables.propagate(e);
             }

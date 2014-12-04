@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.jfinal.ext.kit.JaxbKit;
+import com.jfinal.kit.PathKit;
 import com.jfinal.log.Logger;
 
 public class SqlKit {
@@ -42,7 +43,7 @@ public class SqlKit {
 
     static void init() {
         sqlMap = new HashMap<String, String>();
-        File file = new File(SqlKit.class.getClassLoader().getResource("").getFile());
+        File file = new File(PathKit.getRootClassPath());
         File[] files = file.listFiles(new FileFilter() {
 
             @Override

@@ -15,82 +15,109 @@
  */
 package com.jfinal.ext.plugin.quartz;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.ParseException;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Properties;
-
-import org.quartz.CronTrigger;
-import org.quartz.Job;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SchedulerFactory;
-import org.quartz.impl.StdSchedulerFactory;
-
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 import com.jfinal.ext.kit.Reflect;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.IPlugin;
+import org.quartz.*;
+import org.quartz.impl.StdSchedulerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 public class QuartzPlugin implements IPlugin {
+    public static final String VERSION_1 = "1";
     private static final String JOB = "job";
-
     private final Logger logger = Logger.getLogger(getClass());
-    private Map<String, Job> jobs = Maps.newHashMap();
-
+    private Map<Job,String> jobs = Maps.newLinkedHashMap();
+    private String version;
     private SchedulerFactory sf;
-    private Scheduler sched;
-    private String config = "job.properties";
-    private Properties properties;
+    private Scheduler scheduler;
+    private String jobConfig = "job.properties";
+    private String confConfig = "quartz.properties";
+    private Properties jobProp;
 
-    public QuartzPlugin(String config) {
-        this.config = config;
+    public QuartzPlugin(String jobConfig,String confConfig) {
+        this.jobConfig = jobConfig;
+        this.confConfig = confConfig;
+    }
+
+    public QuartzPlugin(String jobConfig) {
+        this.jobConfig = jobConfig;
     }
 
     public QuartzPlugin() {
     }
 
+    public QuartzPlugin add(String jobCronExp, Job job) {
+        jobs.put(job,jobCronExp);
+        return this;
+    }
     @Override
     public boolean start() {
-        sf = new StdSchedulerFactory();
+        loadJobsFromProperties();
+        startJobs();
+        return true;
+    }
+
+    private void startJobs() {
         try {
-            sched = sf.getScheduler();
+            sf = new StdSchedulerFactory(confConfig);
+            scheduler = sf.getScheduler();
         } catch (SchedulerException e) {
             Throwables.propagate(e);
         }
+        Set<Map.Entry<Job,String>> set = jobs.entrySet();
+        for (Map.Entry<Job,String> entry : set) {
+            Job job = entry.getKey();
+            String jobClassName = job.getClass().getName();
+            String jobCronExp = entry.getValue();
+            JobDetail jobDetail;
+            CronTrigger trigger;
+            //JobDetail and CornTrigger are classes in 1.x version,but are interfaces in 2.X version.
+            if (VERSION_1.equals(version)) {
+                jobDetail = Reflect.on("org.quartz.JobDetail").create(jobClassName, jobClassName, job.getClass()).get();
+                trigger = Reflect.on("org.quartz.CronTrigger").create(jobClassName, jobClassName, jobCronExp).get();
+            } else {
+                jobDetail = Reflect.on("org.quartz.JobBuilder").call("newJob", job.getClass()).call("withIdentity", jobClassName, jobClassName)
+                        .call("build").get();
+                Object temp = Reflect.on("org.quartz.TriggerBuilder").call("newTrigger").get();
+                temp = Reflect.on(temp).call("withIdentity", jobClassName, jobClassName).get();
+                temp = Reflect.on(temp).call("withSchedule",
+                        Reflect.on("org.quartz.CronScheduleBuilder").call("cronSchedule", jobCronExp).get())
+                        .get();
+                trigger = Reflect.on(temp).call("build").get();
+            }
+            Date ft = Reflect.on(scheduler).call("scheduleJob", jobDetail, trigger).get();
+            logger.debug(Reflect.on(jobDetail).call("getKey") + " has been scheduled to run at: " + ft + " " +
+                    "and repeat based on expression: " + Reflect.on(trigger).call("getCronExpression"));
+        }
+        try {
+            scheduler.start();
+        } catch (SchedulerException e) {
+            Throwables.propagate(e);
+        }
+    }
+
+    private void loadJobsFromProperties() {
         loadProperties();
-        Enumeration<Object> enums = properties.keys();
+        Enumeration<Object> enums = jobProp.keys();
         while (enums.hasMoreElements()) {
             String key = enums.nextElement() + "";
             if (!key.endsWith(JOB) || !isEnableJob(enable(key))) {
                 continue;
             }
-            String jobClassName = properties.get(key) + "";
-            String jobCronExp = properties.getProperty(cronKey(key)) + "";
-            Class<Job> clazz = Reflect.on(jobClassName).get();
-            JobDetail job = new JobDetail(jobClassName, jobClassName, clazz);
-            CronTrigger trigger = null;
+            String jobClassName = jobProp.get(key) + "";
+            String jobCronExp = jobProp.getProperty(cronKey(key)) + "";
+            Class<Job> job = Reflect.on(jobClassName).get();
             try {
-                trigger = new CronTrigger(jobClassName, jobClassName, jobCronExp);
-            } catch (ParseException e) {
+                jobs.put(job.newInstance(),jobCronExp);
+            } catch (Exception e) {
                 Throwables.propagate(e);
             }
-            Date ft = null;
-            try {
-                ft = sched.scheduleJob(job, trigger);
-                sched.start();
-            } catch (SchedulerException e) {
-                Throwables.propagate(e);
-            }
-            logger.debug(job.getKey() + " has been scheduled to run at: " + ft + " and repeat based on expression: "
-                    + trigger.getCronExpression());
         }
-        return true;
     }
 
     private String enable(String key) {
@@ -101,8 +128,13 @@ public class QuartzPlugin implements IPlugin {
         return key.substring(0, key.lastIndexOf(JOB)) + "cron";
     }
 
+    public QuartzPlugin version(String version) {
+        this.version = version;
+        return this;
+    }
+
     private boolean isEnableJob(String enableKey) {
-        Object enable = properties.get(enableKey);
+        Object enable = jobProp.get(enableKey);
         if (enable != null && "false".equalsIgnoreCase((enable + "").trim())) {
             return false;
         }
@@ -110,26 +142,35 @@ public class QuartzPlugin implements IPlugin {
     }
 
     private void loadProperties() {
-        properties = new Properties();
-        InputStream is = QuartzPlugin.class.getClassLoader().getResourceAsStream(config);
+        jobProp = new Properties();
+        InputStream is = QuartzPlugin.class.getClassLoader().getResourceAsStream(jobConfig);
         try {
-            properties.load(is);
+            jobProp.load(is);
         } catch (IOException e) {
             Throwables.propagate(e);
         }
-        logger.debug("------------load Propteries---------------");
-        logger.debug(properties.toString());
+        logger.debug("------------load Job Propteries---------------");
+        logger.debug(jobProp.toString());
         logger.debug("------------------------------------------");
     }
 
     @Override
     public boolean stop() {
         try {
-            sched.shutdown();
+            scheduler.shutdown();
         } catch (SchedulerException e) {
             Throwables.propagate(e);
         }
         return true;
     }
 
+    public QuartzPlugin confConfig(String confConfig) {
+        this.confConfig = confConfig;
+        return this;
+    }
+
+    public QuartzPlugin jobConfig(String jobConfig) {
+        this.jobConfig = jobConfig;
+        return this;
+    }
 }

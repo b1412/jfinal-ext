@@ -108,6 +108,16 @@
     </build>
     <dependencies>
         <dependency>
+            <groupId>com.jfinal</groupId>
+            <artifactId>jfinal</artifactId>
+            <version>1.9</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>14.0.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
             <version>2.3.19</version>
@@ -126,6 +136,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>2.2</version>
@@ -134,7 +150,13 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>3.9</version>
+            <version>3.10.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.10.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -204,12 +226,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>14.0.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>net.sf.jxls</groupId>
             <artifactId>jxls-core</artifactId>
             <version>0.9.9</version>
@@ -219,12 +235,6 @@
             <groupId>com.jfinal</groupId>
             <artifactId>cos</artifactId>
             <version>26Dec2008</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.jfinal</groupId>
-            <artifactId>jfinal</artifactId>
-            <version>1.8</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -263,6 +273,7 @@
             <version>1.2.2</version>
             <scope>provided</scope>
         </dependency>
+
 
 
     </dependencies>

@@ -97,7 +97,7 @@ public class AutoBindRoutes extends Routes {
 
     private String controllerKey(Class<Controller> clazz) {
         Preconditions.checkArgument(clazz.getSimpleName().endsWith(suffix),
-                " does not has a @ControllerBind annotation and it's name is not end with " + suffix);
+                clazz.getName()+" is not annotated with @ControllerBind and not end with " + suffix);
         String controllerKey = "/" + StrKit.firstCharToLowerCase(clazz.getSimpleName());
         controllerKey = controllerKey.substring(0, controllerKey.indexOf(suffix));
         return controllerKey;
