@@ -52,7 +52,7 @@ public class PoiRender extends Render {
         OutputStream os = null;
         try {
             os = response.getOutputStream();
-            PoiKit.with(data).sheetName(sheetName).headerRow(headerRow).headers(headers).columns(columns)
+            PoiKit.data(data).sheetName(sheetName).headerRow(headerRow).headers(headers).columns(columns)
                     .cellWidth(cellWidth).export().write(os);
         } catch (Exception e) {
             throw new RenderException(e);
