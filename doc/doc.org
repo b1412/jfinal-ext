@@ -1,7 +1,7 @@
-#+TITLE:     JFinal-Ext文档(v3.1.2)
+#+TITLE:     JFinal-Ext文档(v3.2.0)
 #+AUTHOR:    Kid Zhou
 #+EMAIL:     zhouleib1412@gmail.com.cn
-#+DATE:      2013-10-20
+#+DATE:      2015-01-01
 #+DESCRIPTION: 
 #+KEYWORDS: 
 #+LANGUAGE:  zh_CN
@@ -225,6 +225,12 @@ a和b为任务的名字，仅作为标识，无其他用处。
        
 *** 如何在代码中添加任务
     在plugin上调用add方法
+*** Quartz 1.X和2.X版本不兼容问题
+quartz 2.X版本和1.X不兼容.
+JobDetail 和 CornTrigger 在 1.X版本中是Class,但是在2.X版本中是Interface.
+QuartzPlugin 解决了兼容问题,默认使用2.X版本,如果需要使用1.X,调用quartzPlugin.version(QuartzPlugin.VERSION_1)即可.
+
+
 ** ConfigPlugin
    分优先级加载配置文件
    在团队开发中如果自己有测试配置需要长期存在但是又不需要提交中心库的时候 
@@ -341,10 +347,15 @@ MongoKit.updateFirst("sns", src, desc); //只能修改符合条件的第一条�
    通过list数据生成excel,支持的数据类型为map ,record , model。
 ** PoiRender
    通过list数据生成excel,支持的数据类型为map ,record , model。
+*** 示例代码
    #+BEGIN_SRC java
-   PoiRender.me(data).fileName("your_file_name.xls").headers(headers).cellWidth(5000).headerRow(2)
+   PoiRender.me(data,data2,...datan).fileName("your_file_name.xls").headers(headers).cellWidth(5000).headerRow(2)
    #+END_SRC
-  
+*** excel2003和2007版本问题
+ 2003版一个sheet只支持最多65535行,当超过65535后会自动转化为多个sheet,2007则没有此限制.
+ 默认使用2007版,如果想用2003版调用PoiRender.me(data).version(PoiKit.VERSION_2003)既可
+***
+
 ** CsvRender
    通过list数据生成csv,支持的数据类型为map ,record , model。
 ** AmChartsRender
@@ -524,7 +535,6 @@ country 默认值为zh language默认值为CN
 #+BEGIN_SRC java
 public class DefaultLogProccesor implements LogProccesor {
     @Override
-    @Rethrow
     public void process(SysLog sysLog) {
         Map map = BeanUtils.describe(sysLog);
         map.remove("class");
@@ -557,6 +567,40 @@ public class DefaultLogProccesor implements LogProccesor {
 
 }
 #+END_SRC
+** ExcelUploadInterceptor
+*** 简介
+上传excel文件解析为model并持久化
+*** 使用方法
+**** 配置解析规则Rule
+#+BEGIN_SRC xml
+ <rule>
+　　<sheetNo>1,2<sheetNo>  非必须,默认解析所有sheet.可指定解析对应的sheet,解析多个sheet用","分隔
+    <start>1</start> 非必须,默认0.解析开始行坐标，从０开始
+    <end>-1</end>　非必须，默认-1.解析结束行坐标,负数时候从最后一行往回索引.
+    <postExcelProcessorn>com.xx.xx.AProcessor</postExcelProcessor>
+    <postListProcessor>com.xx.xx.BProcessor</postListProcessor>
+    <preExcelProcessor>com.xx.xx.CProcessor</preExcelProcessor>
+    <preListProcessor>com.xx.xx.DProcessor</preListProcessor>
+    <cells> 每一个单元格的解析策略
+        <cell>
+            <index>1</index>　单元格索引,从0开始
+            <attribute>en_name</attribute>　model属性名
+        </cell>
+        <cell>
+            <index>2</index>
+            <attribute>cn_name</attribute>
+        </cell>
+        <cell>
+            <index>3</index>
+            <attribute>explanation</attribute>
+        </cell>
+　　　　 ...
+    </cells>
+</rule>
+#+END_SRC
+**** 实现ExcelUploadInterceptor
+
+*** 示例代码
 * eclipse代码片段
   将jfinal-templates.xml导入eclipse的Preferences-java-Editor-Templates
 ** jfl

@@ -16,8 +16,13 @@
 package com.jfinal.ext.kit;
 
 import com.jfinal.log.Logger;
-import com.jfinal.plugin.activerecord.Model;
-import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.plugin.activerecord.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 public class RecordKit {
 
@@ -36,4 +41,5 @@ public class RecordKit {
         }
         return model;
     }
+
 }

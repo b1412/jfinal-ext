@@ -3,7 +3,8 @@ package com.jfinal.ext.interceptor.excel;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
-public class CellableMap extends LinkedHashMap<String, Object> implements ExcelExporter.Cellable {
+public class CellableMap extends LinkedHashMap<String, Object> implements Cellable {
+
 	public String[] getHeaderCellValue() {
 		return keySet().toArray(new String[] {});
 	}

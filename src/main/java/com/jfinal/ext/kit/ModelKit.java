@@ -15,21 +15,16 @@
  */
 package com.jfinal.ext.kit;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jfinal.log.Logger;
-import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.DbKit;
-import com.jfinal.plugin.activerecord.Model;
-import com.jfinal.plugin.activerecord.Record;
-import com.jfinal.plugin.activerecord.Table;
-import com.jfinal.plugin.activerecord.TableMapping;
+import com.jfinal.plugin.activerecord.*;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class ModelKit {
 
@@ -102,7 +97,27 @@ public class ModelKit {
         }
         return Db.batch(sql.toString(), batchPara, batchSize);
     }
-
+    @SuppressWarnings("rawtypes")
+    public static void copyColumns(Model src, Model desc, String... columns){
+        for(String column:columns)  {
+            String[] res = column.split(",");
+            if(res.length==1){
+                desc.set(column,src.get(column));
+            }else {
+                desc.set(res[1],src.get(res[0]));
+            }
+        }
+    }
+    @SuppressWarnings("rawtypes")
+    public static void clone(Model src,Model desc){
+        @SuppressWarnings("unchecked")
+        Set<Map.Entry<String, Object>> attrs =  src.getAttrsEntrySet();
+        for(Map.Entry<String,Object> attr:attrs){
+            String key = attr.getKey();
+            Object value = attr.getValue();
+            desc.set(key,value);
+        }
+    }
     public static int hashCode(Model<?> model) {
         final int prime = 31;
         int result = 1;

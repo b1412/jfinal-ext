@@ -1,6 +1,7 @@
 package com.jfinal.ext.render.excel;
 
 import com.google.common.collect.Lists;
+import com.jfinal.ext.kit.PoiKit;
 import com.jfinal.kit.PathKit;
 import com.jfinal.plugin.activerecord.Record;
 import org.apache.poi.ss.usermodel.Workbook;

@@ -69,13 +69,7 @@ public class JaxbKit {
     }
 
     /**
-     * 
      * object -> string
-     * 
-     * @author kid create 2013-4-1
-     * @param src
-     * @param clazz
-     * @return
      */
     public static String marshal(Object jaxbElement) {
         StringWriter sw = null;

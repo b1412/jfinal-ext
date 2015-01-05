@@ -31,11 +31,29 @@ public class ClassSearcher {
 
     protected static final Logger LOG = Logger.getLogger(ClassSearcher.class);
 
+    private String classpath = PathKit.getRootClassPath();
+
+    private String libDir = PathKit.getWebRootPath() + File.separator + "WEB-INF" + File.separator + "lib";
+
+    private List<String> scanPackages = Lists.newArrayList();
+
+    private boolean includeAllJarsInLib = false;
+
+    private List<String> includeJars = Lists.newArrayList();
+
+    private Class target;
+
     @SuppressWarnings("unchecked")
     private static <T> List<Class<? extends T>> extraction(Class<T> clazz, List<String> classFileList) {
         List<Class<? extends T>> classList = Lists.newArrayList();
         for (String classFile : classFileList) {
-            Class<?> classInFile = Reflect.on(classFile).get();
+            Class<?> classInFile ;
+            try {
+                classInFile = Reflect.on(classFile).get();
+            } catch (ReflectException e) {
+                LOG.debug("classFile: "+classFile);
+                throw new RuntimeException("error in file: "+classFile,e);
+            }
             if (clazz.isAssignableFrom(classInFile) && clazz != classInFile) {
                 classList.add((Class<? extends T>) classInFile);
             }
@@ -128,37 +146,6 @@ public class ClassSearcher {
         return strIndex == strLength;
     }
 
-    private String classpath = PathKit.getRootClassPath();
-
-    private List<String> scanPackages = Lists.newArrayList();
-
-    private boolean includeAllJarsInLib = false;
-
-    private List<String> includeJars = Lists.newArrayList();
-
-    private String libDir = PathKit.getWebRootPath() + File.separator + "WEB-INF" + File.separator + "lib";
-
-    private Class target;
-
-    public ClassSearcher(Class target) {
-        this.target = target;
-    }
-
-    public ClassSearcher injars(List<String> jars) {
-        if (jars != null) {
-            includeJars.addAll(jars);
-        }
-        return this;
-    }
-
-    public ClassSearcher inJars(String... jars) {
-        if (jars != null) {
-            for (String jar : jars) {
-                includeJars.add(jar);
-            }
-        }
-        return this;
-    }
 
     public ClassSearcher classpath(String classpath) {
         this.classpath = classpath;
@@ -171,7 +158,7 @@ public class ClassSearcher {
             classFileList = findFiles(classpath, "*.class");
         }else {
             for(String scanPackage:scanPackages){
-                classFileList = findFiles(classpath+File.separator+scanPackage.replaceAll("\\.",File.separator), "*.class");
+                classFileList = findFiles(classpath+File.separator+scanPackage.replaceAll("\\.","\\"+File.separator), "*.class");
             }
         }
         classFileList.addAll(findjarFiles(libDir, includeJars));
@@ -231,6 +218,26 @@ public class ClassSearcher {
         }
         return classFiles;
 
+    }
+
+    public ClassSearcher(Class target) {
+        this.target = target;
+    }
+
+    public ClassSearcher injars(List<String> jars) {
+        if (jars != null) {
+            includeJars.addAll(jars);
+        }
+        return this;
+    }
+
+    public ClassSearcher inJars(String... jars) {
+        if (jars != null) {
+            for (String jar : jars) {
+                includeJars.add(jar);
+            }
+        }
+        return this;
     }
 
     public ClassSearcher includeAllJarsInLib(boolean includeAllJarsInLib) {

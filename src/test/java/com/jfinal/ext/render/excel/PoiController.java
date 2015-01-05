@@ -1,13 +1,14 @@
 package com.jfinal.ext.render.excel;
 
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jfinal.core.Controller;
+import com.jfinal.ext.kit.PoiKit;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.auth.AccessTokenBuilder;
+
+import java.util.List;
+import java.util.Map;
 
 public class PoiController extends Controller {
     String[] columns = new String[] { "ACC_NBR", "DEVID", "IMSI" };
@@ -32,7 +33,7 @@ public class PoiController extends Controller {
             Map<String, Object> map = getMap(i);
             data.add(map);
         }
-        render(PoiRender.me(data).headers(headers));
+        render(PoiRender.me(data).version(PoiKit.VERSION_2003).headers(headers));
     }
 
     public void record() {

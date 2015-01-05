@@ -86,5 +86,20 @@ b.enable=false
 ** FreeMarkerXMLRender
 利用freemaker生成xml
 
+*  捐赠
+
+如果您喜欢JFinal-Ext
+并确实对您带来帮助
+对此感到无比高兴
+您的捐赠，是JFinal-Ext前进的动力!
+支付宝捐助账户： zhouleib1412@gmail.com    (可输入留言)
+[[./doc/img/alipay_pic_small.png]]
+
+* 其他开源项目 
+** JCOP
+  极简自由的代码生成器 JFinal-Code-Online
+  osc: http://www.oschina.net/p/jcop  
+  github: https://github.com/b1412/jfinal-ext
+
 
 

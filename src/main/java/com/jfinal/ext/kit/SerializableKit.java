@@ -23,8 +23,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import org.apache.log4j.Logger;
-//import java.util.zip.GZIPInputStream;
-//import java.util.zip.GZIPOutputStream;
 
 public class SerializableKit {
     private static Logger LOG = Logger.getLogger(SerializableKit.class);

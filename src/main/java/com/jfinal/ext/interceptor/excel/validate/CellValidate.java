@@ -1,4 +1,4 @@
-package com.jfinal.ext.interceptor.excel;
+package com.jfinal.ext.interceptor.excel.validate;
 
 /**
  * 单元格值合法性验证

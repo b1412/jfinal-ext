@@ -1,4 +1,4 @@
-package com.jfinal.ext.interceptor.excel;
+package com.jfinal.ext.interceptor.excel.validate;
 
 public class NumberValidate implements CellValidate {
 

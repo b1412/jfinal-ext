@@ -1,0 +1,1456 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN" xml:lang="zh_CN">
+<head>
+<title>JFinal-Ext文档(v3.2.0)</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<meta name="title" content="JFinal-Ext文档(v3.2.0)"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2014-12-21"/>
+<meta name="author" content="Kid Zhou"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+
+<div id="preamble">
+
+</div>
+
+<div id="content">
+<h1 class="title">JFinal-Ext文档(v3.2.0)</h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 JFinal测试框架</a>
+<ul>
+<li><a href="#sec-1-1">1.1 使用说明</a></li>
+<li><a href="#sec-1-2">1.2 示例代码</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2 Plugin扩展</a>
+<ul>
+<li><a href="#sec-2-1">2.1 自定绑定表 AutoTableBindPlugin</a>
+<ul>
+<li><a href="#sec-2-1-1">2.1.1 简介</a></li>
+<li><a href="#sec-2-1-2">2.1.2 AutoTableBindPlugin使用示例</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-2">2.2 SqlInXmlPlugin</a>
+<ul>
+<li><a href="#sec-2-2-1">2.2.1 简介</a></li>
+<li><a href="#sec-2-2-2">2.2.2 使用示例</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-3">2.3 jms消息处理 JmsPlugin</a>
+<ul>
+<li><a href="#sec-2-3-1">2.3.1 消息接收</a></li>
+<li><a href="#sec-2-3-2">2.3.2 消息发送</a></li>
+<li><a href="#sec-2-3-3">2.3.3 配置文件说明</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-4">2.4 任务调度  QuartzPlugin Cron4jPlugin</a>
+<ul>
+<li><a href="#sec-2-4-1">2.4.1 业务如何调度</a></li>
+<li><a href="#sec-2-4-2">2.4.2 如何加载配置</a></li>
+<li><a href="#sec-2-4-3">2.4.3 配置文件说明</a></li>
+<li><a href="#sec-2-4-4">2.4.4 如何在代码中添加任务</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-5">2.5 ConfigPlugin</a>
+<ul>
+<li><a href="#sec-2-5-1">2.5.1 如何加载配置</a></li>
+<li><a href="#sec-2-5-2">2.5.2 配置说明</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-6">2.6 MongodbPlugin</a>
+<ul>
+<li><a href="#sec-2-6-1">2.6.1 简介</a></li>
+<li><a href="#sec-2-6-2">2.6.2 使用方法</a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-3">3 Render扩展</a>
+<ul>
+<li><a href="#sec-3-1">3.1 DwzRender</a></li>
+<li><a href="#sec-3-2">3.2 JxlsRender</a></li>
+<li><a href="#sec-3-3">3.3 PoiRender</a></li>
+<li><a href="#sec-3-4">3.4 CsvRender</a></li>
+<li><a href="#sec-3-5">3.5 AmChartsRender</a></li>
+<li><a href="#sec-3-6">3.6 FreeMarkerXMLRender</a></li>
+</ul>
+</li>
+<li><a href="#sec-4">4 Routes扩展</a>
+<ul>
+<li><a href="#sec-4-1">4.1 自动注册Route AutoBindRoutes</a>
+<ul>
+<li><a href="#sec-4-1-1">4.1.1 简介</a></li>
+<li><a href="#sec-4-1-2">4.1.2 示例代码</a></li>
+<li><a href="#sec-4-1-3">4.1.3 ControllerBind配置</a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-5">5 Interceptor扩展</a>
+<ul>
+<li><a href="#sec-5-1">5.1 ExceptionInterceptor统一异常处理</a>
+<ul>
+<li><a href="#sec-5-1-1">5.1.1 简介</a></li>
+<li><a href="#sec-5-1-2">5.1.2 示例代码</a></li>
+</ul>
+</li>
+<li><a href="#sec-5-2">5.2 I18nInterceptor 国际化拦截器</a>
+<ul>
+<li><a href="#sec-5-2-1">5.2.1 简介</a></li>
+<li><a href="#sec-5-2-2">5.2.2 render策略</a></li>
+</ul>
+</li>
+<li><a href="#sec-5-3">5.3 SysInterceptor 系统日志拦截器</a>
+<ul>
+<li><a href="#sec-5-3-1">5.3.1 简介</a></li>
+<li><a href="#sec-5-3-2">5.3.2 使用方法</a></li>
+<li><a href="#sec-5-3-3">5.3.3 示例代码</a></li>
+</ul>
+</li>
+<li><a href="#sec-5-4">5.4 ExcelUploadInterceptor</a>
+<ul>
+<li><a href="#sec-5-4-1">5.4.1 简介</a></li>
+<li><a href="#sec-5-4-2">5.4.2 使用方法</a></li>
+<li><a href="#sec-5-4-3">5.4.3 示例代码</a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-6">6 eclipse代码片段</a>
+<ul>
+<li><a href="#sec-6-1">6.1 jfl</a></li>
+<li><a href="#sec-6-2">6.2 jfd</a></li>
+<li><a href="#sec-6-3">6.3 jfld</a></li>
+<li><a href="#sec-6-4">6.4 jfli</a></li>
+<li><a href="#sec-6-5">6.5 jfle</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> JFinal测试框架</h2>
+<div class="outline-text-2" id="text-1">
+
+<p>  在非web环境下对jfinal Controller 进行单元测试
+</p>
+</div>
+
+<div id="outline-container-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> 使用说明</h3>
+<div class="outline-text-3" id="text-1-1">
+
+<p> 所有对Controller的测试必须继承ControllerTestCase,此类中方法说明如下
+</p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">use</td><td class="left">需要调用的url</td></tr>
+<tr><td class="left">post</td><td class="left">post数据包,支持String和File</td></tr>
+<tr><td class="left">writeTo</td><td class="left">response数据写入文件</td></tr>
+<tr><td class="left">invoke</td><td class="left">调用url</td></tr>
+<tr><td class="left">findAttrAfterInvoke</td><td class="left">action调用之后getAttr的值</td></tr>
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+<div id="outline-container-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> 示例代码</h3>
+<div class="outline-text-3" id="text-1-2">
+
+
+
+
+<pre class="example">public class PostTestCase extends ControllerTestCase&lt;Config&gt; {
+
+    @Test
+    public void line() throws Exception {
+        String url = "/post";
+        String filePath = Thread.currentThread().getContextClassLoader().getResource("dataReq.xml").getFile();
+        String fileResp = "/home/kid/git/jfinal-ext/resource/dataResp.xml";
+        String resp = use(url).post(new File(filePath)).writeTo(new File(fileResp)).invoke();
+        System.out.println(resp);
+    }
+
+    @Test
+    public void test3() {
+        String url = "/post/1?age=1&amp;age=2&amp;name=2";
+        String body = "&lt;root&gt;中文&lt;/root&gt;";
+        use(url).post(body).invoke();
+    }
+}
+
+</pre>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Plugin扩展</h2>
+<div class="outline-text-2" id="text-2">
+
+
+</div>
+
+<div id="outline-container-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> 自定绑定表 AutoTableBindPlugin</h3>
+<div class="outline-text-3" id="text-2-1">
+
+
+</div>
+
+<div id="outline-container-2-1-1" class="outline-4">
+<h4 id="sec-2-1-1"><span class="section-number-4">2.1.1</span> 简介</h4>
+<div class="outline-text-4" id="text-2-1-1">
+
+<p>   扫描clsspath和lib中继承了model的类自动注册，可选择不同的命名规则自定映射表名，也可以在每一个model上用注解指定表名
+</p></div>
+
+</div>
+
+<div id="outline-container-2-1-2" class="outline-4">
+<h4 id="sec-2-1-2"><span class="section-number-4">2.1.2</span> AutoTableBindPlugin使用示例</h4>
+<div class="outline-text-4" id="text-2-1-2">
+
+<ul>
+<li id="sec-2-1-2-1">基本使用<br/>
+      AutoTableBindPlugin 继承自ActivitiRecordPlugin，所以如果你使用
+      AutoTableBindPlugin则不用再使用ActivitiRecordPlugin,其他需要在
+      ActiviRecordPlugin中的设置都在此plugin中设置，比如方言，大小写不敏
+      感等..
+
+
+
+<pre class="example">DruidPlugin druid = new DruidPlugin("jdbc:mysql://127.0.0.1/jfinal_demo", "root", "root");
+AutoTableBindPlugin atbp = new AutoTableBindPlugin(druid);   
+</pre>
+
+
+<p>   
+  <b>记住一定要在启动atbp之前启动连接池的plugin ***</b>  jar包扫描 
+      如果你需要载入jar包中的model，需要调用以下的api将jar包加入扫描
+</p>
+
+
+<pre class="example">atbp.addJar("modelInJar.jar");
+atbp.addJars("jar1,jar2");
+</pre>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-1-2-3">表名风格INameStyle 配置<br/>
+   一个model自动绑定的表明默认是该类的simpleClassname，如果需要用其他
+   的命名风格，需要在构造函数中指定，如
+
+
+
+<pre class="example">AutoTableBindPlugin atbp = new AutoTableBindPlugin(cp,SimpleNameStyles.LOWER);
+</pre>
+
+
+<p>   
+   SimpleNameStyles 中已有的命名风格以及映射的表明如下表：
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left"></td><td class="left">DEFAULT</td><td class="left"><code>FIRST_LOWER</code></td><td class="left">UP</td><td class="left">LOWER</td><td class="left"><code>UP_UNDERLINE</code></td><td class="left"><code>LOWER_UNDERLINE</code></td></tr>
+<tr><td class="left">DevInfo.java</td><td class="left">DevInfo</td><td class="left">devInfo</td><td class="left">DEVINFO</td><td class="left">devinfo</td><td class="left"><code>DEV_INFO</code></td><td class="left"><code>dev_info</code></td></tr>
+</tbody>
+</table>
+
+
+<p>  
+   ParamNameStyles 含有构造参数的命名风格：
+</p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left"></td><td class="left">module(test)</td><td class="left">lowerModule(test)</td><td class="left">upModule(test)</td><td class="left">upUnderlineModule(test)</td><td class="left">lowerUnderlineModule(test)</td></tr>
+<tr><td class="left">DevInfo.java</td><td class="left"><code>test_DevInfo</code></td><td class="left"><code>test_devinfo</code></td><td class="left"><code>test_DEVINFO</code></td><td class="left"><code>test_DEV_INFO</code></td><td class="left"><code>test_dev_info</code></td></tr>
+</tbody>
+</table>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-1-2-4">TableName 配置<br/>
+      如果有Model到表的映射命名不符合规范需要单独配置，则在Model上加上
+      TableName注解，属性说明如下：
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">tableName</td><td class="left">表名</td><td class="left">必填</td></tr>
+<tr><td class="left">pkName</td><td class="left">外键名</td><td class="left">默认""</td></tr>
+<tr><td class="left">configName</td><td class="left">数据源名</td><td class="left">默认""</td></tr>
+</tbody>
+</table>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-1-2-5">关闭自动扫描<br/>
+      如果你只想用注解而不想让没有注解的model被自动注册，则如下使用
+
+
+
+<pre class="example">atbp.setAutoScan(false);
+</pre>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-1-2-6">忽略不想自动扫描的Model<br/>
+      如果你打开了自动扫描，但是又有不想要被扫描进去的,如通用的BaseModel
+
+
+
+<pre class="example">atbp.addExcludeClass(Class&lt;? extends Model&gt; clazz)
+</pre>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-1-2-7">多数据源<br/>
+      推荐将不同数据源的Model放在不同的package中然后调用
+      addScanPackages 设置要扫描的package
+
+
+
+<pre class="example">atbp = new AutoTableBindPlugin(druidPlugin)
+        .addScanPackages("com.xx.yy.service1.model");
+atbp2 = new AutoTableBindPlugin("another",druidPlugin2)
+        .addScanPackages("com.xx.yy.service2.model2","com.xx.yy.service2.model3")
+</pre>
+
+<p>
+      如果在一个package里面有属于不同数据源的model（如果不是因为无法避
+      免的历史遗留原因不要采用这样的方式），那么给Model加上TableBind注
+      解并给configName属性赋值
+</p></li>
+</ul>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> SqlInXmlPlugin</h3>
+<div class="outline-text-3" id="text-2-2">
+
+
+</div>
+
+<div id="outline-container-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1"><span class="section-number-4">2.2.1</span> 简介</h4>
+<div class="outline-text-4" id="text-2-2-1">
+
+<p>    类似ibatis的在xml中管理sql.主要用于复杂的sql管理或者有dba的开发团
+    队
+</p></div>
+
+</div>
+
+<div id="outline-container-2-2-2" class="outline-4">
+<h4 id="sec-2-2-2"><span class="section-number-4">2.2.2</span> 使用示例</h4>
+<div class="outline-text-4" id="text-2-2-2">
+
+<p> 插件会扫描classpath根目录下以sql结尾的xml文件，如user-sql.xml，内容如
+ 下
+</p>
+
+
+<pre class="example">&lt;sqlGroup name="blog" &gt;
+      &lt;sql id="findBlog"&gt;select * from blog&lt;/sql&gt;
+      &lt;sql id="findUser"&gt;select * from user&lt;/sql&gt;
+&lt;/sqlGroup&gt;
+</pre>
+
+<p>
+插件会将name+id作为一个sql语句的唯一标识，
+在java中获取该sql的方法为
+SqlKit.sql("blog.findBlog")
+</p></div>
+</div>
+
+</div>
+
+<div id="outline-container-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> jms消息处理 JmsPlugin</h3>
+<div class="outline-text-3" id="text-2-3">
+
+
+</div>
+
+<div id="outline-container-2-3-1" class="outline-4">
+<h4 id="sec-2-3-1"><span class="section-number-4">2.3.1</span> 消息接收</h4>
+<div class="outline-text-4" id="text-2-3-1">
+
+<p>如果你需要处理某个消息号对应的消息，需要实现com.jfinal.plugin.jms.ReceiveResolver
+</p>
+
+
+<pre class="example">public class AReceiveResolver implements ReceiveResolver {
+
+        @Override
+        public void resolve(Serializable objectMessage) throws Exception {
+                System.out.println("AReceiveResolver");
+        }
+
+}
+
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-2-3-2" class="outline-4">
+<h4 id="sec-2-3-2"><span class="section-number-4">2.3.2</span> 消息发送</h4>
+<div class="outline-text-4" id="text-2-3-2">
+
+<ul>
+<li>示例 JmsKit.sendQueue("q1", new M(), "a");
+
+</li>
+<li>接口 public static boolean sendQueue(String queueName, Serializable
+</li>
+</ul>
+
+<p> message, String msgName)
+</p>
+<ul>
+<li>参数说明
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">queueName</td><td class="left">message</td><td class="left">msgName</td></tr>
+<tr><td class="left">发送队列的名字</td><td class="left">发送的消息对象</td><td class="left">发送的消息名字</td></tr>
+</tbody>
+</table>
+
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2-3-3" class="outline-4">
+<h4 id="sec-2-3-3"><span class="section-number-4">2.3.3</span> 配置文件说明</h4>
+<div class="outline-text-4" id="text-2-3-3">
+
+
+
+
+<pre class="example">
+################################
+#          server info         #
+################################
+# jms服务器地址
+serverUrl=tcp://localhost:61616
+username=system
+password=manager
+
+################################
+#          queue info          #
+################################
+# 发送的队列名字，用“，”号分隔
+sendQueues=q1,q2
+
+# 接受的队列的名字，用“，”号分隔
+receiveQueues=q1,q3
+# 队列q1上消息名字为a的消息号
+queue.q1.a=10000
+#接受到队列q1上消息名字为a的消息的时候调用的处理器
+queue.q1.a.resolver=test.com.jfinal.plugin.jms.AReceiveResolver
+
+queue.q1.b=20000
+queue.q1.b.resolver=test.com.jfinal.plugin.jms.BReceiveResolver
+
+################################
+#          topic info          #
+################################
+
+sendTopics=t1,t2
+
+receiveTopics=t1,t3
+topic.t1.c=30000
+topic.t1.c.resolver=test.com.jfinal.plugin.jms.CReceiveResolver
+
+topic.t3.d=40000
+topic.t3.d.resolver=test.com.jfinal.plugin.jms.DReceiveResolver
+</pre>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2-4" class="outline-3">
+<h3 id="sec-2-4"><span class="section-number-3">2.4</span> 任务调度  QuartzPlugin Cron4jPlugin</h3>
+<div class="outline-text-3" id="text-2-4">
+
+
+
+</div>
+
+<div id="outline-container-2-4-1" class="outline-4">
+<h4 id="sec-2-4-1"><span class="section-number-4">2.4.1</span> 业务如何调度</h4>
+<div class="outline-text-4" id="text-2-4-1">
+
+<ul>
+<li id="sec-2-4-1-1">QuartzPlugin<br/>
+需要进行的调度任务实现必须实现org.quartz.Job接口
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-4-1-2">Cron4jPlugin<br/>
+需要进行的调度任务实现必须实现java.lang.Runnable接口
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2-4-2" class="outline-4">
+<h4 id="sec-2-4-2"><span class="section-number-4">2.4.2</span> 如何加载配置</h4>
+<div class="outline-text-4" id="text-2-4-2">
+
+<p>  插件默认加载classpath根目录下job.properties文件。
+  如果需要加载指定的配置文件，需要在构造方法中传入参数
+</p></div>
+
+</div>
+
+<div id="outline-container-2-4-3" class="outline-4">
+<h4 id="sec-2-4-3"><span class="section-number-4">2.4.3</span> 配置文件说明</h4>
+<div class="outline-text-4" id="text-2-4-3">
+
+<p>job.properties配置示例
+</p>
+
+
+<pre class="example">#JobA
+a.job=test.com.jfinal.plugin.quzrtz.JobA
+a.cron=*/5 * * * * ?
+a.enable=true
+#JobB
+b.job=test.com.jfinal.plugin.quartz.JobB
+b.cron=*/10 * * * * ?
+b.enable=false
+</pre>
+
+<p>
+配置说明
+job cron enable为配置关键字
+a和b为任务的名字，仅作为标识，无其他用处。
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">任务名字.job</td><td class="left">调度任务的类全名</td></tr>
+<tr><td class="left">任务名字.cron</td><td class="left">调度任务的cron表达式</td></tr>
+<tr><td class="left">任务名字.enable</td><td class="left">调度任务是否启用</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2-4-4" class="outline-4">
+<h4 id="sec-2-4-4"><span class="section-number-4">2.4.4</span> 如何在代码中添加任务</h4>
+<div class="outline-text-4" id="text-2-4-4">
+
+<p>    在plugin上调用add方法
+</p></div>
+</div>
+
+</div>
+
+<div id="outline-container-2-5" class="outline-3">
+<h3 id="sec-2-5"><span class="section-number-3">2.5</span> ConfigPlugin</h3>
+<div class="outline-text-3" id="text-2-5">
+
+<p>   分优先级加载配置文件
+   在团队开发中如果自己有测试配置需要长期存在但是又不需要提交中心库的时候 
+可以采用分级配置加载的策略。 如中心库中有config.properties这个配置，你可以创建 config-test.properties文件，配置相同的key，ConfigKit中的方法会优先加载 xx-test.properties文件。
+</p>
+
+</div>
+
+<div id="outline-container-2-5-1" class="outline-4">
+<h4 id="sec-2-5-1"><span class="section-number-4">2.5.1</span> 如何加载配置</h4>
+<div class="outline-text-4" id="text-2-5-1">
+
+
+
+
+
+<pre class="example">ConfigPlugin configPlugin = new ConfigPlugin();
+        configPlugin.addResource(".*.properties");
+</pre>
+
+<p>
+addResource支持正则表达式
+当我们加载config.properties时候会找config-test.properties一起加载.
+</p></div>
+
+</div>
+
+<div id="outline-container-2-5-2" class="outline-4">
+<h4 id="sec-2-5-2"><span class="section-number-4">2.5.2</span> 配置说明</h4>
+<div class="outline-text-4" id="text-2-5-2">
+
+<p> 如果我们加载了以下两个配置,下面的测试用列能通过,也就是说当*-test中同
+ 名的key优先读取.
+config.properties
+</p>
+
+
+<pre class="example">name=aa
+age=1
+</pre>
+
+
+<p>
+config-test.properties
+</p>
+
+
+<pre class="example">name=test
+</pre>
+
+
+
+<pre class="example">@Test
+public void testGetStr() throws InterruptedException {
+        Assert.assertEquals("test",ConfigKit.getStr("name"));
+        Assert.assertEquals(1,ConfigKit.getInt("age"));
+}
+</pre>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2-6" class="outline-3">
+<h3 id="sec-2-6"><span class="section-number-3">2.6</span> MongodbPlugin</h3>
+<div class="outline-text-3" id="text-2-6">
+
+
+</div>
+
+<div id="outline-container-2-6-1" class="outline-4">
+<h4 id="sec-2-6-1"><span class="section-number-4">2.6.1</span> 简介</h4>
+<div class="outline-text-4" id="text-2-6-1">
+
+<p>   MongodbPlugin 是Jfinal-ext扩展的nosql插件，在MongoKit中封装mongodb
+   的常用操作。
+</p></div>
+
+</div>
+
+<div id="outline-container-2-6-2" class="outline-4">
+<h4 id="sec-2-6-2"><span class="section-number-4">2.6.2</span> 使用方法</h4>
+<div class="outline-text-4" id="text-2-6-2">
+
+<ul>
+<li id="sec-2-6-2-1">创建<br/>
+默认ip和端口
+
+
+
+<pre class="example">MongodbPlugin mongodbPlugin = new MongodbPlugin("log")
+MongodbPlugin mongodbPlugin = new MongodbPlugin("127.0.0.1", 8888, "other");
+
+</pre>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-6-2-2">分页查询<br/>
+
+
+
+<pre class="example">Map&lt;String, Object&gt; filter = new HashMap&lt;String, Object&gt;();
+filter.put("age", "20") ;  //精确过滤
+Map&lt;String, Object&gt; like = new HashMap&lt;String, Object&gt;();
+like.put("name","zhang");  //模糊匹配，相当于sql 的 like %zhang%
+Map&lt;String, Object&gt; sort = new HashMap&lt;String, Object&gt;();
+sort.put("age","desc");     //排序
+Page&lt;Record&gt; page = MongoKit.paginate("sns", 1, 10, filter, like,sort);
+</pre>
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-6-2-3">新增<br/>
+
+
+
+<pre class="example">MongoKit.save("sns", record) //保存一个record
+MongoKit.save("sns", records)//批量保存record
+</pre>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-6-2-4">删除<br/>
+
+
+
+<pre class="example">MongoKit.removeAll("sns")  //删除所有sns
+
+Map&lt;String, Object&gt; filter  = new HashMap&lt;String,Object&gt;();
+filter.put("name", "bb");
+filter.put("age", "1");
+MongoKit.remove("sns", filter);  //删除符合条件的sns
+
+</pre>
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-6-2-5">修改<br/>
+
+
+
+<pre class="example">Map&lt;String, Object&gt; src = new HashMap&lt;String, Object&gt;();
+src.put("age", "1");  //查询条件
+Map&lt;String, Object&gt; desc = new HashMap&lt;String, Object&gt;();
+desc.put("addr", "test"); //将符合查询条件的文档修改为此文档
+MongoKit.updateFirst("sns", src, desc); //只能修改符合条件的第一条数据..
+</pre>
+
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Render扩展</h2>
+<div class="outline-text-2" id="text-3">
+
+
+</div>
+
+<div id="outline-container-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> DwzRender</h3>
+<div class="outline-text-3" id="text-3-1">
+
+
+
+
+<pre class="example">public void save() {
+         Blog model = getModel(Blog.class);
+         if (model.getInt("id") == null) {
+                 model.save();
+         } else {
+                 model.update();
+         }
+         render(DwzRender.closeCurrentAndRefresh("pageBlog"));
+ }
+
+ public void edit() {
+         int id = getParaToInt(0);
+         Blog blog = Blog.dao.findById(id);
+         if (id == -1) {
+                 blog = new Blog();
+         } else if (blog == null) {
+                 render(DwzRender.error("该记录已被删除，请您先刷新列表"));
+         }
+         setAttr("blog", blog);
+ }
+
+ public void delete() {
+         Blog.dao.deleteById(getParaToInt());
+         render(DwzRender.success());
+ }
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> JxlsRender</h3>
+<div class="outline-text-3" id="text-3-2">
+
+<p>   通过list数据生成excel,支持的数据类型为map ,record , model。
+</p></div>
+
+</div>
+
+<div id="outline-container-3-3" class="outline-3">
+<h3 id="sec-3-3"><span class="section-number-3">3.3</span> PoiRender</h3>
+<div class="outline-text-3" id="text-3-3">
+
+<p>   通过list数据生成excel,支持的数据类型为map ,record , model。
+</p>
+
+
+<pre class="example">PoiRender.me(data).fileName("your_file_name.xls").headers(headers).cellWidth(5000).headerRow(2)
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-3-4" class="outline-3">
+<h3 id="sec-3-4"><span class="section-number-3">3.4</span> CsvRender</h3>
+<div class="outline-text-3" id="text-3-4">
+
+<p>   通过list数据生成csv,支持的数据类型为map ,record , model。
+</p></div>
+
+</div>
+
+<div id="outline-container-3-5" class="outline-3">
+<h3 id="sec-3-5"><span class="section-number-3">3.5</span> AmChartsRender</h3>
+<div class="outline-text-3" id="text-3-5">
+
+<p>新增AmChartsRener,对AmCharts报表工具进行了简单的封装
+</p>
+
+
+
+<pre class="example">public void pie(){
+         List&lt;KeyLabel&gt; pies = new ArrayList&lt;KeyLabel&gt;();
+         KeyLabel e= new KeyLabel("java","111");
+         pies.add(e);
+         KeyLabel e2= new KeyLabel("c","11");
+         pies.add(e2);
+         render(AmChartsRender.pie(pies, "ampie.swf", "pie_settings.xml",500,500));
+ }
+
+ public void multiple(){
+         List&lt;String&gt; data = new ArrayList&lt;String&gt;();
+         data.add("10");
+         data.add("11");
+         data.add("12");
+         data.add("13");
+         data.add("14");
+         List&lt;String&gt; data1 = new ArrayList&lt;String&gt;();
+         data1.add("20");
+         data1.add("21");
+         data1.add("22");
+         data1.add("23");
+         data1.add("24");
+         List&lt;List&lt;String&gt;&gt; list = new ArrayList&lt;List&lt;String&gt;&gt;();
+         list.add(data);
+         list.add(data1);
+         List&lt;String&gt; series = new ArrayList&lt;String&gt;();
+         series.add("1月");
+         series.add("2月");
+         series.add("3月");
+         series.add("4月");
+         series.add("5月");
+         render(AmChartsRender.graph(list, series, "amline.swf", "line_settings.xml"));
+ }
+ public void simple(){
+         List&lt;String&gt; data = new ArrayList&lt;String&gt;();
+         data.add("10");
+         data.add("11");
+         data.add("12");
+         data.add("13");
+         data.add("14");
+         List&lt;String&gt; series = new ArrayList&lt;String&gt;();
+         series.add("1月");
+         series.add("2月");
+         series.add("3月");
+         series.add("4月");
+         series.add("5月");
+         render(AmChartsRender.graph(data, series, "amline.swf", "line_settings.xml"));
+ }public void pie(){
+         List&lt;KeyLabel&gt; pies = new ArrayList&lt;KeyLabel&gt;();
+         KeyLabel e= new KeyLabel("java","111");
+         pies.add(e);
+         KeyLabel e2= new KeyLabel("c","11");
+         pies.add(e2);
+         render(AmChartsRender.pie(pies, "ampie.swf", "pie_settings.xml",500,500));
+ }
+
+ public void multiple(){
+         List&lt;String&gt; data = new ArrayList&lt;String&gt;();
+         data.add("10");
+         data.add("11");
+         data.add("12");
+         data.add("13");
+         data.add("14");
+         List&lt;String&gt; data1 = new ArrayList&lt;String&gt;();
+         data1.add("20");
+         data1.add("21");
+         data1.add("22");
+         data1.add("23");
+         data1.add("24");
+         List&lt;List&lt;String&gt;&gt; list = new ArrayList&lt;List&lt;String&gt;&gt;();
+         list.add(data);
+         list.add(data1);
+         List&lt;String&gt; series = new ArrayList&lt;String&gt;();
+         series.add("1月");
+         series.add("2月");
+         series.add("3月");
+         series.add("4月");
+         series.add("5月");
+         render(AmChartsRender.graph(list, series, "amline.swf", "line_settings.xml"));
+ }
+ public void simple(){
+         List&lt;String&gt; data = new ArrayList&lt;String&gt;();
+         data.add("10");
+         data.add("11");
+         data.add("12");
+         data.add("13");
+         data.add("14");
+         List&lt;String&gt; series = new ArrayList&lt;String&gt;();
+         series.add("1月");
+         series.add("2月");
+         series.add("3月");
+         series.add("4月");
+         series.add("5月");
+         render(AmChartsRender.graph(data, series, "amline.swf", "line_settings.xml"));
+ }
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-3-6" class="outline-3">
+<h3 id="sec-3-6"><span class="section-number-3">3.6</span> FreeMarkerXMLRender</h3>
+<div class="outline-text-3" id="text-3-6">
+
+<p>利用freemaker生成xml
+</p>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Routes扩展</h2>
+<div class="outline-text-2" id="text-4">
+
+
+</div>
+
+<div id="outline-container-4-1" class="outline-3">
+<h3 id="sec-4-1"><span class="section-number-3">4.1</span> 自动注册Route AutoBindRoutes</h3>
+<div class="outline-text-3" id="text-4-1">
+
+
+
+</div>
+
+<div id="outline-container-4-1-1" class="outline-4">
+<h4 id="sec-4-1-1"><span class="section-number-4">4.1.1</span> 简介</h4>
+<div class="outline-text-4" id="text-4-1-1">
+
+<p>    扫描clsspath和lib中继承了Route的类按照约定的规则自动注册，也可以在
+    每一个Route上用注解配置
+</p></div>
+
+</div>
+
+<div id="outline-container-4-1-2" class="outline-4">
+<h4 id="sec-4-1-2"><span class="section-number-4">4.1.2</span> 示例代码</h4>
+<div class="outline-text-4" id="text-4-1-2">
+
+
+
+
+<pre class="example">public void configRoute(Routes me) {
+    me.add(new AutoBindRoutes());
+}
+</pre>
+
+<p>
+    如果我们有一个AController，以上代码则相当于
+</p>
+
+
+<pre class="example">public void configRoute(Routes me) {
+     me.add("/a",AController.class);
+ }
+</pre>
+
+<p>
+    默认的注册规则是截取类名Controller前的部分并首字母小写.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-4-1-3" class="outline-4">
+<h4 id="sec-4-1-3"><span class="section-number-4">4.1.3</span> ControllerBind配置</h4>
+<div class="outline-text-4" id="text-4-1-3">
+
+<p>    如果需要单独配置Route，需要在Controller上加上ControllerBind注解
+</p>
+<p>
+    ControllerBind 注解，属性说明如下：
+</p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">controllerKey</td><td class="left">访问某个 Controller 所需要的一个字符串</td></tr>
+<tr><td class="left">viewPath</td><td class="left">Controller 返回的视图的相对路径</td></tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Interceptor扩展</h2>
+<div class="outline-text-2" id="text-5">
+
+
+</div>
+
+<div id="outline-container-5-1" class="outline-3">
+<h3 id="sec-5-1"><span class="section-number-3">5.1</span> ExceptionInterceptor统一异常处理</h3>
+<div class="outline-text-3" id="text-5-1">
+
+
+</div>
+
+<div id="outline-container-5-1-1" class="outline-4">
+<h4 id="sec-5-1-1"><span class="section-number-4">5.1.1</span> 简介</h4>
+<div class="outline-text-4" id="text-5-1-1">
+
+<p>    对Controller抛出的异常按照类型进行定制化处理
+</p></div>
+
+</div>
+
+<div id="outline-container-5-1-2" class="outline-4">
+<h4 id="sec-5-1-2"><span class="section-number-4">5.1.2</span> 示例代码</h4>
+<div class="outline-text-4" id="text-5-1-2">
+
+
+
+
+<pre class="example">ExceptionInterceptor exceptionInterceptor = new ExceptionInterceptor();
+exceptionInterceptor.addMapping(IllegalArgumentException.class, "/exceptions/a.html");
+exceptionInterceptor.addMapping(IllegalStateException.class, "exceptions/b.html");
+exceptionInterceptor.setDefault(new ErrorRender("测试系统"));
+</pre>
+
+<p>
+   addMapping 设置一个异常类型对应的View,可以是一个视图路径，也可以是
+   一个ExceptionRender的子类，类似Controller的 render(String) 和
+   render(Render)方法
+   setDefault是当抛出的异常在mapping中没有找到的时候调用的默认的异常处
+   理方式。
+</p></div>
+</div>
+
+</div>
+
+<div id="outline-container-5-2" class="outline-3">
+<h3 id="sec-5-2"><span class="section-number-3">5.2</span> I18nInterceptor 国际化拦截器</h3>
+<div class="outline-text-3" id="text-5-2">
+
+
+</div>
+
+<div id="outline-container-5-2-1" class="outline-4">
+<h4 id="sec-5-2-1"><span class="section-number-4">5.2.1</span> 简介</h4>
+<div class="outline-text-4" id="text-5-2-1">
+
+<p>    简化国际化页面的render处理。
+</p></div>
+
+</div>
+
+<div id="outline-container-5-2-2" class="outline-4">
+<h4 id="sec-5-2-2"><span class="section-number-4">5.2.2</span> render策略</h4>
+<div class="outline-text-4" id="text-5-2-2">
+
+<p>   会在原有的render路径上加上当前请求参数中的country和language。
+   例如（/p?language=zh&amp;country=CN）
+</p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">原始view</td><td class="left">country</td><td class="left">language</td><td class="left">改变之后的view</td></tr>
+<tr><td class="left">/p</td><td class="left">zh</td><td class="left">CN</td><td class="left"><code>/zh_CN/p/index.html</code></td></tr>
+</tbody>
+</table>
+
+
+<p>
+country 默认值为zh language默认值为CN
+</p></div>
+</div>
+
+</div>
+
+<div id="outline-container-5-3" class="outline-3">
+<h3 id="sec-5-3"><span class="section-number-3">5.3</span> SysInterceptor 系统日志拦截器</h3>
+<div class="outline-text-3" id="text-5-3">
+
+
+</div>
+
+<div id="outline-container-5-3-1" class="outline-4">
+<h4 id="sec-5-3-1"><span class="section-number-4">5.3.1</span> 简介</h4>
+<div class="outline-text-4" id="text-5-3-1">
+
+<p> ActionReport的人性化版本，用于后台管理系统的日志记录
+</p></div>
+
+</div>
+
+<div id="outline-container-5-3-2" class="outline-4">
+<h4 id="sec-5-3-2"><span class="section-number-4">5.3.2</span> 使用方法</h4>
+<div class="outline-text-4" id="text-5-3-2">
+
+<ul>
+<li id="sec-5-3-2-1">配置LogConfig<br/>
+
+
+
+<pre class="example">SysLogInterceptor log = new SysLogInterceptor();
+log.addConfig("/blog", new LogConfig("查看博客").addPara("user", "作者名字"));
+</pre>
+
+</li>
+</ul>
+<ul>
+<li id="sec-5-3-2-2">实现LogProcessor<br/>
+需要实现以下方法
+
+
+
+<pre class="example">| process(SysLog sysLog)                                   | 处理一条日志       |
+| getUsername(Controller c)                                | 获取当前登陆用户名 |
+| formatMessage(String title, Map&lt;String, String&gt; message) | 格式化日志信息     |
+</pre>
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-5-3-3" class="outline-4">
+<h4 id="sec-5-3-3"><span class="section-number-4">5.3.3</span> 示例代码</h4>
+<div class="outline-text-4" id="text-5-3-3">
+
+<p>一个简单的日志处理器的实现
+</p>
+
+
+<pre class="example">public class DefaultLogProccesor implements LogProccesor {
+    @Override
+    @Rethrow
+    public void process(SysLog sysLog) {
+        Map map = BeanUtils.describe(sysLog);
+        map.remove("class");
+        Record record = new Record();
+        record.setColumns(map);
+        Db.save("syslog", record);
+    }
+
+    @Override
+    public String getUsername(Controller c) {
+        User user = c.getSessionAttr("user");
+        return user.getStr("username");
+    }
+
+    @Override
+    public String formatMessage(String title, Map&lt;String, String&gt; message) {
+        String result = title;
+        if (message.isEmpty()) {
+            return result;
+        }
+        result += ", ";
+        Set&lt;Entry&lt;String, String&gt;&gt; entrySet = message.entrySet();
+        for (Entry&lt;String, String&gt; entry : entrySet) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            result += key + ":" + value;
+        }
+        return result;
+    }
+
+}
+</pre>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-5-4" class="outline-3">
+<h3 id="sec-5-4"><span class="section-number-3">5.4</span> ExcelUploadInterceptor</h3>
+<div class="outline-text-3" id="text-5-4">
+
+
+</div>
+
+<div id="outline-container-5-4-1" class="outline-4">
+<h4 id="sec-5-4-1"><span class="section-number-4">5.4.1</span> 简介</h4>
+<div class="outline-text-4" id="text-5-4-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-5-4-2" class="outline-4">
+<h4 id="sec-5-4-2"><span class="section-number-4">5.4.2</span> 使用方法</h4>
+<div class="outline-text-4" id="text-5-4-2">
+
+</div>
+
+</div>
+
+<div id="outline-container-5-4-3" class="outline-4">
+<h4 id="sec-5-4-3"><span class="section-number-4">5.4.3</span> 示例代码</h4>
+<div class="outline-text-4" id="text-5-4-3">
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> eclipse代码片段</h2>
+<div class="outline-text-2" id="text-6">
+
+<p>  将jfinal-templates.xml导入eclipse的Preferences-java-Editor-Templates
+</p>
+</div>
+
+<div id="outline-container-6-1" class="outline-3">
+<h3 id="sec-6-1"><span class="section-number-3">6.1</span> jfl</h3>
+<div class="outline-text-3" id="text-6-1">
+
+<p>   在任何类中使用，生成logger
+</p>
+
+
+
+<pre class="example">protected final Logger logger = Logger.getLogger(getClass());
+protected final static Logger logger = Logger.getLogger(Object.class);
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-6-2" class="outline-3">
+<h3 id="sec-6-2"><span class="section-number-3">6.2</span> jfd</h3>
+<div class="outline-text-3" id="text-6-2">
+
+<p>   在Model中使用，生成dao
+</p>
+
+
+
+<pre class="example">public final static Model dao = new Model();
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-6-3" class="outline-3">
+<h3 id="sec-6-3"><span class="section-number-3">6.3</span> jfld</h3>
+<div class="outline-text-3" id="text-6-3">
+
+
+<p>
+   在需要打印日志的变量下面使用
+</p>
+
+
+<pre class="example">logger.debug("var :" + var);
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-6-4" class="outline-3">
+<h3 id="sec-6-4"><span class="section-number-3">6.4</span> jfli</h3>
+<div class="outline-text-3" id="text-6-4">
+
+<p>   在需要打印日志的变量下面使用
+</p>
+
+
+<pre class="example">logger.info("var :" + var);
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-6-5" class="outline-3">
+<h3 id="sec-6-5"><span class="section-number-3">6.5</span> jfle</h3>
+<div class="outline-text-3" id="text-6-5">
+
+<p>   在需要打印日志的变量下面使用
+</p>
+
+
+<pre class="example">logger.error("var :" + var);
+</pre>
+
+
+</div>
+</div>
+</div>
+</div>
+
+<div id="postamble">
+<p class="date">Date: 2014-12-21</p>
+<p class="author">Author: Kid Zhou</p>
+<p class="creator"><a href="http://orgmode.org">Org</a> version 7.9.3f with <a href="http://www.gnu.org/software/emacs/">Emacs</a> version 24</p>
+<a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
+
+</div>
+</body>
+</html>

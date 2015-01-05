@@ -15,13 +15,14 @@
  */
 package com.jfinal.ext.render.excel;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
-
+import com.jfinal.ext.kit.PoiKit;
 import com.jfinal.log.Logger;
 import com.jfinal.render.Render;
 import com.jfinal.render.RenderException;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class PoiRender extends Render {
@@ -35,7 +36,7 @@ public class PoiRender extends Render {
     private String[] columns = new String[] {};
     private String fileName = "file1.xls";
     private int headerRow;
-
+    private String version;
     public PoiRender(List<?> data) {
         this.data = data;
     }
@@ -52,7 +53,7 @@ public class PoiRender extends Render {
         OutputStream os = null;
         try {
             os = response.getOutputStream();
-            PoiKit.data(data).sheetName(sheetName).headerRow(headerRow).headers(headers).columns(columns)
+            PoiKit.data(data).version(version).sheetName(sheetName).headerRow(headerRow).headers(headers).columns(columns)
                     .cellWidth(cellWidth).export().write(os);
         } catch (Exception e) {
             throw new RenderException(e);
@@ -96,6 +97,10 @@ public class PoiRender extends Render {
 
     public PoiRender fileName(String fileName) {
         this.fileName = fileName;
+        return this;
+    }
+    public PoiRender version(String version) {
+        this.version = version;
         return this;
     }
 }
