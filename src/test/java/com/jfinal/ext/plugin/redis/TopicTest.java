@@ -1,14 +1,13 @@
 package com.jfinal.ext.plugin.redis;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import org.junit.Before;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class TopicTest {
     @Before
@@ -17,14 +16,14 @@ public class TopicTest {
         jp.start();
     }
 
-    @Test
+//    @Test
     public void lrange() {
         String key = "mylist";
         List<String> list = JedisKit.lrange(key, -1, -1);
         System.out.println(list);
     }
 
-    @Test
+//    @Test
     public void publishObject() {
         TopicPoducer p = new TopicPoducer("obj");
         final Bean bean = new Bean();
@@ -33,26 +32,26 @@ public class TopicTest {
         p.publish(bean);
     }
 
-    @Test
+//    @Test
     public void consumeObject() {
         TopicConsumer c = new TopicConsumer("a subscriber", "obj");
         Bean message = c.consume();
         System.out.println(message);
     }
 
-    @Test
+//    @Test
     public void clean() {
         TopicPoducer p = new TopicPoducer("foo");
         p.clean();
     }
 
-    @Test
+//    @Test
     public void publish() {
         TopicPoducer p = new TopicPoducer("foo");
         p.publish("hello world!");
     }
 
-    @Test
+//    @Test
     public void consume() {
         TopicConsumer c = new TopicConsumer("a subscriber", "foo");
         c.consume();
@@ -62,7 +61,7 @@ public class TopicTest {
         System.out.println(message);
     }
 
-    @Test
+//    @Test
     public void consumeCallback() {
         final TopicPoducer p = new TopicPoducer("foo");
         final Bean bean = new Bean();
@@ -92,7 +91,7 @@ public class TopicTest {
         });
     }
 
-    @Test
+//    @Test
     public void publishAndConsume() {
         TopicPoducer p = new TopicPoducer("foo");
         TopicConsumer c1 = new TopicConsumer("a subscriber", "foo");
@@ -102,7 +101,7 @@ public class TopicTest {
         assertEquals("hello world!", c2.consume());
     }
 
-    @Test
+//    @Test
     public void publishAndRead() {
         TopicPoducer p = new TopicPoducer("foo");
         p.clean();
@@ -112,7 +111,7 @@ public class TopicTest {
         assertEquals("hello world!", c.consume());
     }
 
-    @Test
+//    @Test
     public void unreadMessages() {
         TopicPoducer p = new TopicPoducer("foo");
         p.clean();
@@ -127,7 +126,7 @@ public class TopicTest {
         assertEquals(1, c.unreadMessages());
     }
 
-    @Test
+//    @Test
     public void raceConditionsWhenPublishing() throws InterruptedException {
         TopicPoducer slow = new SlowProducer("foo");
         slow.clean();
@@ -148,7 +147,7 @@ public class TopicTest {
         assertEquals("b", c.consume());
     }
 
-    @Test
+//    @Test
     public void eraseOldMessages() {
         TopicPoducer p = new TopicPoducer("foo");
 
@@ -167,7 +166,7 @@ public class TopicTest {
         assertNull(nc.consume());
     }
 
-    @Test
+//    @Test
     public void expiredMessages() throws InterruptedException {
         TopicConsumer c = new SlowConsumer("a consumer", "foo", 2000L);
         TopicPoducer p = new TopicPoducer("foo");
@@ -182,7 +181,7 @@ public class TopicTest {
         }
     }
 
-    @Test
+//    @Test
     public void firstMessageExpired() throws InterruptedException {
         TopicConsumer c = new SlowConsumer("a consumer", "foo", 2000L);
         TopicPoducer p = new TopicPoducer("foo");

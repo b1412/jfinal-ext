@@ -1,9 +1,9 @@
 #+TITLE:     JFinal-Ext文档(v3.2.0)
-#+AUTHOR:    Kid Zhou
+#+AUTHOR:    周 磊
 #+EMAIL:     zhouleib1412@gmail.com.cn
-#+DATE:      2015-01-01
-#+DESCRIPTION: 
-#+KEYWORDS: 
+#+DATE:      2015-02-09
+#+DESCRIPTION:
+#+KEYWORDS:
 #+LANGUAGE:  zh_CN
 #+EXPORT_SELECT_TAGS: export
 #+EXPORT_EXCLUDE_TAGS: noexport
@@ -13,12 +13,14 @@
   在非web环境下对jfinal Controller 进行单元测试
 ** 使用说明
  所有对Controller的测试必须继承ControllerTestCase,此类中方法说明如下
+ |---------------------+-----------------------------|
  | use                 | 需要调用的url               |
  | post                | post数据包,支持String和File |
  | writeTo             | response数据写入文件        |
  | invoke              | 调用url                     |
  | findAttrAfterInvoke | action调用之后getAttr的值   |
-** 示例代码 
+ |---------------------+-----------------------------|
+** 示例代码
 #+BEGIN_SRC java
 public class PostTestCase extends ControllerTestCase<Config> {
 
@@ -40,9 +42,9 @@ public class PostTestCase extends ControllerTestCase<Config> {
 }
 
 #+END_SRC
-    
+
 * Plugin扩展
-** 自定绑定表 AutoTableBindPlugin 
+** 自定绑定表 AutoTableBindPlugin
 *** 简介
    扫描clsspath和lib中继承了model的类自动注册，可选择不同的命名规则自定映射表名，也可以在每一个model上用注解指定表名
 *** AutoTableBindPlugin使用示例
@@ -53,9 +55,9 @@ public class PostTestCase extends ControllerTestCase<Config> {
       感等..
    #+BEGIN_SRC java
 	DruidPlugin druid = new DruidPlugin("jdbc:mysql://127.0.0.1/jfinal_demo", "root", "root");
-	AutoTableBindPlugin atbp = new AutoTableBindPlugin(druid);   
+	AutoTableBindPlugin atbp = new AutoTableBindPlugin(druid);
    #+END_SRC
-   
+
   *记住一定要在启动atbp之前启动连接池的plugin
 ****  jar包扫描
       如果你需要载入jar包中的model，需要调用以下的api将jar包加入扫描
@@ -70,23 +72,23 @@ public class PostTestCase extends ControllerTestCase<Config> {
    #+BEGIN_SRC java
      AutoTableBindPlugin atbp = new AutoTableBindPlugin(cp,SimpleNameStyles.LOWER);
    #+END_SRC
-   
+
    SimpleNameStyles 中已有的命名风格以及映射的表明如下表：
 
    |              | DEFAULT | =FIRST_LOWER= | UP      | LOWER   | =UP_UNDERLINE= | =LOWER_UNDERLINE= |
    | DevInfo.java | DevInfo | devInfo       | DEVINFO | devinfo | =DEV_INFO=     | =dev_info=        |
-  
+
    ParamNameStyles 含有构造参数的命名风格：
    |              | module(test)   | lowerModule(test) | upModule(test) | upUnderlineModule(test) | lowerUnderlineModule(test) |
    | DevInfo.java | =test_DevInfo= | =test_devinfo=    | =test_DEVINFO= | =test_DEV_INFO=         | =test_dev_info=            |
- 
+
 ****  TableName 配置
       如果有Model到表的映射命名不符合规范需要单独配置，则在Model上加上
       TableName注解，属性说明如下：
       | tableName  | 表名     | 必填   |
       | pkName     | 外键名   | 默认"" |
       | configName | 数据源名 | 默认"" |
-     
+
 ****  关闭自动扫描
       如果你只想用注解而不想让没有注解的model被自动注册，则如下使用
  #+BEGIN_SRC java
@@ -111,14 +113,15 @@ public class PostTestCase extends ControllerTestCase<Config> {
       如果在一个package里面有属于不同数据源的model（如果不是因为无法避
       免的历史遗留原因不要采用这样的方式），那么给Model加上TableBind注
       解并给configName属性赋值
-** SqlInXmlPlugin 
+** SqlInXmlPlugin
 *** 简介
     类似ibatis的在xml中管理sql.主要用于复杂的sql管理或者有dba的开发团
     队
 *** 使用示例
- 插件会扫描classpath根目录下以sql结尾的xml文件，如user-sql.xml，内容如
- 下
-#+BEGIN_SRC java
+ 插件会扫描classpath根目录下以".sql"结尾的xml文件.
+  用一个xml举例,文件名为user-sql.xml，内容如
+ 下:
+#+BEGIN_SRC xml
  <sqlGroup name="blog" >
        <sql id="findBlog">select * from blog</sql>
        <sql id="findUser">select * from user</sql>
@@ -146,7 +149,7 @@ public class AReceiveResolver implements ReceiveResolver {
 
  - 接口 public static boolean sendQueue(String queueName, Serializable
  message, String msgName)
- 
+
  - 参数说明
     | queueName      | message        | msgName        |
     | 发送队列的名字 | 发送的消息对象 | 发送的消息名字 |
@@ -193,9 +196,9 @@ topic.t3.d.resolver=test.com.jfinal.plugin.jms.DReceiveResolver
 #+END_SRC
 
 ** 任务调度  QuartzPlugin Cron4jPlugin
-  
+
 *** 业务如何调度
-**** QuartzPlugin 
+**** QuartzPlugin
 需要进行的调度任务实现必须实现org.quartz.Job接口
 
 **** Cron4jPlugin
@@ -222,7 +225,7 @@ a和b为任务的名字，仅作为标识，无其他用处。
 | 任务名字.job    | 调度任务的类全名     |
 | 任务名字.cron   | 调度任务的cron表达式 |
 | 任务名字.enable | 调度任务是否启用     |
-       
+
 *** 如何在代码中添加任务
     在plugin上调用add方法
 *** Quartz 1.X和2.X版本不兼容问题
@@ -230,10 +233,9 @@ quartz 2.X版本和1.X不兼容.
 JobDetail 和 CornTrigger 在 1.X版本中是Class,但是在2.X版本中是Interface.
 QuartzPlugin 解决了兼容问题,默认使用2.X版本,如果需要使用1.X,调用quartzPlugin.version(QuartzPlugin.VERSION_1)即可.
 
-
 ** ConfigPlugin
    分优先级加载配置文件
-   在团队开发中如果自己有测试配置需要长期存在但是又不需要提交中心库的时候 
+   在团队开发中如果自己有测试配置需要长期存在但是又不需要提交中心库的时候
 可以采用分级配置加载的策略。 如中心库中有config.properties这个配置，你可以创建 config-test.properties文件，配置相同的key，ConfigKit中的方法会优先加载 xx-test.properties文件。
 
 ***  如何加载配置
@@ -245,7 +247,7 @@ QuartzPlugin 解决了兼容问题,默认使用2.X版本,如果需要使用1.X,�
 addResource支持正则表达式
 当我们加载config.properties时候会找config-test.properties一起加载.
 ***  配置说明
- 如果我们加载了以下两个配置,下面的测试用列能通过,也就是说当*-test中同
+ 如果我们加载了以下两个配置,下面的测试用例能通过,也就是说当*-test中同
  名的key优先读取.
 config.properties
 #+BEGIN_SRC java
@@ -306,13 +308,13 @@ MongoKit.remove("sns", filter);  //删除符合条件的sns
 
 #+END_SRC
 **** 修改
-#+BEGIN_SRC java 
+#+BEGIN_SRC java
 Map<String, Object> src = new HashMap<String, Object>();
 src.put("age", "1");  //查询条件
 Map<String, Object> desc = new HashMap<String, Object>();
 desc.put("addr", "test"); //将符合查询条件的文档修改为此文档
 MongoKit.updateFirst("sns", src, desc); //只能修改符合条件的第一条数据..
-#+END_SRC 
+#+END_SRC
 * Render扩展
 ** DwzRender
 #+BEGIN_SRC java
@@ -359,7 +361,7 @@ MongoKit.updateFirst("sns", src, desc); //只能修改符合条件的第一条�
 ** CsvRender
    通过list数据生成csv,支持的数据类型为map ,record , model。
 ** AmChartsRender
-新增AmChartsRener,对AmCharts报表工具进行了简单的封装
+对AmCharts报表工具进行了简单的封装
 
 #+BEGIN_SRC java
        public void pie(){
@@ -370,7 +372,7 @@ MongoKit.updateFirst("sns", src, desc); //只能修改符合条件的第一条�
 		pies.add(e2);
 		render(AmChartsRender.pie(pies, "ampie.swf", "pie_settings.xml",500,500));
 	}
-	
+
 	public void multiple(){
 		List<String> data = new ArrayList<String>();
 		data.add("10");
@@ -417,7 +419,7 @@ MongoKit.updateFirst("sns", src, desc); //只能修改符合条件的第一条�
 		pies.add(e2);
 		render(AmChartsRender.pie(pies, "ampie.swf", "pie_settings.xml",500,500));
 	}
-	
+
 	public void multiple(){
 		List<String> data = new ArrayList<String>();
 		data.add("10");
@@ -487,7 +489,7 @@ MongoKit.updateFirst("sns", src, desc); //只能修改符合条件的第一条�
     ControllerBind 注解，属性说明如下：
     | controllerKey | 访问某个 Controller 所需要的一个字符串 |
     | viewPath      | Controller 返回的视图的相对路径        |
-  
+
 * Interceptor扩展
 ** ExceptionInterceptor统一异常处理
 *** 简介
@@ -507,7 +509,7 @@ MongoKit.updateFirst("sns", src, desc); //只能修改符合条件的第一条�
 ** I18nInterceptor 国际化拦截器
 *** 简介
     简化国际化页面的render处理。
-*** render策略 
+*** render策略
    会在原有的render路径上加上当前请求参数中的country和language。
    例如（/p?language=zh&country=CN）
    | 原始view | country | language | 改变之后的view        |
@@ -605,7 +607,7 @@ public class DefaultLogProccesor implements LogProccesor {
   将jfinal-templates.xml导入eclipse的Preferences-java-Editor-Templates
 ** jfl
    在任何类中使用，生成logger
-  
+
    #+BEGIN_SRC java
      protected final Logger logger = Logger.getLogger(getClass());
      protected final static Logger logger = Logger.getLogger(Object.class);
@@ -632,4 +634,4 @@ public class DefaultLogProccesor implements LogProccesor {
    #+BEGIN_SRC java
      logger.error("var :" + var);
    #+END_SRC
-   
+

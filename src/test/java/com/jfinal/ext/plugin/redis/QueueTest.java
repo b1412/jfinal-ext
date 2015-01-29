@@ -1,9 +1,8 @@
 package com.jfinal.ext.plugin.redis;
 
-import java.io.IOException;
-
 import org.junit.Before;
-import org.junit.Test;
+
+import java.io.IOException;
 
 public class QueueTest {
     @Before
@@ -12,7 +11,7 @@ public class QueueTest {
         jp.start();
     }
 
-    @Test
+//    @Test
     public void publish() {
         String queueName = "a";
         QueueProducer p = QueueProducer.create(queueName);
@@ -24,14 +23,14 @@ public class QueueTest {
         }
     }
 
-    @Test
+//    @Test
     public void consume() {
         QueueConsumer c = QueueConsumer.create("a");
         Bean bean = c.consume();
         System.out.println(bean);
     }
 
-    @Test
+//    @Test
     public void consumeCallback() {
         QueueConsumer c = QueueConsumer.create("a");
         c.consume(new JedisMessage<Bean>() {
@@ -48,7 +47,7 @@ public class QueueTest {
         });
     }
 
-    @Test
+//    @Test
     public void produceAndConsume() {
 
     }

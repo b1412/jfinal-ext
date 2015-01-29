@@ -1,0 +1,43 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'eclipse-wtp'
+
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+    options.encoding = "UTF-8"
+}
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2.1'
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'junit:junit:4.12'
+    compile 'log4j:log4j:1.2.17'
+    compile 'com.jfinal:jfinal:1.9'
+    compile 'com.jfinal:jetty-server:8.1.8'
+    compile 'org.freemarker:freemarker:2.3.21'
+    compile 'com.google.guava:guava:18.0'
+    compile 'org.quartz-scheduler:quartz:1.8.6'
+    compile 'org.quartz-scheduler:quartz:2.2.1'
+    compile 'org.apache.poi:poi:3.10.1'
+    compile 'org.apache.poi:poi-ooxml:3.10.1'
+    compile 'org.mongodb:mongo-java-driver:2.11.2'
+    compile 'it.sauronsoftware.cron4j:cron4j:2.2.5'
+    compile 'org.apache.activemq:activemq-core:5.7.0'
+    compile 'javax.jms:jms-api:1.1-rev-1'
+    compile 'net.sf.jxls:jxls-core:0.9.9'
+    compile 'redis.clients:jedis:2.2.1'
+    compile 'org.apache.shiro:shiro-all:1.2.2'
+    compile 'org.crazycake:shiro-redis:1.0.0-RELEASE'
+    compile 'org.apache.commons:commons-lang3:3.1'
+}
+
+apply from: 'maven_push.gradle'

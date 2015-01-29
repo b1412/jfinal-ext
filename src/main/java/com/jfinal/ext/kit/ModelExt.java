@@ -1,18 +1,14 @@
 package com.jfinal.ext.kit;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.List;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.jfinal.ext.interceptor.CallbackListener;
 import com.jfinal.ext.interceptor.pageinfo.Parent;
-import com.jfinal.plugin.activerecord.ActiveRecordException;
-import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.Model;
-import com.jfinal.plugin.activerecord.Table;
-import com.jfinal.plugin.activerecord.TableMapping;
+import com.jfinal.plugin.activerecord.*;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class ModelExt<M extends ModelExt<M>> extends Model<M> {
@@ -77,7 +73,7 @@ public class ModelExt<M extends ModelExt<M>> extends Model<M> {
         for (CallbackListener callbackListener : callbackListeners) {
             callbackListener.beforeDelete(this);
         }
-        boolean result = false;
+        boolean result;
         if (pseudoDelete()) {
             if (!tableInfo.hasColumnLabel(deleteColumnLabel)) {
                 throw new ActiveRecordException("The deleteColumnLabel (" + deleteColumnLabel + ") is not exist");
@@ -100,7 +96,7 @@ public class ModelExt<M extends ModelExt<M>> extends Model<M> {
         for (CallbackListener callbackListener : callbackListeners) {
             callbackListener.beforeDelete(this);
         }
-        boolean result = false;
+        boolean result ;
         if (pseudoDelete()) {
             if (!tableInfo.hasColumnLabel(deleteColumnLabel)) {
                 throw new ActiveRecordException("The deleteColumnLabel (" + deleteColumnLabel + ") is not exist");

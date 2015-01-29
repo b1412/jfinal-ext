@@ -15,21 +15,19 @@
  */
 package com.jfinal.ext.plugin.tablebind;
 
-import java.util.List;
-
-import javax.sql.DataSource;
-
 import com.google.common.collect.Lists;
 import com.jfinal.ext.kit.ClassSearcher;
-import com.jfinal.ext.kit.JfinalKit;
 import com.jfinal.ext.kit.Reflect;
+import com.jfinal.kit.PathKit;
 import com.jfinal.kit.StrKit;
 import com.jfinal.log.Logger;
-import com.jfinal.plugin.IPlugin;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.activerecord.DbKit;
 import com.jfinal.plugin.activerecord.IDataSourceProvider;
 import com.jfinal.plugin.activerecord.Model;
+
+import javax.sql.DataSource;
+import java.util.List;
 
 public class AutoTableBindPlugin extends ActiveRecordPlugin {
 
@@ -42,7 +40,7 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
     private boolean includeAllJarsInLib = false;
     private List<String> scanPackages = Lists.newArrayList();
     private INameStyle nameStyle;
-
+    private String classpath = PathKit.getRootClassPath();
 
     public AutoTableBindPlugin(IDataSourceProvider dataSourceProvider) {
         this(DbKit.MAIN_CONFIG_NAME, dataSourceProvider, SimpleNameStyles.DEFAULT);
@@ -205,6 +203,12 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
         this.autoScan = autoScan;
         return this;
     }
+
+    public AutoTableBindPlugin classpath(String classpath) {
+        this.classpath = classpath;
+        return this;
+    }
+
 
     public AutoTableBindPlugin includeAllJarsInLib(boolean includeAllJarsInLib) {
         this.includeAllJarsInLib = includeAllJarsInLib;

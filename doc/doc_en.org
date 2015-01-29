@@ -1,0 +1,678 @@
+#+TITLE:     JFinal-Ext Manual(v3.2.0)
+#+AUTHOR:    Leon Zhou
+#+EMAIL:     zhouleib1412@gmail.com.cn
+#+DATE:      2015-02-09
+#+DESCRIPTION:
+#+KEYWORDS:
+#+LANGUAGE:  zh_CN
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+LATEX_CLASS: cn-article
+
+* JFinal Test Framework
+  Test JFinal controller in non-web environment
+** Introduction
+   Any test class of  controller should extend from ControllerTestCase,methods of this class are introduced follow:
+
+ | use                 | url needed to be invoked                     |
+ |---------------------+----------------------------------------------|
+ | post                | post data package,suppot for String and File |
+ |---------------------+----------------------------------------------|
+ | writeTo             | write response data to file                  |
+ |---------------------+----------------------------------------------|
+ | invoke              | invoke url                                   |
+ |---------------------+----------------------------------------------|
+ | findAttrAfterInvoke | attribute after action invoked               |
+
+** Demo Usage
+#+BEGIN_SRC java
+public class PostTestCase extends ControllerTestCase<Config> {
+
+    @Test
+    public void line() throws Exception {
+        String url = "/post";
+        String filePath = Thread.currentThread().getContextClassLoader().getResource("dataReq.xml").getFile();
+        String fileResp = "/home/kid/git/jfinal-ext/resource/dataResp.xml";
+        String resp = use(url).post(new File(filePath)).writeTo(new File(fileResp)).invoke();
+        System.out.println(resp);
+    }
+
+    @Test
+    public void test3() {
+        String url = "/post/1?age=1&age=2&name=2";
+        String body = "<root>some data</root>";
+        use(url).post(body).invoke();
+    }
+}
+
+#+END_SRC
+* Plugin Extentions
+** Mapping classes automatically --AutoTableBindPlugin
+*** Introduction
+    Scan classes exnted from Model in classpath and lib.Different naming conventions can be chosed to specific table name,also
+    annotation can be used on any model to specific table name.
+*** AutoTableBindPlugin Usage Demo
+
+**** Basic Usage
+     AutoTableBindPlugin extends from ActivitiRecordPlugin,so if you use this,these is no need to use  ActivitiRecordPlugin.
+     Any configuration setted in ActivitiRecordPlugin  before should be setted in this plugin,such as dialect,caseinsentive ,etc.
+  #+BEGIN_SRC java
+	DruidPlugin druid = new DruidPlugin("jdbc:mysql://127.0.0.1/jfinal_demo", "root", "root");
+	AutoTableBindPlugin atbp = new AutoTableBindPlugin(druid);
+  #+END_SRC
+
+     * remember db connection pool plugin should be start before this plugin.
+****  Scanning Jars
+      If you need to load model in jars,follow api should be invoked to add jar to scan
+   #+BEGIN_SRC java
+	atbp.addJar("modelInJar.jar");
+	atbp.addJars("jar1,jar2");
+   #+END_SRC
+
+****  Configue Naming Conventions--INameStyle
+      Table name of one Model binded automatically is its simpleClassname.If other naming convention is needed, INameStyle should be specified
+ in construct method,for example:
+
+   #+BEGIN_SRC java
+     AutoTableBindPlugin atbp = new AutoTableBindPlugin(cp,SimpleNameStyles.LOWER);
+   #+END_SRC
+
+   Some naming conventions existed in SimpleNameStyles are as follows:
+
+   |              | DEFAULT | =FIRST_LOWER= | UP      | LOWER   | =UP_UNDERLINE= | =LOWER_UNDERLINE= |
+   | DevInfo.java | DevInfo | devInfo       | DEVINFO | devinfo | =DEV_INFO=     | =dev_info=        |
+
+   Some naming conventions consisted construct parameter and existed in ParamNameStyles are as follows:
+   |              | module(test)   | lowerModule(test) | upModule(test) | upUnderlineModule(test) | lowerUnderlineModule(test) |
+   | DevInfo.java | =test_DevInfo= | =test_devinfo=    | =test_DEVINFO= | =test_DEV_INFO=         | =test_dev_info=            |
+
+****  TableName Configuration
+      If some models` table names need to be specified ,add TableName annotation to Model,its properties are as follows:
+
+   | tableName  | name of table mapped to | required            |
+   | pkName     | name of foreign key     | default value is "" |
+   | configName | name of datasource      | default value is "" |
+
+****  Disable Automatical Scan
+      If you only need to use annotation and not to allow model with no annotation to be scanned,use follow method:
+ #+BEGIN_SRC java
+      atbp.setAutoScan(false);
+ #+END_SRC
+
+****  Ignore model you do not want to be bind automatically
+      If you enable automatical scan but have some models do not want
+      them to be scanned ,such as common BaseModel,invoke following api:
+ #+BEGIN_SRC java
+      atbp.addExcludeClass(Class<? extends Model> clazz)
+ #+END_SRC
+
+****  Multiple datasources
+      Recommoned to sort models to different packages by datasources,then invoke addScanPackages to set package needed to be scanned.
+      #+BEGIN_SRC java
+        atbp = new AutoTableBindPlugin(druidPlugin)
+                .addScanPackages("com.xx.yy.service1.model");
+        atbp2 = new AutoTableBindPlugin("another",druidPlugin2)
+                .addScanPackages("com.xx.yy.service2.model2","com.xx.yy.service2.model3")
+      #+END_SRC
+      If there are some models from different datasource in the same package,add TableBind annotation to Model and assign value to
+        configName property.(Use this method only if there are some historical reason that cannot be avoided)
+
+** SqlInXmlPlugin
+*** Introduction
+    Manage xml in xml files like mybatis, mainly used to manage complex sql and in the team who have dba
+*** Usage Demo
+    This plugin would scan classpath root to load XML files with a
+    suffix name "-sql.xml"
+
+    For example, filename is user-sql.xml and content is as follow:
+#+BEGIN_SRC java
+ <sqlGroup name="blog" >
+       <sql id="findBlog">select * from blog</sql>
+       <sql id="findUser">select * from user</sql>
+ </sqlGroup>
+#+END_SRC
+  This plugin would regard name+id as an unique key of a sql statement.
+  The method to get this sql in java is
+  SqlKit.sql("blog.findBlog")
+** JMS -- JmsPlugin
+*** Receiving Messages
+    If you need to process message mapped to a message number,
+    you need to implements com.jfinal.plugin.jms.ReceiveResolver
+#+BEGIN_SRC java
+    public class AReceiveResolver implements ReceiveResolver {
+
+	@Override
+	public void resolve(Serializable objectMessage) throws Exception {
+		System.out.println("AReceiveResolver");
+	}
+
+    }
+#+END_SRC
+*** Sending Messages
+ - Demo code  JmsKit.sendQueue("q1", new M(), "a");
+
+ - Interface  public static boolean sendQueue(String queueName, Serializable
+ message, String msgName)
+
+ - Parameters Instruction
+    | queueName             | message             | msgName                |
+    | name of thesend queue | Object need to send | name of sended message |
+
+*** Instruction of Configuration File
+#+BEGIN_SRC java
+
+################################
+#          server info         #
+################################
+# jms server address
+serverUrl=tcp://localhost:61616
+username=system
+password=manager
+
+################################
+#          queue info          #
+################################
+# name of sending queue,seperated by ","
+sendQueues=q1,q2
+
+# name of receiving queue,seperated by ","
+receiveQueues=q1,q3
+# message number of message named a in queue q1
+queue.q1.a=10000
+#processor which can be invoked when receiving a message named a in queue q1
+queue.q1.a.resolver=test.com.jfinal.plugin.jms.AReceiveResolver
+
+queue.q1.b=20000
+queue.q1.b.resolver=test.com.jfinal.plugin.jms.BReceiveResolver
+
+################################
+#          topic info          #
+################################
+
+sendTopics=t1,t2
+
+receiveTopics=t1,t3
+topic.t1.c=30000
+topic.t1.c.resolver=test.com.jfinal.plugin.jms.CReceiveResolver
+
+topic.t3.d=40000
+topic.t3.d.resolver=test.com.jfinal.plugin.jms.DReceiveResolver
+#+END_SRC
+
+** Scheduling Jobs --  QuartzPlugin Cron4jPlugin
+
+*** How to Schedule Jobs
+**** QuartzPlugin
+     Jobs need to be scheduled should implement org.quartz.Job interface
+
+**** Cron4jPlugin
+     Jobs need to be scheduled should implement java.lang.Runnable interface
+*** How to Load Configuration File
+    Job.properties in root path of classpath would be loaded by default
+    If you need  to load specific configuration file,you need to pass
+    a parameter in constructor
+*** Introuction of Configuration File
+job.properties configuration demo
+#+BEGIN_SRC java
+#JobA
+a.job=test.com.jfinal.plugin.quzrtz.JobA
+a.cron=*/5 * * * * ?
+a.enable=true
+#JobB
+b.job=test.com.jfinal.plugin.quartz.JobB
+b.cron=*/10 * * * * ?
+b.enable=false
+#+END_SRC
+configuration instruction
+
+job,cron and enable are key words of configuration
+
+a and b are tasks` names,only used to be signs and havding no other function
+
+| task`s name.job    | scheduled job`s full class name |
+| task`s name.cron   | scheduled job`s cron expression |
+| task`s name.enable | scheduled job is enable or not  |
+
+*** How to Add a task in code
+
+  Invoke add method in plugin
+
+*** Addressing uncompitable problem of Quartz 1.X version and 2.X version
+
+quartz 2.X version and 1.X version are not compitable.
+
+JobDetail and  CornTrigger in  1.X versions are Classes,but in 2.X
+versions are Interfaces.
+
+QuartzPlugin has solved this uncompitable problem,uses 2.x versions by
+default .If you need 1.X versions,invoke quartzPlugin.version(QuartzPlugin.VERSION_1).
+
+** ConfigPlugin
+
+   Loading configuration files by priority.
+
+   If you have some test configurations need to exist for a long time in
+   team work but do not need to commit to centre ,you can use stratrage of loading configuration files by priority.
+   If there is a configuration file named config.properties,you can
+   create a file named config-test.properties configuring same keys,methods if ConfigKit would load xx-test.properties file prioritily.
+
+***  How to Load Configuration File
+
+#+BEGIN_SRC java
+    ConfigPlugin configPlugin = new ConfigPlugin();
+    configPlugin.addResource(".*.properties");
+#+END_SRC
+
+ addResource surports for regex expression
+
+ When loading config.properties,config-test.properties would be loadding at the same time.
+***  Configuration Instruction
+ If we have loaded follow two configurations, follow test case could
+ be passed,it means that same key in *-test could be loaded priority.
+
+config.properties
+#+BEGIN_SRC java
+name=aa
+age=1
+#+END_SRC
+
+config-test.properties
+#+BEGIN_SRC java
+name=test
+#+END_SRC
+
+#+BEGIN_SRC java
+    @Test
+    public void testGetStr() throws InterruptedException {
+	Assert.assertEquals("test",ConfigKit.getStr("name"));
+	Assert.assertEquals(1,ConfigKit.getInt("age"));
+    }
+#+END_SRC
+
+** MongodbPlugin
+*** Introduction
+    MongodbPlugin is a nosql plugin in JFinal-Ext,which encapsulates some common operations in MongoKit
+*** How to Use
+**** Creating
+     Ip and port are specified by default
+#+BEGIN_SRC java
+    MongodbPlugin mongodbPlugin = new MongodbPlugin("log")
+    MongodbPlugin mongodbPlugin = new MongodbPlugin("127.0.0.1", 8888, "other");
+#+END_SRC
+
+**** Searching
+#+BEGIN_SRC java
+    Map<String, Object> filter = new HashMap<String, Object>();
+    filter.put("age", "20") ;  // Filtering
+    Map<String, Object> like = new HashMap<String, Object>();
+    like.put("name","zhang");  // Like matching ,equal to "like %zhang%" in sql.
+    Map<String, Object> sort = new HashMap<String, Object>();
+    sort.put("age","desc");     //Sorting
+    Page<Record> page = MongoKit.paginate("sns", 1, 10, filter,like,sort);
+#+END_SRC
+**** Adding
+#+BEGIN_SRC java
+    MongoKit.save("sns", record) // save a record
+    MongoKit.save("sns", records)// batch save records
+#+END_SRC
+
+**** Deleting
+#+BEGIN_SRC java
+    MongoKit.removeAll("sns")  // delete all sns
+
+    Map<String, Object> filter  = new HashMap<String,Object>();
+    filter.put("name", "bb");
+    filter.put("age", "1");
+    MongoKit.remove("sns", filter);  // delete sns match the condition
+#+END_SRC
+**** Updating
+#+BEGIN_SRC java
+    Map<String, Object> src = new HashMap<String, Object>();
+    src.put("age", "1");  // search condition
+    Map<String, Object> desc = new HashMap<String, Object>();
+    desc.put("addr", "test"); // Update matched document to this document
+    MongoKit.updateFirst("sns", src, desc); // Update the first record matched conditon.
+#+END_SRC
+* Render Extentions
+** DwzRender
+#+BEGIN_SRC java
+    public void save() {
+        Blog model = getModel(Blog.class);
+	if (model.getInt("id") == null) {
+		model.save();
+	} else {
+		model.update();
+	}
+	render(DwzRender.closeCurrentAndRefresh("pageBlog"));
+    }
+
+    public void edit() {
+        int id = getParaToInt(0);
+	Blog blog = Blog.dao.findById(id);
+	if (id == -1) {
+	    blog = new Blog();
+	} else if (blog == null) {
+	    render(DwzRender.error("This record has been deleted,please refresh the page first"));
+	}
+	    setAttr("blog", blog);
+    }
+
+    public void delete() {
+        Blog.dao.deleteById(getParaToInt());
+        render(DwzRender.success());
+    }
+
+#+END_SRC
+
+** JxlsRender
+   Generating excel by list data ,which supports for map,record and model.
+** PoiRender
+   Generating excel by list data ,which supports for map,record and model.
+*** Demo Code
+ #+BEGIN_SRC java
+     PoiRender.me(data,data2,...dataN).fileName("your_file_name.xls").headers(headers).cellWidth(5000).headerRow(2)
+ #+END_SRC
+*** Issue of excel versons
+ Max row supported by MS Excel 2003 in one sheet is 65535 ,when row is
+ over 65535,data would be filled into more than one sheet,but this
+ restriction do not apply to  MsExcel 2007
+
+ This plugin uses MsExcel by default ,if you need MsExcel 2003,invoke
+ this api ,PoiRender.me(data).version(PoiKit.VERSION_2003)
+
+** CsvRender
+   Generating excel by list data ,which supports for map,record and model.
+** AmChartsRender
+   Some simple encapsulations of AmCharts report tool.
+
+#+BEGIN_SRC java
+    public void pie(){
+	List<KeyLabel> pies = new ArrayList<KeyLabel>();
+	KeyLabel e= new KeyLabel("java","111");
+	pies.add(e);
+	KeyLabel e2= new KeyLabel("c","11");
+	pies.add(e2);
+	render(AmChartsRender.pie(pies, "ampie.swf", "pie_settings.xml",500,500));
+    }
+
+    public void multiple(){
+	List<String> data = new ArrayList<String>();
+	data.add("10");
+	data.add("11");
+	data.add("12");
+	data.add("13");
+	data.add("14");
+	List<String> data1 = new ArrayList<String>();
+	data1.add("20");
+	data1.add("21");
+	data1.add("22");
+	data1.add("23");
+	data1.add("24");
+	List<List<String>> list = new ArrayList<List<String>>();
+	list.add(data);
+	list.add(data1);
+	List<String> series = new ArrayList<String>();
+	series.add("Jan");
+	series.add("Feb");
+	series.add("March");
+	series.add("April");
+	series.add("May");
+	render(AmChartsRender.graph(list, series, "amline.swf", "line_settings.xml"));
+    }
+
+    public void simple(){
+	List<String> data = new ArrayList<String>();
+	data.add("10");
+	data.add("11");
+	data.add("12");
+	data.add("13");
+	data.add("14");
+	List<String> series = new ArrayList<String>();
+	series.add("Jan");
+	series.add("Feb");
+	series.add("March");
+	series.add("April");
+	series.add("May");
+	render(AmChartsRender.graph(data, series, "amline.swf", "line_settings.xml"));
+    }
+
+    public void pie(){
+	List<KeyLabel> pies = new ArrayList<KeyLabel>();
+	KeyLabel e= new KeyLabel("java","111");
+	pies.add(e);
+	KeyLabel e2= new KeyLabel("c","11");
+	pies.add(e2);
+	render(AmChartsRender.pie(pies, "ampie.swf", "pie_settings.xml",500,500));
+    }
+
+    public void multiple(){
+	List<String> data = new ArrayList<String>();
+	data.add("10");
+	data.add("11");
+	data.add("12");
+	data.add("13");
+	data.add("14");
+	List<String> data1 = new ArrayList<String>();
+	data1.add("20");
+	data1.add("21");
+	data1.add("22");
+	data1.add("23");
+	data1.add("24");
+	List<List<String>> list = new ArrayList<List<String>>();
+	list.add(data);
+	list.add(data1);
+	List<String> series = new ArrayList<String>();
+	series.add("Jan");
+	series.add("Feb");
+	series.add("March");
+	series.add("April");
+	series.add("May");
+	render(AmChartsRender.graph(list, series, "amline.swf", "line_settings.xml"));
+    }
+	public void simple(){
+		List<String> data = new ArrayList<String>();
+		data.add("10");
+		data.add("11");
+		data.add("12");
+		data.add("13");
+		data.add("14");
+		List<String> series = new ArrayList<String>();
+		series.add("Jan");
+		series.add("Feb");
+		series.add("March");
+		series.add("April");
+		series.add("May");
+		render(AmChartsRender.graph(data, series, "amline.swf", "line_settings.xml"));
+	}
+#+END_SRC
+** FreeMarkerXMLRender
+Use freemaker to generate xml
+
+* Routes Extentions
+** Registing Route automatically -- AutoBindRoutes
+*** Introduction
+
+    This plugin can scan routes in classpath and lib to regist them by
+    naming convention and you also can use annotation to configure a
+    Route.
+
+*** Demo Code
+
+#+BEGIN_SRC java
+    public void configRoute(Routes me) {
+        me.add(new AutoBindRoutes());
+    }
+#+END_SRC
+
+    If you have a controller named AController,above code is equalto
+
+#+BEGIN_SRC java
+   public void configRoute(Routes me) {
+        me.add("/a",AController.class);
+   }
+#+END_SRC
+
+    Default naming convention is trunct the part before "Controller" of classname and capitalising first character
+
+*** ControllerBind Configuration
+
+    If you need to configue Route seperately,you need to add a ControllerBind annotation on  Controller
+    Instruction of ControllerBind`s properties are as follows:
+
+    | controllerKey | The key to visit a Controller                |
+    | viewPath      | relative path of view returned by Controller |
+
+* Interceptor Extentions
+** ExceptionInterceptor --Exceptions handlling
+*** Introduction
+
+    Handlling exceptions throwed by Controller
+
+*** Demo Code
+
+#+BEGIN_SRC java
+    ExceptionInterceptor exceptionInterceptor = new ExceptionInterceptor();
+    exceptionInterceptor.addMapping(IllegalArgumentException.class, "/exceptions/a.html");
+    exceptionInterceptor.addMapping(IllegalStateException.class, "exceptions/b.html");
+    exceptionInterceptor.setDefault(new ErrorRender("Test System"));
+#+END_SRC
+   addMapping method  could configue a view mapped to an exception ,this view
+   could be a view path or a subclass of ExceptionRende,like
+   render(String) and render(Render) methods of Controller
+
+   setDefault method is used to configue a default process method when
+   exceptions throwed could be found in  mapping.
+
+** I18nInterceptor
+*** Introduction
+
+Simplify render's processing of I18n pages.
+
+*** Render Stratrages
+
+This interceptor would add country and language of current request to original render
+
+For example: /p?language=zh&country=CN
+
+| original view | country | language | changed view          |
+| /p            | zh      | CN       | =/zh_CN/p/index.html= |
+
+Country`s default value is "zh"  and language`s default value is "CN"
+
+** SysInterceptor  --- System log interceptor
+*** Introduction
+More human-readeable than ActionReport,used to log in back-end manage system
+*** How to Use
+**** Configuring LogConfig
+#+BEGIN_SRC java
+    SysLogInterceptor log = new SysLogInterceptor();
+    log.addConfig("/blog", new LogConfig("View Blog").addPara("user", "Author`s name"));
+#+END_SRC
+**** Implementing  LogProcessor
+Following methods need to be implemented
+#+BEGIN_SRC java
+     | process(SysLog sysLog)                                   | how to process one log   |
+     | getUsername(Controller c)                                | get name of current user |
+     | formatMessage(String title, Map<String, String> message) | how to format log info   |
+ #+END_SRC
+*** Demo Code
+A simple implemention of log processor
+#+BEGIN_SRC java
+public class DefaultLogProccesor implements LogProccesor {
+    @Override
+    public void process(SysLog sysLog) {
+        Map map = BeanUtils.describe(sysLog);
+        map.remove("class");
+        Record record = new Record();
+        record.setColumns(map);
+        Db.save("syslog", record);
+    }
+
+    @Override
+    public String getUsername(Controller c) {
+        User user = c.getSessionAttr("user");
+        return user.getStr("username");
+    }
+
+    @Override
+    public String formatMessage(String title, Map<String, String> message) {
+        String result = title;
+        if (message.isEmpty()) {
+            return result;
+        }
+        result += ", ";
+        Set<Entry<String, String>> entrySet = message.entrySet();
+        for (Entry<String, String> entry : entrySet) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            result += key + ":" + value;
+        }
+        return result;
+    }
+
+}
+#+END_SRC
+** ExcelUploadInterceptor
+*** Introduction
+Upload excel file ,digist data to model and presmist model.
+*** How to Use
+**** Configurate digist Rule
+#+BEGIN_SRC xml
+ <rule>
+　　<sheetNo>1,2<sheetNo>  Not required ,digist all sheets by default.You can specify sheet you want to digist,more than one sheet should be seperated by ","
+    <start>1</start> Not required ,default value is 0.The  posion in which to be digisted from ,from position 0.
+    <end>-1</end>　Not required,default value is -1.The posion in which digisted to, when the value is negative,index back from last row.
+    <postExcelProcessorn>com.xx.xx.AProcessor</postExcelProcessor>
+    <postListProcessor>com.xx.xx.BProcessor</postListProcessor>
+    <preExcelProcessor>com.xx.xx.CProcessor</preExcelProcessor>
+    <preListProcessor>com.xx.xx.DProcessor</preListProcessor>
+    <cells> Configue stratrage of every cell
+        <cell>
+            <index>1</index>　index of cell ,from position 0
+            <attribute>en_name</attribute>　model`s attribute name
+        </cell>
+        <cell>
+            <index>2</index>
+            <attribute>cn_name</attribute>
+        </cell>
+        <cell>
+            <index>3</index>
+            <attribute>explanation</attribute>
+        </cell>
+　　　　 ...
+    </cells>
+</rule>
+#+END_SRC
+**** Implementing ExcelUploadInterceptor
+
+*** Demo code
+* Eclipse Code Segments
+  Load jfinal-templates.xml to eclipse`s Preferences-java-Editor-Templates
+** jfl
+   Used in any class to generate logger
+
+   #+BEGIN_SRC java
+     protected final Logger logger = Logger.getLogger(getClass());
+     protected final static Logger logger = Logger.getLogger(Object.class);
+   #+END_SRC
+** jfd
+
+   Used in Model to generate dao
+   #+BEGIN_SRC java
+     public final static Model dao = new Model();
+   #+END_SRC
+** jfld
+   Used under variables need to be logged
+   #+BEGIN_SRC java
+     logger.debug("var :" + var);
+   #+END_SRC
+** jfli
+   Used under variables need to be logged
+   #+BEGIN_SRC java
+     logger.info("var :" + var);
+   #+END_SRC
+** jfle
+   Used under variables need to be logged
+   #+BEGIN_SRC java
+     logger.error("var :" + var);
+   #+END_SRC

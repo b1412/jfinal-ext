@@ -1,10 +1,8 @@
 package com.jfinal.ext.plugin.tablebind;
 
+import com.jfinal.plugin.druid.DruidPlugin;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-
-import com.jfinal.plugin.druid.DruidPlugin;
-import org.junit.Test;
 
 public class TestTableBind {
     private static AutoTableBindPlugin atbp;
@@ -28,7 +26,7 @@ public class TestTableBind {
         druidPlugin.stop();
     }
 
-    @Test
+//    @Test
     public void testDefault() {
         atbp = new AutoTableBindPlugin(druidPlugin,SimpleNameStyles.LOWER)
                 .addScanPackages("com.jfinal.ext.render")
@@ -36,7 +34,7 @@ public class TestTableBind {
         atbp.start();
     }
 
-    @Test
+//    @Test
     public void testInJar() {
         atbp = new AutoTableBindPlugin(druidPlugin2,SimpleNameStyles.LOWER)
                 .addScanPackages("com.jfinal.ext.render");

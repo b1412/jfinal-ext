@@ -1,5 +1,5 @@
-
-#+TITLE:     JFinal-Ext
+:
+#+TITLE:     JFinal-Ext Introduction
 #+AUTHOR:    Kid Zhou
 #+EMAIL:     zhouleib1412@gmail.com
 #+DATE:      2014-10-18
@@ -11,95 +11,90 @@
 #+LATEX_CLASS: cn-article
 
 
-Jfinal-ext是对java极速web框架jfinal (https://github.com/jfinal/jfinal)
-的功能扩展
-使用手册 https://github.com/b1412/jfinal-ext/blob/master/doc/doc.org
-*  Plugin扩展
-** 自定绑定表 AutoTableBindPlugin 
-扫描clsspath和lib中继承了model的类自动注册，可选择不同的命名规则自定映射表名，也可以在每一个model上用注解指定表名
+JFinal-Ext(简称JFE)是对java极速web框架JFinal(简称JF) (https://github.com/jfinal/jfinal)
+的功能扩展,包含常用的自动model绑定,route注册,excel导入导出,图形报表,系
+统日志,统一异常处理,定时任务等扩展功能.详细说明请看手册,部分示例代码请
+参考test包下的代码.
 
-** 类似ibatis在xml中管理sql SqlInXmlPlugin 
+中文手册
+        
+    https://github.com/b1412/jfinal-ext/blob/master/doc/doc.org
 
-xml配置格式
-#+BEGIN_SRC elisp
- <sqlGroup name="blog" >
-       <sql id="findBlog">select * from blog</sql>
-       <sql id="findUser">select * from user</sql>
- </sqlGroup>
-#+END_SRC
+English Manual 
 
-获取配置的sql
-SqlManager.sql("blog.findBlog")
-** jms消息处理 JmsPlugin
+    https://github.com/b1412/jfinal-ext/blob/master/doc/doc_en.org
 
-JmsKit.sendQueue("q1", new M(), "a");
-** 任务调度  QuartzPlugin Cron4jPlugin
+* 快速开始
+** maven/gralde 用户
 
-*** Quartz 
+    http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.jfinal%22%20AND%20a%3A%22jfinal-ext%22
 
-调度任务实现org.quartz.Job接口
+    gradle 
+    
+    #+BEGIN_SRC xml
+        'com.jfinal:jfinal-ext:3.1.2' 
+    #+END_SRC
 
-job.properties中配置任务
+    maven
 
-#+BEGIN_SRC elisp
-#JobA
-a.job=test.com.jfinal.plugin.quzrtz.JobA
-a.cron=*/5 * * * * ?
-a.enable=true
-#JobB
-b.job=test.com.jfinal.plugin.quartz.JobB
-b.cron=*/10 * * * * ?
-b.enable=false
-#+END_SRC
+    #+BEGIN_SRC xml
+        <dependency>
+	    <groupId>com.jfinal</groupId>
+	    <artifactId>jfinal-ext</artifactId>
+	    <version>3.1.2</version>
+        </dependency>
+    #+END_SRC
 
-*** Cron4j
+** 不使用依赖管理工具
+ JFE的jar下载地址:
 
-调度任务实现java.lang.Runnable接口
+   http://central.maven.org/maven2/com/jfinal/jfinal-ext/3.1.2/jfinal-ext-3.1.2.jar
+ 
+ JFE依赖JF(https://repo1.maven.org/maven2/com/jfinal/jfinal/1.9/jfinal-1.9.jar)和Guava (https://repo1.maven.org/maven2/com/google/guava/guava/18.0/guava-18.0.jar)
 
-job.properties中配置任务
+snapshot版 
+    https://oss.sonatype.org/content/repositories/snapshots/com/jfinal/jfinal-ext/
 
-#+BEGIN_SRC elisp
-#JobA
-a.job=test.com.jfinal.plugin.cron4j.JobA
-a.cron=* * * * *
-a.enable=true
-#JobB
-b.job=test.com.jfinal.plugin.cron4j.JobB
-b.cron=* * * * *
-b.enable=false
-#+END_SRC
+* 从源码开始
+JFE是基于gradle(https://gradle.org/)构建的项目,如果你已经是gradle用户,
+执行gradle build可直接构建项目,也可按照gradle的方式导入项目.
 
-** ConfigPlugin
-   分优先级加载配置文件
-   在团队开发中如果自己有测试配置需要长期存在但是又不需要提交中心库的时候 
-可以采用分级配置加载的策略。 如中心库中有config.properties这个配置，你可以创建 config-test.properties文件，配置相同的key，ConfigKit中的方法会优先加载 xx-test.properties文件。
 
-** MongodbPlugin
-  
-*  Render扩展
-** DwzRender
-** excel支持
-   通过list数据生成excel,支持的数据类型为map ,record , model。
-*** PoiRender
-*** JxlsRender
-** AmChartsRender
-** FreeMarkerXMLRender
-利用freemaker生成xml
+如果你没使用gralde,也不愿意单独下载配置gradle,那么执行项目跟路径下的gradlew脚本,windows用户执行
 
-*  捐赠
+      gradlew.bat
 
-如果您喜欢JFinal-Ext
-并确实对您带来帮助
-对此感到无比高兴
-您的捐赠，是JFinal-Ext前进的动力!
-支付宝捐助账户： zhouleib1412@gmail.com    (可输入留言)
-[[./doc/img/alipay_pic_small.png]]
+linux用户执行
+
+      gradlew
+
+自动下载gralde完成后,执行 gradlew build构建项目(首次构建需要在中心库下载依赖,速度较慢)构建成功后如下位置找到war
+
+     build/libs/jfinal-ext.war
+
+如果想将项目导入IDE调试,eclipse用户执行
+
+     gradlew eclipse
+
+idea用户执行
+
+     gradlew idea
+
+* 捐赠
+   如果您喜欢JFinal-Ext
+   并确实对您带来帮助
+   对此感到无比高兴
+   您的捐赠，是JFinal-Ext前进的动力!
+   支付宝捐助账户： zhouleib1412@gmail.com    (可输入留言)
+   
+   [[./doc/img/alipay_pic_small.png]]
 
 * 其他开源项目 
 ** JCOP
-  极简自由的代码生成器 JFinal-Code-Online
-  osc: http://www.oschina.net/p/jcop  
-  github: https://github.com/b1412/jfinal-ext
+   极简自由的代码生成器 JFinal-Code-Online
+   - 官方网站: http://code.jfinal.com
+   - osc: http://www.oschina.net/p/jcop  
+   - github: https://github.com/b1412/jfinal-ext
 
 
 

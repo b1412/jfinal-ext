@@ -4,18 +4,16 @@
 
 package com.jfinal.ext.kit;
 
-import java.util.List;
-
-import org.junit.Test;
-
 import com.jfinal.plugin.activerecord.Model;
+
+import java.util.List;
 
 /**
  * 
  * @author kid create 2013-4-13
  */
 public class TestClassSearch {
-    @Test
+//    @Test
     public void findInClasspathAndJars() {
 
         List<Class<? extends Model>> models2 = ClassSearcher.of(Model.class).search();
