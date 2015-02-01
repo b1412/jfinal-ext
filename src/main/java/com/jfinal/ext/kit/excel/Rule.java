@@ -1,5 +1,7 @@
 
-package com.jfinal.ext.interceptor.excel;
+package com.jfinal.ext.kit.excel;
+
+import com.google.common.collect.Lists;
 
 import javax.xml.bind.annotation.*;
 import java.util.List;
@@ -26,7 +28,7 @@ public class Rule {
 
     protected String postListProcessor;
 
-    protected List<Cell> cells;
+    protected List<Cell> cells = Lists.newArrayList();
 
     public String getName() {
         return name;

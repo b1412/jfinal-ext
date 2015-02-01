@@ -3,7 +3,7 @@ package com.jfinal.ext.render.excel;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jfinal.core.Controller;
-import com.jfinal.ext.kit.PoiKit;
+import com.jfinal.ext.kit.excel.PoiExporter;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.auth.AccessTokenBuilder;
 
@@ -33,7 +33,7 @@ public class PoiController extends Controller {
             Map<String, Object> map = getMap(i);
             data.add(map);
         }
-        render(PoiRender.me(data).version(PoiKit.VERSION_2003).headers(headers));
+        render(PoiRender.me(data).version(PoiExporter.VERSION_2003).headers(headers));
     }
 
     public void record() {

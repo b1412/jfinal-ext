@@ -18,28 +18,30 @@ package com.jfinal.ext.plugin.quartz;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 import com.jfinal.ext.kit.Reflect;
+import com.jfinal.ext.kit.ResourceKit;
+import com.jfinal.kit.StrKit;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.IPlugin;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 
 public class QuartzPlugin implements IPlugin {
     public static final String VERSION_1 = "1";
     private static final String JOB = "job";
     private final Logger logger = Logger.getLogger(getClass());
-    private Map<Job,String> jobs = Maps.newLinkedHashMap();
+    private Map<Job, String> jobs = Maps.newLinkedHashMap();
     private String version;
     private SchedulerFactory sf;
     private Scheduler scheduler;
-    private String jobConfig = "job.properties";
-    private String confConfig = "quartz.properties";
-    private Properties jobProp;
+    private String jobConfig;
+    private String confConfig;
+    private Map<String, String> jobProp;
 
-    public QuartzPlugin(String jobConfig,String confConfig) {
+    public QuartzPlugin(String jobConfig, String confConfig) {
         this.jobConfig = jobConfig;
         this.confConfig = confConfig;
     }
@@ -52,9 +54,10 @@ public class QuartzPlugin implements IPlugin {
     }
 
     public QuartzPlugin add(String jobCronExp, Job job) {
-        jobs.put(job,jobCronExp);
+        jobs.put(job, jobCronExp);
         return this;
     }
+
     @Override
     public boolean start() {
         loadJobsFromProperties();
@@ -64,13 +67,17 @@ public class QuartzPlugin implements IPlugin {
 
     private void startJobs() {
         try {
-            sf = new StdSchedulerFactory(confConfig);
+            if (StrKit.notBlank(confConfig)) {
+                sf = new StdSchedulerFactory(confConfig);
+            } else {
+                sf = new StdSchedulerFactory();
+            }
             scheduler = sf.getScheduler();
         } catch (SchedulerException e) {
             Throwables.propagate(e);
         }
-        Set<Map.Entry<Job,String>> set = jobs.entrySet();
-        for (Map.Entry<Job,String> entry : set) {
+        Set<Map.Entry<Job, String>> set = jobs.entrySet();
+        for (Map.Entry<Job, String> entry : set) {
             Job job = entry.getKey();
             String jobClassName = job.getClass().getName();
             String jobCronExp = entry.getValue();
@@ -102,18 +109,21 @@ public class QuartzPlugin implements IPlugin {
     }
 
     private void loadJobsFromProperties() {
-        loadProperties();
-        Enumeration<Object> enums = jobProp.keys();
-        while (enums.hasMoreElements()) {
-            String key = enums.nextElement() + "";
+        if (StrKit.isBlank(jobConfig)) {
+            return;
+        }
+        jobProp = ResourceKit.readProperties(jobConfig);
+        Set<Map.Entry<String, String>> entries = jobProp.entrySet();
+        for (Map.Entry<String, String> entry : entries) {
+            String key = entry.getKey();
             if (!key.endsWith(JOB) || !isEnableJob(enable(key))) {
                 continue;
             }
             String jobClassName = jobProp.get(key) + "";
-            String jobCronExp = jobProp.getProperty(cronKey(key)) + "";
+            String jobCronExp = jobProp.get(cronKey(key)) + "";
             Class<Job> job = Reflect.on(jobClassName).get();
             try {
-                jobs.put(job.newInstance(),jobCronExp);
+                jobs.put(job.newInstance(), jobCronExp);
             } catch (Exception e) {
                 Throwables.propagate(e);
             }
@@ -139,19 +149,6 @@ public class QuartzPlugin implements IPlugin {
             return false;
         }
         return true;
-    }
-
-    private void loadProperties() {
-        jobProp = new Properties();
-        InputStream is = QuartzPlugin.class.getClassLoader().getResourceAsStream(jobConfig);
-        try {
-            jobProp.load(is);
-        } catch (IOException e) {
-            Throwables.propagate(e);
-        }
-        logger.debug("------------load Job Propteries---------------");
-        logger.debug(jobProp.toString());
-        logger.debug("------------------------------------------");
     }
 
     @Override

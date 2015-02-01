@@ -13,31 +13,52 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.2.1'
 }
 
+configurations {
+    provided
+}
+
+sourceSets {
+    main.compileClasspath += configurations.provided
+    test.compileClasspath += configurations.provided
+    test.runtimeClasspath += configurations.provided
+}
+
+idea {
+    module {
+        scopes.PROVIDED.plus += [configurations.provided]
+    }
+}
+
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile 'junit:junit:4.12'
-    compile 'log4j:log4j:1.2.17'
+
+
     compile 'com.jfinal:jfinal:1.9'
-    compile 'com.jfinal:jetty-server:8.1.8'
-    compile 'org.freemarker:freemarker:2.3.21'
     compile 'com.google.guava:guava:18.0'
-    compile 'org.quartz-scheduler:quartz:1.8.6'
-    compile 'org.quartz-scheduler:quartz:2.2.1'
-    compile 'org.apache.poi:poi:3.10.1'
-    compile 'org.apache.poi:poi-ooxml:3.10.1'
-    compile 'org.mongodb:mongo-java-driver:2.11.2'
-    compile 'it.sauronsoftware.cron4j:cron4j:2.2.5'
-    compile 'org.apache.activemq:activemq-core:5.7.0'
-    compile 'javax.jms:jms-api:1.1-rev-1'
-    compile 'net.sf.jxls:jxls-core:0.9.9'
-    compile 'redis.clients:jedis:2.2.1'
-    compile 'org.apache.shiro:shiro-all:1.2.2'
-    compile 'org.crazycake:shiro-redis:1.0.0-RELEASE'
-    compile 'org.apache.commons:commons-lang3:3.1'
+
+    provided 'junit:junit:4.12'
+    provided 'com.jfinal:jetty-server:8.1.8'
+    provided 'mysql:mysql-connector-java:5.1.34'
+    provided 'com.alibaba:druid:1.0.12'
+    provided 'log4j:log4j:1.2.17'
+    provided 'org.freemarker:freemarker:2.3.21'
+    provided 'org.quartz-scheduler:quartz:1.8.6'
+    provided 'org.quartz-scheduler:quartz:2.2.1'
+    provided 'org.apache.poi:poi:3.10.1'
+    provided 'org.apache.poi:poi-ooxml:3.10.1'
+    provided 'org.mongodb:mongo-java-driver:2.11.2'
+    provided 'it.sauronsoftware.cron4j:cron4j:2.2.5'
+    provided 'org.apache.activemq:activemq-core:5.7.0'
+    provided 'javax.jms:jms-api:1.1-rev-1'
+    provided 'net.sf.jxls:jxls-core:0.9.9'
+    provided 'redis.clients:jedis:2.2.1'
+    provided 'org.apache.shiro:shiro-all:1.2.2'
+    provided 'org.crazycake:shiro-redis:1.0.0-RELEASE'
+    provided 'org.apache.commons:commons-lang3:3.1'
 }
 
 apply from: 'maven_push.gradle'

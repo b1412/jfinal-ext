@@ -27,6 +27,7 @@ import com.jfinal.plugin.activerecord.IDataSourceProvider;
 import com.jfinal.plugin.activerecord.Model;
 
 import javax.sql.DataSource;
+import java.io.File;
 import java.util.List;
 
 public class AutoTableBindPlugin extends ActiveRecordPlugin {
@@ -41,6 +42,7 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
     private List<String> scanPackages = Lists.newArrayList();
     private INameStyle nameStyle;
     private String classpath = PathKit.getRootClassPath();
+    private String libDir = PathKit.getWebRootPath() + File.separator + "WEB-INF" + File.separator + "lib";
 
     public AutoTableBindPlugin(IDataSourceProvider dataSourceProvider) {
         this(DbKit.MAIN_CONFIG_NAME, dataSourceProvider, SimpleNameStyles.DEFAULT);
@@ -162,7 +164,8 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public boolean start() {
-        List<Class<? extends Model>> modelClasses = ClassSearcher.of(Model.class).scanPackages(scanPackages).injars(includeJars).includeAllJarsInLib(includeAllJarsInLib).search();
+        List<Class<? extends Model>> modelClasses = ClassSearcher.of(Model.class).libDir(libDir).classpath(classpath)
+                .scanPackages(scanPackages).injars(includeJars).includeAllJarsInLib(includeAllJarsInLib).search();
         TableBind tb;
         for (Class modelClass : modelClasses) {
             if (excludeClasses.contains(modelClass)) {
@@ -209,7 +212,10 @@ public class AutoTableBindPlugin extends ActiveRecordPlugin {
         return this;
     }
 
-
+    public AutoTableBindPlugin libDir(String libDir) {
+        this.libDir = libDir;
+        return this;
+    }
     public AutoTableBindPlugin includeAllJarsInLib(boolean includeAllJarsInLib) {
         this.includeAllJarsInLib = includeAllJarsInLib;
         return this;

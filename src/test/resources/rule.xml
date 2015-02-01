@@ -9,17 +9,17 @@
     <preListProcessor>com.xx.aa</preListProcessor>
     <postListProcessor>com.xx.bb</postListProcessor>
     <cells>
-    <cell>
-        <index>1</index>
-        <attribute>age</attribute>
-        <convert>com.xx.xxx</convert>
-        <validate>com.xx.xxxxx</validate>
-    </cell>
-    <cell>
-        <index>1</index>
-        <attribute>age</attribute>
-        <convert>com.xx.xxx</convert>
-        <validate>com.xx.xxxxx</validate>
-    </cell>
+        <cell>
+            <index>1</index>
+            <attribute>age</attribute>
+            <convert>com.xx.xxx</convert>
+            <validate>com.xx.xxxxx</validate>
+        </cell>
+        <cell>
+            <index>1</index>
+            <attribute>age</attribute>
+            <convert>com.xx.xxx</convert>
+            <validate>com.xx.xxxxx</validate>
+        </cell>
     </cells>
 </rule>

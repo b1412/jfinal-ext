@@ -15,14 +15,13 @@
  */
 package com.jfinal.ext.handler;
 
-import java.util.Map;
-import java.util.Map.Entry;
+import com.google.common.collect.Maps;
+import com.jfinal.handler.Handler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.google.common.collect.Maps;
-import com.jfinal.handler.Handler;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class AddHeaderHandler extends Handler {
     private final Map<String, Object> headers = Maps.newHashMap();
@@ -44,7 +43,7 @@ public class AddHeaderHandler extends Handler {
             } else if (header instanceof Long) {
                 response.addDateHeader(name, (Long) header);
             } else {
-                new RuntimeException("does not support the name (" + name + ") with  value that type is "
+                new RuntimeException("Not support the name (" + name + ") with  value that type is "
                         + header.getClass());
             }
         }

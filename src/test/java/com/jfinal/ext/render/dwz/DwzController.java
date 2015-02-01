@@ -3,7 +3,7 @@ package com.jfinal.ext.render.dwz;
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
 import com.jfinal.ext.interceptor.I18nInterceptor;
-import com.jfinal.ext.kit.JfinalKit;
+import com.jfinal.ext.kit.JFinalKit;
 
 public class DwzController extends Controller {
     public void add() {
@@ -25,7 +25,7 @@ public class DwzController extends Controller {
     }
 
     public void restart() {
-        JfinalKit.restartPlugin("active");
+        JFinalKit.restartPlugin("active");
         renderNull();
     }
 }

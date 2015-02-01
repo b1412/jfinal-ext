@@ -15,39 +15,36 @@
  */
 package com.jfinal.ext.plugin.cron;
 
-import it.sauronsoftware.cron4j.Scheduler;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Set;
-
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 import com.jfinal.ext.kit.Reflect;
+import com.jfinal.ext.kit.ResourceKit;
+import com.jfinal.kit.StrKit;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.IPlugin;
+import it.sauronsoftware.cron4j.Scheduler;
+
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class Cron4jPlugin implements IPlugin {
-    
+
     private static final String JOB = "job";
 
     private final Logger log = Logger.getLogger(getClass());
 
-    private Map<Runnable,String> jobs = Maps.newLinkedHashMap();
-    
-    private String config = "job.properties";
+    private Map<Runnable, String> jobs = Maps.newLinkedHashMap();
+
+    private String config;
 
     private Scheduler scheduler;
 
-    private Properties properties;
-    
+    private Map<String, String> jobProp;
+
 
     public Cron4jPlugin add(String jobCronExp, Runnable job) {
-        jobs.put(job,jobCronExp);
+        jobs.put(job, jobCronExp);
         return this;
     }
 
@@ -55,7 +52,7 @@ public class Cron4jPlugin implements IPlugin {
         this.config = config;
         return this;
     }
-    
+
     @Override
     public boolean start() {
         loadJobsFromProperties();
@@ -65,27 +62,30 @@ public class Cron4jPlugin implements IPlugin {
 
     private void startJobs() {
         scheduler = new Scheduler();
-        Set<Entry<Runnable,String>> set = jobs.entrySet();
-        for (Entry<Runnable,String> entry : set) {
-            scheduler.schedule(entry.getValue(),entry.getKey());
+        Set<Entry<Runnable, String>> set = jobs.entrySet();
+        for (Entry<Runnable, String> entry : set) {
+            scheduler.schedule(entry.getValue(), entry.getKey());
             log.debug(entry.getValue() + " has been scheduled to run and repeat based on expression: " + entry.getKey());
         }
         scheduler.start();
     }
 
     private void loadJobsFromProperties() {
-        loadProperties();
-        Enumeration<Object> enums = properties.keys();
-        while (enums.hasMoreElements()) {
-            String key = enums.nextElement() + "";
+        if (StrKit.isBlank(config)) {
+            return;
+        }
+        jobProp = ResourceKit.readProperties(config);
+        Set<Map.Entry<String, String>> entries = jobProp.entrySet();
+        for (Map.Entry<String, String> entry : entries) {
+            String key = entry.getKey();
             if (!key.endsWith(JOB) || !isEnableJob(enable(key))) {
                 continue;
             }
-            String jobClassName = properties.get(key) + "";
-            String jobCronExp = properties.getProperty(cronKey(key)) + "";
+            String jobClassName = jobProp.get(key) + "";
+            String jobCronExp = jobProp.get(cronKey(key)) + "";
             Class<Runnable> clazz = Reflect.on(jobClassName).get();
             try {
-                jobs.put(clazz.newInstance(),jobCronExp);
+                jobs.put(clazz.newInstance(), jobCronExp);
             } catch (Exception e) {
                 Throwables.propagate(e);
             }
@@ -101,28 +101,11 @@ public class Cron4jPlugin implements IPlugin {
     }
 
     private boolean isEnableJob(String enableKey) {
-        Object enable = properties.get(enableKey);
+        Object enable = jobProp.get(enableKey);
         if (enable != null && "false".equalsIgnoreCase((enable + "").trim())) {
             return false;
         }
         return true;
-    }
-
-    private void loadProperties() {
-        properties = new Properties();
-        log.debug("config is: " + config);
-        InputStream is = Cron4jPlugin.class.getClassLoader().getResourceAsStream(config);
-        if(is == null){
-            return;
-        }
-        try {
-            properties.load(is);
-        } catch (IOException e) {
-            Throwables.propagate(e);
-        }
-        log.debug("------------load Propteries---------------");
-        log.debug(properties.toString());
-        log.debug("------------------------------------------");
     }
 
     @Override
@@ -130,5 +113,5 @@ public class Cron4jPlugin implements IPlugin {
         scheduler.stop();
         return true;
     }
-    
+
 }

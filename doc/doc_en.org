@@ -1,4 +1,4 @@
-#+TITLE:     JFinal-Ext Manual(v3.2.0)
+#+TITLE:     JFinal-Ext Manual(v3.1.3)
 #+AUTHOR:    Leon Zhou
 #+EMAIL:     zhouleib1412@gmail.com.cn
 #+DATE:      2015-02-09

@@ -1,4 +1,3 @@
-:
 #+TITLE:     JFinal-Ext Introduction
 #+AUTHOR:    Kid Zhou
 #+EMAIL:     zhouleib1412@gmail.com
@@ -9,7 +8,6 @@
 #+EXPORT_SELECT_TAGS: export
 #+EXPORT_EXCLUDE_TAGS: noexport
 #+LATEX_CLASS: cn-article
-
 
 JFinal-Ext(简称JFE)是对java极速web框架JFinal(简称JF) (https://github.com/jfinal/jfinal)
 的功能扩展,包含常用的自动model绑定,route注册,excel导入导出,图形报表,系
@@ -47,12 +45,17 @@ English Manual
 
 ** 不使用依赖管理工具
  JFE的jar下载地址:
-
    http://central.maven.org/maven2/com/jfinal/jfinal-ext/3.1.2/jfinal-ext-3.1.2.jar
  
- JFE依赖JF(https://repo1.maven.org/maven2/com/jfinal/jfinal/1.9/jfinal-1.9.jar)和Guava (https://repo1.maven.org/maven2/com/google/guava/guava/18.0/guava-18.0.jar)
+ JFE依赖下载
 
-snapshot版 
+ JF
+     https://repo1.maven.org/maven2/com/jfinal/jfinal/1.9/jfinal-1.9.jar
+
+ Guava
+     https://repo1.maven.org/maven2/com/google/guava/guava/18.0/guava-18.0.jar
+
+** 最新构建的snapshot版
     https://oss.sonatype.org/content/repositories/snapshots/com/jfinal/jfinal-ext/
 
 * 从源码开始
@@ -60,13 +63,15 @@ JFE是基于gradle(https://gradle.org/)构建的项目,如果你已经是gradle�
 执行gradle build可直接构建项目,也可按照gradle的方式导入项目.
 
 
-如果你没使用gralde,也不愿意单独下载配置gradle,那么执行项目跟路径下的gradlew脚本,windows用户执行
+如果你没使用gralde,也不愿意单独下载配置gradle,那么执行项目跟路径下的gradlew脚本
 
-      gradlew.bat
+windows用户执行
+
+    gradlew.bat
 
 linux用户执行
 
-      gradlew
+    gradlew
 
 自动下载gralde完成后,执行 gradlew build构建项目(首次构建需要在中心库下载依赖,速度较慢)构建成功后如下位置找到war
 
@@ -81,13 +86,14 @@ idea用户执行
      gradlew idea
 
 * 捐赠
-   如果您喜欢JFinal-Ext
-   并确实对您带来帮助
-   对此感到无比高兴
-   您的捐赠，是JFinal-Ext前进的动力!
-   支付宝捐助账户： zhouleib1412@gmail.com    (可输入留言)
+
+    如果您喜欢JFinal-Ext
+    并确实对您带来帮助
+    对此感到无比高兴
+    您的捐赠，是JFinal-Ext前进的动力!
+    支付宝捐助账户： zhouleib1412@gmail.com    (可输入留言)
    
-   [[./doc/img/alipay_pic_small.png]]
+    [[./doc/img/alipay_pic_small.png]]
 
 * 其他开源项目 
 ** JCOP
@@ -95,6 +101,5 @@ idea用户执行
    - 官方网站: http://code.jfinal.com
    - osc: http://www.oschina.net/p/jcop  
    - github: https://github.com/b1412/jfinal-ext
-
 
 

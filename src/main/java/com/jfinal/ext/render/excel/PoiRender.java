@@ -15,7 +15,7 @@
  */
 package com.jfinal.ext.render.excel;
 
-import com.jfinal.ext.kit.PoiKit;
+import com.jfinal.ext.kit.excel.PoiExporter;
 import com.jfinal.log.Logger;
 import com.jfinal.render.Render;
 import com.jfinal.render.RenderException;
@@ -29,19 +29,20 @@ public class PoiRender extends Render {
 
     protected final Logger LOG = Logger.getLogger(getClass());
     private final static String CONTENT_TYPE = "application/msexcel;charset=" + getEncoding();
-    private List<?> data;
-    private String[] headers;
-    private String sheetName = "sheet1";
+    private List<?>[] data;
+    private String[][] headers;
+    private String[] sheetNames = new String[]{};
     private int cellWidth;
-    private String[] columns = new String[] {};
+    private String[] columns = new String[]{};
     private String fileName = "file1.xls";
     private int headerRow;
     private String version;
-    public PoiRender(List<?> data) {
+
+    public PoiRender(List<?>[] data) {
         this.data = data;
     }
 
-    public static PoiRender me(List<?> data) {
+    public static PoiRender me(List<?>... data) {
         return new PoiRender(data);
     }
 
@@ -53,7 +54,7 @@ public class PoiRender extends Render {
         OutputStream os = null;
         try {
             os = response.getOutputStream();
-            PoiKit.data(data).version(version).sheetName(sheetName).headerRow(headerRow).headers(headers).columns(columns)
+            PoiExporter.data(data).version(version).sheetNames(sheetNames).headerRow(headerRow).headers(headers).columns(columns)
                     .cellWidth(cellWidth).export().write(os);
         } catch (Exception e) {
             throw new RenderException(e);
@@ -70,7 +71,7 @@ public class PoiRender extends Render {
         }
     }
 
-    public PoiRender headers(String... headers) {
+    public PoiRender headers(String[]... headers) {
         this.headers = headers;
         return this;
     }
@@ -85,8 +86,8 @@ public class PoiRender extends Render {
         return this;
     }
 
-    public PoiRender sheetName(String sheetName) {
-        this.sheetName = sheetName;
+    public PoiRender sheetName(String... sheetName) {
+        this.sheetNames = sheetName;
         return this;
     }
 
@@ -99,6 +100,7 @@ public class PoiRender extends Render {
         this.fileName = fileName;
         return this;
     }
+
     public PoiRender version(String version) {
         this.version = version;
         return this;

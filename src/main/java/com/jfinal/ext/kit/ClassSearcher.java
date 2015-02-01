@@ -20,7 +20,6 @@ import com.jfinal.kit.PathKit;
 import com.jfinal.log.Logger;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
@@ -47,13 +46,7 @@ public class ClassSearcher {
     private static <T> List<Class<? extends T>> extraction(Class<T> clazz, List<String> classFileList) {
         List<Class<? extends T>> classList = Lists.newArrayList();
         for (String classFile : classFileList) {
-            Class<?> classInFile ;
-            try {
-                classInFile = Reflect.on(classFile).get();
-            } catch (ReflectException e) {
-                LOG.debug("classFile: "+classFile);
-                throw new RuntimeException("error in file: "+classFile,e);
-            }
+            Class<?> classInFile = Reflect.on(classFile).get();
             if (clazz.isAssignableFrom(classInFile) && clazz != classInFile) {
                 classList.add((Class<? extends T>) classInFile);
             }
@@ -67,37 +60,32 @@ public class ClassSearcher {
     }
 
     /**
-     * 递归查找文件
-     * 
-     * @param baseDirName
-     *            查找的文件夹路径
-     * @param targetFileName
-     *            需要查找的文件名
+     * @param baseDirName    查找的文件夹路径
+     * @param targetFileName 需要查找的文件名
      */
     private static List<String> findFiles(String baseDirName, String targetFileName) {
         /**
          * 算法简述： 从某个给定的需查找的文件夹出发，搜索该文件夹的所有子文件夹及文件， 若为文件，则进行匹配，匹配成功则加入结果集，若为子文件夹，则进队列。 队列不空，重复上述操作，队列为空，程序结束，返回结果。
          */
         List<String> classFiles = Lists.newArrayList();
-        String tempName = null;
-        // 判断目录是否存在
         File baseDir = new File(baseDirName);
         if (!baseDir.exists() || !baseDir.isDirectory()) {
             LOG.error("search error：" + baseDirName + "is not a dir！");
         } else {
-            String[] filelist = baseDir.list();
-            for (int i = 0; i < filelist.length; i++) {
-                File readfile = new File(baseDirName + File.separator + filelist[i]);
-                if (readfile.isDirectory()) {
-                    classFiles.addAll(findFiles(baseDirName + File.separator + filelist[i], targetFileName));
+            String[] files = baseDir.list();
+            for (int i = 0; i < files.length; i++) {
+                File file = new File(baseDirName + File.separator + files[i]);
+                if (file.isDirectory()) {
+                    classFiles.addAll(findFiles(baseDirName + File.separator + files[i], targetFileName));
                 } else {
-                    tempName = readfile.getName();
-                    if (ClassSearcher.wildcardMatch(targetFileName, tempName)) {
-                        String classname;
-                        String tem = readfile.getAbsoluteFile().toString().replaceAll("\\\\", "/");
-                        classname = tem.substring(tem.indexOf("/classes") + "/classes".length() + 1,
-                                tem.indexOf(".class"));
-                        classFiles.add(classname.replaceAll("/", "."));
+                    if (wildcardMatch(targetFileName, file.getName())) {
+                        String fileName = file.getAbsolutePath();
+                        String open = PathKit.getRootClassPath() + File.separator;
+                        String close = ".class";
+                        int start = fileName.indexOf(open);
+                        int end = fileName.indexOf(close, start + open.length());
+                        String className = fileName.substring(start + open.length(), end).replaceAll(File.separator, ".");
+                        classFiles.add(className);
                     }
                 }
             }
@@ -107,16 +95,13 @@ public class ClassSearcher {
 
     /**
      * 通配符匹配
-     * 
-     * @param pattern
-     *            通配符模式
-     * @param str
-     *            待匹配的字符串 <a href="http://my.oschina.net/u/556800" target="_blank" rel="nofollow">@return</a>
-     *            匹配成功则返回true，否则返回false
+     *
+     * @param pattern  通配符模式
+     * @param fileName 待匹配的字符串
      */
-    private static boolean wildcardMatch(String pattern, String str) {
+    private static boolean wildcardMatch(String pattern, String fileName) {
         int patternLength = pattern.length();
-        int strLength = str.length();
+        int strLength = fileName.length();
         int strIndex = 0;
         char ch;
         for (int patternIndex = 0; patternIndex < patternLength; patternIndex++) {
@@ -124,7 +109,7 @@ public class ClassSearcher {
             if (ch == '*') {
                 // 通配符星号*表示可以匹配任意多个字符
                 while (strIndex < strLength) {
-                    if (wildcardMatch(pattern.substring(patternIndex + 1), str.substring(strIndex))) {
+                    if (wildcardMatch(pattern.substring(patternIndex + 1), fileName.substring(strIndex))) {
                         return true;
                     }
                     strIndex++;
@@ -137,7 +122,7 @@ public class ClassSearcher {
                     return false;
                 }
             } else {
-                if ((strIndex >= strLength) || (ch != str.charAt(strIndex))) {
+                if ((strIndex >= strLength) || (ch != fileName.charAt(strIndex))) {
                     return false;
                 }
                 strIndex++;
@@ -146,78 +131,73 @@ public class ClassSearcher {
         return strIndex == strLength;
     }
 
-
-    public ClassSearcher classpath(String classpath) {
-        this.classpath = classpath;
-        return this;
-    }
-
     public <T> List<Class<? extends T>> search() {
         List<String> classFileList = Lists.newArrayList();
-        if(scanPackages.isEmpty()){
+        if (scanPackages.isEmpty()) {
             classFileList = findFiles(classpath, "*.class");
-        }else {
-            for(String scanPackage:scanPackages){
-                classFileList = findFiles(classpath+File.separator+scanPackage.replaceAll("\\.","\\"+File.separator), "*.class");
+        } else {
+            for (String scanPackage : scanPackages) {
+                classFileList = findFiles(classpath + File.separator + scanPackage.replaceAll("\\.", "\\" + File.separator), "*.class");
             }
         }
-        classFileList.addAll(findjarFiles(libDir, includeJars));
+        classFileList.addAll(findjarFiles(libDir));
         return extraction(target, classFileList);
     }
 
     /**
      * 查找jar包中的class
-     * 
-     * @param baseDirName
-     *            jar路径
-     * @param includeJars
-     *
-     * @see <a href="http://my.oschina.net/u/556800" target="_blank" rel="nofollow">@return</a>
      */
-    private List<String> findjarFiles(String baseDirName, final List<String> includeJars) {
+    private List<String> findjarFiles(String baseDirName) {
         List<String> classFiles = Lists.newArrayList();
-        try {
-            // 判断目录是否存在
-            File baseDir = new File(baseDirName);
-            if (!baseDir.exists() || !baseDir.isDirectory()) {
-                LOG.error("file serach error：" + baseDirName + " is not a dir！");
-            } else {
-                String[] filelist = baseDir.list(new FilenameFilter() {
-                    @Override
-                    public boolean accept(File dir, String name) {
-                        return includeAllJarsInLib || includeJars.contains(name);
-                    }
-                });
-                for (int i = 0; i < filelist.length; i++) {
-                    JarFile localJarFile = new JarFile(new File(baseDirName + File.separator + filelist[i]));
-                    Enumeration<JarEntry> entries = localJarFile.entries();
-                    while (entries.hasMoreElements()) {
-                        JarEntry jarEntry = entries.nextElement();
-                        String entryName = jarEntry.getName();
-                        if(scanPackages.isEmpty()){
-                            if (!jarEntry.isDirectory() && entryName.endsWith(".class")) {
-                                String className = entryName.replaceAll("/", ".").substring(0, entryName.length() - 6);
-                                classFiles.add(className);
-                            }
-                        }else {
-                            for(String scanPackage:scanPackages){
-                                scanPackage = scanPackage.replaceAll("\\.",File.separator);
-                                if (!jarEntry.isDirectory() && entryName.endsWith(".class") && entryName.startsWith(scanPackage)) {
-                                    String className = entryName.replaceAll("/", ".").substring(0, entryName.length() - 6);
-                                    classFiles.add(className);
+        File baseDir = new File(baseDirName);
+        if (!baseDir.exists() || !baseDir.isDirectory()) {
+            LOG.error("file search error:" + baseDirName + " is not a dir！");
+        } else {
+            File[] files = baseDir.listFiles();
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    classFiles.addAll(findjarFiles(file.getAbsolutePath()));
+                } else {
+                    if (includeAllJarsInLib || includeJars.contains(file.getName())) {
+                        JarFile localJarFile = null;
+                        try {
+                            localJarFile = new JarFile(new File(baseDirName + File.separator + file.getName()));
+                            Enumeration<JarEntry> entries = localJarFile.entries();
+                            while (entries.hasMoreElements()) {
+                                JarEntry jarEntry = entries.nextElement();
+                                String entryName = jarEntry.getName();
+                                if (scanPackages.isEmpty()) {
+                                    if (!jarEntry.isDirectory() && entryName.endsWith(".class")) {
+                                        String className = entryName.replaceAll(File.separator, ".").substring(0, entryName.length() - 6);
+                                        classFiles.add(className);
+                                    }
+                                } else {
+                                    for (String scanPackage : scanPackages) {
+                                        scanPackage = scanPackage.replaceAll("\\.", "\\" + File.separator);
+                                        if (!jarEntry.isDirectory() && entryName.endsWith(".class") && entryName.startsWith(scanPackage)) {
+                                            String className = entryName.replaceAll(File.separator, ".").substring(0, entryName.length() - 6);
+                                            classFiles.add(className);
+                                        }
+                                    }
                                 }
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } finally {
+                            try {
+                                if (localJarFile != null) {
+                                    localJarFile.close();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
                         }
                     }
-                    localJarFile.close();
                 }
-            }
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            }
         }
         return classFiles;
-
     }
 
     public ClassSearcher(Class target) {
@@ -245,13 +225,18 @@ public class ClassSearcher {
         return this;
     }
 
+    public ClassSearcher classpath(String classpath) {
+        this.classpath = classpath;
+        return this;
+    }
+
     public ClassSearcher libDir(String libDir) {
         this.libDir = libDir;
         return this;
     }
 
     public ClassSearcher scanPackages(List<String> scanPaths) {
-        if(scanPaths != null){
+        if (scanPaths != null) {
             scanPackages.addAll(scanPaths);
         }
         return this;

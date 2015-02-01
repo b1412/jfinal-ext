@@ -1,0 +1,98 @@
+#+TITLE:     JFinal-Ext Introduction
+#+AUTHOR:    Leon Zhou
+#+EMAIL:     zhouleib1412@gmail.com
+#+DATE:      2015-02-02
+#+DESCRIPTION: JFinal-Ext Introduction
+#+KEYWORDS:  JFinal-Ext JFinal Java
+#+LANGUAGE:  zh_CN
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+LATEX_CLASS: cn-article
+
+
+JFinal-Ext(JFE for short) are  extentions of JFinal(JF for short) which is a WEB+ORM framework for agile development
+(https://github.com/jfinal/jfinal) including some commonly used functionalities,such as binding model automatically,registing routes automatically,importing and exporting excel,creating graphical report,unified exception handling,scheduling jobs,etc.
+for more details,see manual.Some demo code is under test package.
+
+中文手册
+       
+    https://github.com/b1412/jfinal-ext/blob/master/doc/doc.org
+
+English Manual 
+
+    https://github.com/b1412/jfinal-ext/blob/master/doc/doc_en.org
+
+* Quick Start
+** maven/gralde users
+
+    http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.jfinal%22%20AND%20a%3A%22jfinal-ext%22
+
+    gradle 
+    
+    #+BEGIN_SRC xml
+        'com.jfinal:jfinal-ext:3.1.2' 
+    #+END_SRC
+
+    maven
+
+    #+BEGIN_SRC xml
+        <dependency>
+	    <groupId>com.jfinal</groupId>
+	    <artifactId>jfinal-ext</artifactId>
+	    <version>3.1.2</version>
+        </dependency>
+    #+END_SRC
+
+** Without Dependency Management Tool
+ Download url of JFE:
+   http://central.maven.org/maven2/com/jfinal/jfinal-ext/3.1.2/jfinal-ext-3.1.2.jar
+ 
+ Download urls of JFE's dependencies
+
+ JF
+     https://repo1.maven.org/maven2/com/jfinal/jfinal/1.9/jfinal-1.9.jar
+
+ Guava
+     https://repo1.maven.org/maven2/com/google/guava/guava/18.0/guava-18.0.jar
+
+** Newest snapshot verson
+    https://oss.sonatype.org/content/repositories/snapshots/com/jfinal/jfinal-ext/
+    
+* Building From Source Code
+JFE is a gradle-based(https://gradle.org/) project,if you are useing grade,
+you can execute gradle build to build project,also can import the
+project using gralde' method.
+
+
+If you do not set up gradle,and not want to download and set up manully,execute gradlew script in project root path.
+
+windows users should execute 
+
+    gradlew.bat
+
+linux users should execute
+
+    gradlew
+
+After download gralde automatically,execute 'gradlew build' to bulid
+project(maybe a little slow ,because need to download dependencies
+from maven centre the first time).After successful build,you can find war in the following path
+
+    build/libs/jfinal-ext.war
+
+If you want to import the project to debug,eclipse users should execute
+
+    gradlew eclipse
+
+idea users should execute
+
+    gradlew idea
+     
+* Other Open Source Projects 
+** JCOP
+   Extremely simple and flexbile code generator -- JFinal-Code-Online
+   - offical website: http://code.jfinal.com
+   - github: https://github.com/b1412/jfinal-ext
+   - osc: http://www.oschina.net/p/jcop  
+
+

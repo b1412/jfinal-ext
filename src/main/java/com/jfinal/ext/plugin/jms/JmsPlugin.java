@@ -15,16 +15,15 @@
  */
 package com.jfinal.ext.plugin.jms;
 
-import java.util.HashMap;
-import java.util.List;
-
-import javax.jms.MessageListener;
-
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.jfinal.ext.plugin.config.ConfigPlugin;
 import com.jfinal.kit.StrKit;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.IPlugin;
+
+import javax.jms.MessageListener;
+import java.util.List;
 
 public class JmsPlugin implements IPlugin {
 
@@ -101,7 +100,7 @@ public class JmsPlugin implements IPlugin {
 
     private void initSender() {
         jmsSender = new JmsSender();
-        jmsSender.queueProducers = new HashMap<String, QueueProducer>();
+        jmsSender.queueProducers = Maps.newHashMap();
         String sendQueues = JmsConfig.getStr("sendQueues");
         logger.debug("sendQueues :" + sendQueues);
         if (StrKit.notBlank(sendQueues)) {
@@ -113,7 +112,7 @@ public class JmsPlugin implements IPlugin {
 
         logger.debug("sendTopics :" + sendTopics);
         if (StrKit.notBlank(sendTopics)) {
-            jmsSender.topicPublishers = new HashMap<String, TopicPublisher>();
+            jmsSender.topicPublishers = Maps.newHashMap();
             for (String topicName : sendTopics.split(",")) {
                 jmsSender.topicPublishers.put(topicName, new TopicPublisher(serverUrl, username, password, topicName));
             }
@@ -122,6 +121,9 @@ public class JmsPlugin implements IPlugin {
 
     @Override
     public boolean stop() {
+//        for (MessageListener listener : listeners) {
+//            Reflect.on(listener).call("closeConnection");
+//        }
         listeners.clear();
         return true;
     }

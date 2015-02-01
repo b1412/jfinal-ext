@@ -1,7 +1,7 @@
-#+TITLE:     JFinal-Ext文档(v3.2.0)
+#+TITLE:     JFinal-Ext文档(v3.1.3)
 #+AUTHOR:    周 磊
 #+EMAIL:     zhouleib1412@gmail.com.cn
-#+DATE:      2015-02-09
+#+DATE:      2015-02-02
 #+DESCRIPTION:
 #+KEYWORDS:
 #+LANGUAGE:  zh_CN
@@ -13,10 +13,11 @@
   在非web环境下对jfinal Controller 进行单元测试
 ** 使用说明
  所有对Controller的测试必须继承ControllerTestCase,此类中方法说明如下
+
  |---------------------+-----------------------------|
  | use                 | 需要调用的url               |
  | post                | post数据包,支持String和File |
- | writeTo             | response数据写入文件        |
+ | writeTo             | response数据写入文件  |
  | invoke              | 调用url                     |
  | findAttrAfterInvoke | action调用之后getAttr的值   |
  |---------------------+-----------------------------|
@@ -348,15 +349,25 @@ MongoKit.updateFirst("sns", src, desc); //只能修改符合条件的第一条�
 ** JxlsRender
    通过list数据生成excel,支持的数据类型为map ,record , model。
 ** PoiRender
-   通过list数据生成excel,支持的数据类型为map ,record , model。
+   通过list数据生成excel,支持多sheet导出,支持的数据类型为map ,record , model.
 *** 示例代码
    #+BEGIN_SRC java
-   PoiRender.me(data,data2,...datan).fileName("your_file_name.xls").headers(headers).cellWidth(5000).headerRow(2)
+       PoiRender.me(data,data2,...dataN).fileName("your_file_name.xls").headers(headers,headers2,...headerN).cellWidth(5000).headerRow(2)
    #+END_SRC
 *** excel2003和2007版本问题
- 2003版一个sheet只支持最多65535行,当超过65535后会自动转化为多个sheet,2007则没有此限制.
- 默认使用2007版,如果想用2003版调用PoiRender.me(data).version(PoiKit.VERSION_2003)既可
-***
+ 2003版一个sheet只支持最多65535行,2007则没有此限制.对此PoiRender做了如
+ 下处理
+
+ - 默认使用2007版,单个sheet的data无限制,如果想用2003版调用以下API:
+   #+BEGIN_SRC java
+       PoiRender.me(data).version(PoiKit.VERSION_2003)
+   #+END_SRC   
+
+*** 多sheet支持
+ - data ,sheetNames,headers,columns长度必须相同.
+ - 2003版本,如果data长度大于1,会检查每个data的item的数据长度,不允许超
+   过65535
+ - 2003版本,如果data长度等于1,如果数据超过65535,会自动拆分为多个sheet
 
 ** CsvRender
    通过list数据生成csv,支持的数据类型为map ,record , model。

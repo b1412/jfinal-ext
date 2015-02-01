@@ -1,3 +1,18 @@
+/**
+ * Copyright (c) 2011-2013, kidzhou 周磊 (zhouleib1412@gmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.jfinal.ext.kit;
 
 import com.google.common.base.Joiner;
@@ -15,9 +30,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
-/**
- * Created by kid on 14-4-24.
- */
 public abstract class ModelFingerprint<M extends ModelFingerprint<M>> extends ModelExt<M> {
 
     private static Logger LOG = Logger.getLogger(ModelFingerprint.class);
@@ -48,7 +60,7 @@ public abstract class ModelFingerprint<M extends ModelFingerprint<M>> extends Mo
         map = Maps.newConcurrentMap();
         Table tableInfo = TableMapping.me().getTable(clazz);
         if (!tableInfo.hasColumnLabel(fingerprintColumnLabel)) {
-            throw new ActiveRecordException("The fingerprintColumnLabel (" + fingerprintColumnLabel + ") is not exist");
+            throw new ActiveRecordException("fingerprintColumnLabel (" + fingerprintColumnLabel + ") is not exist");
         }
         LOG.info("begin load " + tableName() + " fingerprints");
         List<Record> records = Db.find("SELECT id, " + fingerprintColumnLabel + " FROM " + tableName());
@@ -83,7 +95,7 @@ public abstract class ModelFingerprint<M extends ModelFingerprint<M>> extends Mo
     }
 
     public void compare(ModelFingerprint modelFingerprint) {
-        if(map == null){
+        if (map == null) {
             throw new IllegalStateException("modelFingerprint have not been initialized");
         }
         Integer id = map.get(modelFingerprint.calcFingerprint());
@@ -112,13 +124,13 @@ public abstract class ModelFingerprint<M extends ModelFingerprint<M>> extends Mo
 
     public void removeExpired() {
         int size = deleting.size();
-        LOG.info("delete " + size);
+        LOG.info("delete " + size+ "records");
         if (size != 0) {
             List<Integer> ids = Lists.newArrayList(deleting);
-            int idsize = ids.size();
+            int idSize = ids.size();
             int batchSize = 1000;
-            int length = idsize / batchSize;
-            if (idsize % batchSize != 0) {
+            int length = idSize / batchSize;
+            if (idSize % batchSize != 0) {
                 length++;
             }
             for (int i = 0; i < length; i++) {

@@ -1,4 +1,4 @@
-package com.jfinal.ext.interceptor.excel;
+package com.jfinal.ext.kit.excel;
 
 import java.util.LinkedHashMap;
 import java.util.Set;

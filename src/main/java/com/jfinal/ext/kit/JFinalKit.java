@@ -15,20 +15,16 @@
  */
 package com.jfinal.ext.kit;
 
-import java.util.List;
-
 import com.google.common.collect.Lists;
-import com.jfinal.config.Constants;
-import com.jfinal.config.Handlers;
-import com.jfinal.config.Interceptors;
-import com.jfinal.config.Plugins;
-import com.jfinal.config.Routes;
+import com.jfinal.config.*;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.IPlugin;
 
-public class JfinalKit {
+import java.util.List;
 
-    protected static final Logger LOG = Logger.getLogger(JfinalKit.class);
+public class JFinalKit {
+
+    protected static final Logger LOG = Logger.getLogger(JFinalKit.class);
 
     static {
         init();
@@ -52,23 +48,23 @@ public class JfinalKit {
     }
 
     public static Constants getConstants() {
-        return JfinalKit.constants;
+        return JFinalKit.constants;
     }
 
     public static Routes getRoutes() {
-        return JfinalKit.routes;
+        return JFinalKit.routes;
     }
 
     public static Plugins getPlugins() {
-        return JfinalKit.plugins;
+        return JFinalKit.plugins;
     }
 
     public static Interceptors getInterceptors() {
-        return JfinalKit.interceptors;
+        return JFinalKit.interceptors;
     }
 
     public static Handlers getHandlers() {
-        return JfinalKit.handlers;
+        return JFinalKit.handlers;
     }
 
     public static void stopPlugin(String pluginName) {

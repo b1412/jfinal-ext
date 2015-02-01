@@ -15,20 +15,18 @@
  */
 package com.jfinal.ext.interceptor.excel;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
 import com.google.common.collect.Lists;
 import com.jfinal.aop.PrototypeInterceptor;
 import com.jfinal.core.ActionInvocation;
 import com.jfinal.core.Controller;
-import com.jfinal.ext.interceptor.excel.filter.RowFilter;
-import com.jfinal.ext.kit.ModelExt;
 import com.jfinal.ext.kit.Reflect;
+import com.jfinal.ext.kit.excel.PoiImporter;
+import com.jfinal.ext.kit.excel.Rule;
+import com.jfinal.ext.kit.excel.filter.RowFilter;
 import com.jfinal.kit.StrKit;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.activerecord.Model;
 
-import java.io.File;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -55,7 +53,7 @@ public abstract class ExcelUploadInterceptor<M extends Model<?>> extends Prototy
     public void doIntercept(ActionInvocation ai) {
         rule = configRule();
         Controller controller = ai.getController();
-        List<Model<?>> list = ExcelTools.processSheet(controller.getFile().getFile(), rule, clazz);
+        List<Model<?>> list = PoiImporter.processSheet(controller.getFile().getFile(), rule, clazz);
         execPreListProcessor(list);
         for (Model<?> model : list) {
             execPreExcelProcessor(model);
