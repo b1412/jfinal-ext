@@ -15,17 +15,9 @@
  */
 package com.jfinal.ext.render.chart.funshion;
 
-/**
- * 
- */
-
 import javax.servlet.http.HttpServletResponse;
 
 public class FusionCharts {
-    // Author: InfoSoft Global (P) Ltd.
-
-    // This page contains functions that can be used to create FusionCharts.
-
     /**
      * Encodes the dataURL before it's served to FusionCharts. If you have parameters in your dataURL, you necessarily need to encode it.
      * 

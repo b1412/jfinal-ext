@@ -15,11 +15,11 @@
  */
 package com.jfinal.ext.render.chart.amchart;
 
-import java.util.List;
-
 import com.jfinal.ext.kit.KeyLabel;
 import com.jfinal.kit.StrKit;
 import com.jfinal.log.Logger;
+
+import java.util.List;
 
 public class Creater {
 
@@ -29,17 +29,6 @@ public class Creater {
     private Creater() {
     }
 
-    /**
-     * 
-     * 创建报表,曲线图,区域图 <?xml version="1.0" encoding="UTF-8"?> <chart> <series> <value xid="0">USA</value> <value
-     * xid="1">UK</value> </series> <graphs> <graph gid="1"> <value xid="0">3.5</value> <value xid="1">1.7</value>
-     * </graph> <graph gid="0"> <value xid="0">4.2</value> <value xid="1">3.1</value> </graph> </graphs> </chart>
-     * 
-     * @param chart
-     *            报表实体
-     * 
-     * @return 创建的字符串
-     */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static String createMultipleChart(GraphChart chart) {
         StringBuffer strXML = new StringBuffer("<?xml version='1.0' encoding='UTF-8'?>").append(newLine())
@@ -58,17 +47,6 @@ public class Creater {
         return strXML.toString();
     }
 
-    /**
-     * 
-     * Description: <br>
-     * 创建饼状图
-     * 
-     * 数据格式 <pie> <slice title="月租费">0.0</slice> <slice title="语音费">24.58</slice> <slice title="数据费">1.5</slice> <slice
-     * title="增值费">12.6</slice> <slice title="一次性费">0.0</slice> <slice title="其他费用">60.0</slice> </pie>
-     * 
-     * @param chart
-     * @return
-     */
     public static String createPieChart(PieChart chart) {
         StringBuffer strXML = new StringBuffer("<?xml version='1.0' encoding='UTF-8'?>").append(newLine());
         strXML.append("<pie>").append(newLine());

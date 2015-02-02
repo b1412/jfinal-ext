@@ -15,23 +15,17 @@
  */
 package com.jfinal.ext.kit;
 
-import java.io.File;
-import java.io.StringReader;
-import java.io.StringWriter;
+import com.google.common.base.Throwables;
+import com.jfinal.log.Logger;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import java.io.File;
+import java.io.StringReader;
+import java.io.StringWriter;
 
-import com.google.common.base.Throwables;
-import com.jfinal.log.Logger;
-
-/**
- * 
- * Xml object互转. <br/>
- * 
- */
 public class JaxbKit {
 
     protected final static Logger LOG = Logger.getLogger(JaxbKit.class);
@@ -72,7 +66,7 @@ public class JaxbKit {
      * object -> string
      */
     public static String marshal(Object jaxbElement) {
-        StringWriter sw = null;
+        StringWriter sw ;
         try {
             Marshaller fm = JAXBContext.newInstance(jaxbElement.getClass()).createMarshaller();
             fm.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
