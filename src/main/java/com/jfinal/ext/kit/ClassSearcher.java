@@ -84,7 +84,7 @@ public class ClassSearcher {
                         String close = ".class";
                         int start = fileName.indexOf(open);
                         int end = fileName.indexOf(close, start + open.length());
-                        String className = fileName.substring(start + open.length(), end).replaceAll(File.separator, ".");
+                        String className = fileName.substring(start + open.length(), end).replaceAll("\\" + File.separator, ".");
                         classFiles.add(className);
                     }
                 }
@@ -168,7 +168,7 @@ public class ClassSearcher {
                                 String entryName = jarEntry.getName();
                                 if (scanPackages.isEmpty()) {
                                     if (!jarEntry.isDirectory() && entryName.endsWith(".class")) {
-                                        String className = entryName.replaceAll(File.separator, ".").substring(0, entryName.length() - 6);
+                                        String className = entryName.replaceAll("\\" + File.separator, ".").substring(0, entryName.length() - 6);
                                         classFiles.add(className);
                                     }
                                 } else {
