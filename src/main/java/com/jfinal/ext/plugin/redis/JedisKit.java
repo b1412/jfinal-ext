@@ -25,6 +25,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Transaction;
 import redis.clients.jedis.Tuple;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.util.SafeEncoder;
 
 import com.google.common.collect.Lists;
@@ -45,9 +46,15 @@ public class JedisKit {
             Transaction trans = jedis.multi();
             jedisAtom.action(trans);
             result = trans.exec();
-        }catch (Exception e){
+        } catch (JedisConnectionException e) {
             LOG.error(e.getMessage(), e);
-        }finally {
+            if (null != jedis) {
+                pool.returnBrokenResource(jedis);
+                jedis = null;
+            }
+        } catch (Exception e){
+            LOG.error(e.getMessage(), e);
+        } finally {
             if(null != jedis){
                 pool.returnResource(jedis);
             }
@@ -61,6 +68,12 @@ public class JedisKit {
         Jedis jedis = pool.getResource();
         try {
             result = jedisAction.action(jedis);
+        } catch (JedisConnectionException e) {
+            LOG.error(e.getMessage(), e);
+            if (null != jedis) {
+                pool.returnBrokenResource(jedis);
+                jedis = null;
+            }
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         } finally {
