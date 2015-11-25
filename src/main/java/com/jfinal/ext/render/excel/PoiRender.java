@@ -33,7 +33,7 @@ public class PoiRender extends Render {
     private String[][] headers;
     private String[] sheetNames = new String[]{};
     private int cellWidth;
-    private String[] columns = new String[]{};
+    private String[][] columns = new String[]{};
     private String fileName = "file1.xls";
     private int headerRow;
     private String version;
